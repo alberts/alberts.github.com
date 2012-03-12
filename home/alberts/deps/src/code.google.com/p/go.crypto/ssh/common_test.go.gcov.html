@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ssh/common_test.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ssh</a> - common_test.go<span style="font-size: 80%;"> (source / <a href="common_test.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package ssh
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;testing&quot;
+<a name="9"><span class="lineNum">       9 </span>                :            : )</a>
+<span class="lineNum">      10 </span>                :            : 
+<span class="lineNum">      11 </span>                :<span class="lineCov">          1 : func TestSafeString(t *testing.T) {</span>
+<span class="lineNum">      12 </span>                :<span class="lineCov">          1 :         strings := map[string]string{</span>
+<span class="lineNum">      13 </span>                :            :                 &quot;\x20\x0d\x0a&quot;:  &quot;\x20\x0d\x0a&quot;,
+<span class="lineNum">      14 </span>                :            :                 &quot;flibble&quot;:       &quot;flibble&quot;,
+<span class="lineNum">      15 </span>                :            :                 &quot;new\x20line&quot;:   &quot;new\x20line&quot;,
+<span class="lineNum">      16 </span>                :            :                 &quot;123456\x07789&quot;: &quot;123456 789&quot;,
+<span class="lineNum">      17 </span>                :            :                 &quot;\t\t\x10\r\n&quot;:  &quot;\t\t \r\n&quot;,
+<span class="lineNum">      18 </span>                :            :         }
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          6 :         for s, expected := range strings {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 5 times"> + </span><span class="branchCov" title="Branch 7 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 8 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      21 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          5 :                 actual := safeString(s)</span>
+<span class="lineNum">      22 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 5 times"> + </span>]:<span class="lineCov">          5 :                 if expected != actual {</span>
+<span class="lineNum">      23 </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;expected: %v, actual: %v&quot;, []byte(expected), []byte(actual))</span>
+<span class="lineNum">      24 </span>                :            :                 }
+<span class="lineNum">      25 </span>                :            :         }
+<span class="lineNum">      26 </span>                :<span class="lineCov">          1 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

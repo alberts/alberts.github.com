@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ssh/mac.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ssh</a> - mac.go<span style="font-size: 80%;"> (source / <a href="mac.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryHi">93.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryLo">40.6 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2012 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package ssh
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : // Message authentication support
+<span class="lineNum">       8 </span>                :            : 
+<span class="lineNum">       9 </span>                :            : import (
+<span class="lineNum">      10 </span>                :            :         &quot;crypto/hmac&quot;
+<span class="lineNum">      11 </span>                :            :         &quot;crypto/sha1&quot;
+<span class="lineNum">      12 </span>                :            :         &quot;hash&quot;
+<span class="lineNum">      13 </span>                :            : )
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :            : type macMode struct {
+<span class="lineNum">      16 </span>                :            :         keySize int
+<span class="lineNum">      17 </span>                :            :         new     func(key []byte) hash.Hash
+<span class="lineNum">      18 </span>                :            : }
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>                :            : // truncatingMAC wraps around a hash.Hash and truncates the output digest to
+<span class="lineNum">      21 </span>                :            : // a given size.
+<span class="lineNum">      22 </span>                :            : type truncatingMAC struct {
+<span class="lineNum">      23 </span>                :            :         length int
+<span class="lineNum">      24 </span>                :            :         hmac   hash.Hash
+<a name="25"><span class="lineNum">      25 </span>                :            : }</a>
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         56 : func (t truncatingMAC) Write(data []byte) (int, error) {</span>
+<span class="lineNum">      28 </span>[<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         56 :         return t.hmac.Write(data)</span>
+<a name="29"><span class="lineNum">      29 </span>                :            : }</a>
+<span class="lineNum">      30 </span>                :            : 
+<span class="lineNum">      31 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 : func (t truncatingMAC) Sum(in []byte) []byte {</span>
+<span class="lineNum">      32 </span>[<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         16 :         out := t.hmac.Sum(in)</span>
+<span class="lineNum">      33 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">         16 :         return out[:len(in)+t.length]</span>
+<a name="34"><span class="lineNum">      34 </span>                :            : }</a>
+<span class="lineNum">      35 </span>                :            : 
+<span class="lineNum">      36 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 : func (t truncatingMAC) Reset() {</span>
+<span class="lineNum">      37 </span>[<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         16 :         t.hmac.Reset()</span>
+<a name="38"><span class="lineNum">      38 </span>                :<span class="lineCov">         16 : }</span></a>
+<span class="lineNum">      39 </span>                :            : 
+<span class="lineNum">      40 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          8 : func (t truncatingMAC) Size() int {</span>
+<span class="lineNum">      41 </span>                :<span class="lineCov">          8 :         return t.length</span>
+<a name="42"><span class="lineNum">      42 </span>                :            : }</a>
+<span class="lineNum">      43 </span>                :            : 
+<span class="lineNum">      44 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : func (t truncatingMAC) BlockSize() int { return t.hmac.BlockSize() }</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      45 </span>                :            : 
+<span class="lineNum">      46 </span>                :            : // Specifies a default set of MAC algorithms and a preference order. 
+<span class="lineNum">      47 </span>                :            : // This is based on RFC 4253, section 6.4, with the removal of the 
+<span class="lineNum">      48 </span>                :            : // hmac-md5 variants as they have reached the end of their useful life.
+<span class="lineNum">      49 </span>                :            : var DefaultMACOrder = []string{&quot;hmac-sha1&quot;, &quot;hmac-sha1-96&quot;}
+<a name="50"><span class="lineNum">      50 </span>                :            : </a>
+<span class="lineNum">      51 </span>                :            : var macModes = map[string]*macMode{
+<span class="lineNum">      52 </span>                :<span class="lineCov">         56 :         &quot;hmac-sha1&quot;: {20, func(key []byte) hash.Hash {</span>
+<a name="53"><span class="lineNum">      53 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         56 :                 return hmac.New(sha1.New, key)</span></a>
+<span class="lineNum">      54 </span>                :            :         }},
+<span class="lineNum">      55 </span>                :<span class="lineCov">          4 :         &quot;hmac-sha1-96&quot;: {20, func(key []byte) hash.Hash {</span>
+<span class="lineNum">      56 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          4 :                 return truncatingMAC{12, hmac.New(sha1.New, key)}</span>
+<span class="lineNum">      57 </span>                :            :         }},
+<span class="lineNum">      58 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

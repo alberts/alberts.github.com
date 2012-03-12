@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.net/spdy/read.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.net/spdy</a> - read.go<span style="font-size: 80%;"> (source / <a href="read.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">146</td>
+            <td class="headerCovTableEntry">183</td>
+            <td class="headerCovTableEntryMed">79.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">208</td>
+            <td class="headerCovTableEntry">534</td>
+            <td class="headerCovTableEntryLo">39.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package spdy
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;compress/zlib&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;encoding/binary&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;io&quot;
+<span class="lineNum">      11 </span>                :            :         &quot;net/http&quot;
+<span class="lineNum">      12 </span>                :            :         &quot;strings&quot;
+<a name="13"><span class="lineNum">      13 </span>                :            : )</a>
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :<span class="lineCov">          4 : func (frame *SynStreamFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      16 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         return f.readSynStreamFrame(h, frame)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<a name="17"><span class="lineNum">      17 </span>                :            : }</a>
+<span class="lineNum">      18 </span>                :            : 
+<span class="lineNum">      19 </span>                :<span class="lineCov">          2 : func (frame *SynReplyFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      20 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          2 :         return f.readSynReplyFrame(h, frame)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<a name="21"><span class="lineNum">      21 </span>                :            : }</a>
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :<span class="lineCov">          1 : func (frame *RstStreamFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      24 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.CFHeader = h</span>
+<span class="lineNum">      25 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;frame.StreamId); err != nil {</span>
+<span class="lineNum">      26 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      27 </span>                :            :         }
+<span class="lineNum">      28 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;frame.Status); err != nil {</span>
+<span class="lineNum">      29 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      30 </span>                :            :         }
+<span class="lineNum">      31 </span>                :<span class="lineCov">          1 :         return nil</span>
+<a name="32"><span class="lineNum">      32 </span>                :            : }</a>
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :<span class="lineCov">          1 : func (frame *SettingsFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      35 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.CFHeader = h</span>
+<span class="lineNum">      36 </span>                :<span class="lineCov">          1 :         var numSettings uint32</span>
+<span class="lineNum">      37 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;numSettings); err != nil {</span>
+<span class="lineNum">      38 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      39 </span>                :            :         }
+<span class="lineNum">      40 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.FlagIdValues = make([]SettingsFlagIdValue, numSettings)</span>
+<span class="lineNum">      41 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          3 :         for i := uint32(0); i &lt; numSettings; i++ {</span>
+<span class="lineNum">      42 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err := binary.Read(f.r, binary.BigEndian, &amp;frame.FlagIdValues[i].Id); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 2 times"> + </span>]
+<span class="lineNum">      43 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      44 </span>                :            :                 }
+<span class="lineNum">      45 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 frame.FlagIdValues[i].Flag = SettingsFlag((frame.FlagIdValues[i].Id &amp; 0xff000000) &gt;&gt; 24)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 12 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>]
+<span class="lineNum">      46 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 frame.FlagIdValues[i].Id &amp;= 0xffffff</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 2 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 10 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>][<span class="branchCov" title="Branch 12 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>]
+<span class="lineNum">      47 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err := binary.Read(f.r, binary.BigEndian, &amp;frame.FlagIdValues[i].Value); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 2 times"> + </span>]
+<span class="lineNum">      48 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      49 </span>                :            :                 }
+<span class="lineNum">      50 </span>                :            :         }
+<span class="lineNum">      51 </span>                :<span class="lineCov">          1 :         return nil</span>
+<a name="52"><span class="lineNum">      52 </span>                :            : }</a>
+<span class="lineNum">      53 </span>                :            : 
+<span class="lineNum">      54 </span>                :<span class="lineCov">          1 : func (frame *NoopFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      55 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.CFHeader = h</span>
+<span class="lineNum">      56 </span>                :<span class="lineCov">          1 :         return nil</span>
+<a name="57"><span class="lineNum">      57 </span>                :            : }</a>
+<span class="lineNum">      58 </span>                :            : 
+<span class="lineNum">      59 </span>                :<span class="lineCov">          1 : func (frame *PingFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      60 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.CFHeader = h</span>
+<span class="lineNum">      61 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;frame.Id); err != nil {</span>
+<span class="lineNum">      62 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      63 </span>                :            :         }
+<span class="lineNum">      64 </span>                :<span class="lineCov">          1 :         return nil</span>
+<a name="65"><span class="lineNum">      65 </span>                :            : }</a>
+<span class="lineNum">      66 </span>                :            : 
+<span class="lineNum">      67 </span>                :<span class="lineCov">          1 : func (frame *GoAwayFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      68 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.CFHeader = h</span>
+<span class="lineNum">      69 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;frame.LastGoodStreamId); err != nil {</span>
+<span class="lineNum">      70 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">      71 </span>                :            :         }
+<span class="lineNum">      72 </span>                :<span class="lineCov">          1 :         return nil</span>
+<a name="73"><span class="lineNum">      73 </span>                :            : }</a>
+<span class="lineNum">      74 </span>                :            : 
+<span class="lineNum">      75 </span>                :<span class="lineCov">          4 : func (frame *HeadersFrame) read(h ControlFrameHeader, f *Framer) error {</span>
+<span class="lineNum">      76 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         return f.readHeadersFrame(h, frame)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<a name="77"><span class="lineNum">      77 </span>                :            : }</a>
+<span class="lineNum">      78 </span>                :            : 
+<span class="lineNum">      79 </span>                :<span class="lineCov">         15 : func newControlFrame(frameType ControlFrameType) (controlFrame, error) {</span>
+<span class="lineNum">      80 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         15 :         ctor, ok := cframeCtor[frameType]</span>
+<span class="lineNum">      81 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>]:<span class="lineCov">         15 :         if !ok {</span>
+<span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :                 return nil, &amp;Error{Err: InvalidControlFrame}</span>
+<span class="lineNum">      83 </span>                :            :         }
+<span class="lineNum">      84 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         15 :         return ctor(), nil</span>
+<span class="lineNum">      85 </span>                :            : }
+<a name="86"><span class="lineNum">      86 </span>                :            : </a>
+<a name="87"><span class="lineNum">      87 </span>                :            : var cframeCtor = map[ControlFrameType]func() controlFrame{</a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineCov">          4 :         TypeSynStream: func() controlFrame { return new(SynStreamFrame) },</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :<span class="lineCov">          2 :         TypeSynReply:  func() controlFrame { return new(SynReplyFrame) },</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :<span class="lineCov">          1 :         TypeRstStream: func() controlFrame { return new(RstStreamFrame) },</span></a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineCov">          1 :         TypeSettings:  func() controlFrame { return new(SettingsFrame) },</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineCov">          1 :         TypeNoop:      func() controlFrame { return new(NoopFrame) },</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :<span class="lineCov">          1 :         TypePing:      func() controlFrame { return new(PingFrame) },</span></a>
+<span class="lineNum">      94 </span>                :<span class="lineCov">          1 :         TypeGoAway:    func() controlFrame { return new(GoAwayFrame) },</span>
+<span class="lineNum">      95 </span>                :<span class="lineCov">          4 :         TypeHeaders:   func() controlFrame { return new(HeadersFrame) },</span>
+<span class="lineNum">      96 </span>                :            :         // TODO(willchan): Add TypeWindowUpdate
+<a name="97"><span class="lineNum">      97 </span>                :            : }</a>
+<span class="lineNum">      98 </span>                :            : 
+<span class="lineNum">      99 </span>                :<span class="lineCov">          7 : func (f *Framer) uncorkHeaderDecompressor(payloadSize int64) error {</span>
+<span class="lineNum">     100 </span>[<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 2 times"> + </span><span class="branchCov" title="Branch 3 was taken 5 times"> + </span>]:<span class="lineCov">          7 :         if f.headerDecompressor != nil {</span>
+<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 f.headerReader.N = payloadSize</span>
+<span class="lineNum">     102 </span>                :<span class="lineCov">          2 :                 return nil</span>
+<span class="lineNum">     103 </span>                :            :         }
+<span class="lineNum">     104 </span>[<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          5 :         f.headerReader = io.LimitedReader{R: f.r, N: payloadSize}</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     105 </span>        [<span class="branchCov" title="Branch 1 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          5 :         decompressor, err := zlib.NewReaderDict(&amp;f.headerReader, []byte(HeaderDictionary))</span>
+<span class="lineNum">     106 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          5 :         if err != nil {</span>
+<span class="lineNum">     107 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     108 </span>                :            :         }
+<span class="lineNum">     109 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          5 :         f.headerDecompressor = decompressor</span>
+<span class="lineNum">     110 </span>                :<span class="lineCov">          7 :         return nil</span>
+<span class="lineNum">     111 </span>                :            : }
+<a name="112"><span class="lineNum">     112 </span>                :            : </a>
+<span class="lineNum">     113 </span>                :            : // ReadFrame reads SPDY encoded data and returns a decompressed Frame.
+<span class="lineNum">     114 </span>                :<span class="lineCov">         16 : func (f *Framer) ReadFrame() (Frame, error) {</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">         16 :         var firstWord uint32</span>
+<span class="lineNum">     116 </span>[<span class="branchCov" title="Branch 1 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 16 times"> + </span>]:<span class="lineCov">         16 :         if err := binary.Read(f.r, binary.BigEndian, &amp;firstWord); err != nil {</span>
+<span class="lineNum">     117 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     118 </span>                :            :         }
+<span class="lineNum">     119 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">         16 :         if (firstWord &amp; 0x80000000) != 0 {</span>
+<span class="lineNum">     120 </span>                :<span class="lineCov">         15 :                 frameType := ControlFrameType(firstWord &amp; 0xffff)</span>
+<span class="lineNum">     121 </span>                :<span class="lineCov">         15 :                 version := uint16(0x7fff &amp; (firstWord &gt;&gt; 16))</span>
+<span class="lineNum">     122 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         15 :                 return f.parseControlFrame(version, frameType)</span>
+<span class="lineNum">     123 </span>                :            :         }
+<span class="lineNum">     124 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 :         return f.parseDataFrame(firstWord &amp; 0x7fffffff)</span>
+<a name="125"><span class="lineNum">     125 </span>                :            : }</a>
+<span class="lineNum">     126 </span>                :            : 
+<span class="lineNum">     127 </span>                :<span class="lineCov">         15 : func (f *Framer) parseControlFrame(version uint16, frameType ControlFrameType) (Frame, error) {</span>
+<span class="lineNum">     128 </span>                :<span class="lineCov">         15 :         var length uint32</span>
+<span class="lineNum">     129 </span>[<span class="branchCov" title="Branch 1 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 15 times"> + </span>]:<span class="lineCov">         15 :         if err := binary.Read(f.r, binary.BigEndian, &amp;length); err != nil {</span>
+<span class="lineNum">     130 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     131 </span>                :            :         }
+<span class="lineNum">     132 </span>                :<span class="lineCov">         15 :         flags := ControlFlags((length &amp; 0xff000000) &gt;&gt; 24)</span>
+<span class="lineNum">     133 </span>                :<span class="lineCov">         15 :         length &amp;= 0xffffff</span>
+<span class="lineNum">     134 </span>                :<span class="lineCov">         15 :         header := ControlFrameHeader{version, frameType, flags, length}</span>
+<span class="lineNum">     135 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         15 :         cframe, err := newControlFrame(frameType)</span>
+<span class="lineNum">     136 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>]:<span class="lineCov">         15 :         if err != nil {</span>
+<span class="lineNum">     137 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     138 </span>                :            :         }
+<span class="lineNum">     139 </span>[<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         15 :         if err = cframe.read(header, f); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 15 times"> + </span>][<span class="branchNoExec" title="Branch 7 was not executed"> # </span><span class="branchNoExec" title="Branch 8 was not executed"> # </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchNoCov" title="Branch 12 was not taken"> - </span><span class="branchCov" title="Branch 13 was taken 15 times"> + </span>]
+<span class="lineNum">     140 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     141 </span>                :            :         }
+<span class="lineNum">     142 </span>[<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         15 :         return cframe, nil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="143"><span class="lineNum">     143 </span>                :            : }</a>
+<span class="lineNum">     144 </span>                :            : 
+<span class="lineNum">     145 </span>                :<span class="lineCov">         11 : func parseHeaderValueBlock(r io.Reader, streamId uint32) (http.Header, error) {</span>
+<span class="lineNum">     146 </span>                :<span class="lineCov">         11 :         var numHeaders uint16</span>
+<span class="lineNum">     147 </span>[<span class="branchCov" title="Branch 1 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         if err := binary.Read(r, binary.BigEndian, &amp;numHeaders); err != nil {</span>
+<span class="lineNum">     148 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     149 </span>                :            :         }
+<span class="lineNum">     150 </span>                :<span class="lineCov">         11 :         var e error</span>
+<span class="lineNum">     151 </span>[<span class="branchCov" title="Branch 1 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">         11 :         h := make(http.Header, int(numHeaders))</span>
+<span class="lineNum">     152 </span>        [<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         44 :         for i := 0; i &lt; int(numHeaders); i++ {</span>
+<span class="lineNum">     153 </span>                :<span class="lineCov">         33 :                 var length uint16</span>
+<span class="lineNum">     154 </span>[<span class="branchCov" title="Branch 1 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if err := binary.Read(r, binary.BigEndian, &amp;length); err != nil {</span>
+<span class="lineNum">     155 </span>                :<span class="lineNoCov">          0 :                         return nil, err</span>
+<span class="lineNum">     156 </span>                :            :                 }
+<span class="lineNum">     157 </span>        [<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         33 :                 nameBytes := make([]byte, length)</span>
+<span class="lineNum">     158 </span>[<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if _, err := io.ReadFull(r, nameBytes); err != nil {</span>
+<span class="lineNum">     159 </span>                :<span class="lineNoCov">          0 :                         return nil, err</span>
+<span class="lineNum">     160 </span>                :            :                 }
+<span class="lineNum">     161 </span>                :<span class="lineCov">         33 :                 name := string(nameBytes)</span>
+<span class="lineNum">     162 </span>[<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if name != strings.ToLower(name) {</span>
+<span class="lineNum">     163 </span>                :<span class="lineNoCov">          0 :                         e = &amp;Error{UnlowercasedHeaderName, streamId}</span>
+<span class="lineNum">     164 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         name = strings.ToLower(name)</span>
+<span class="lineNum">     165 </span>                :            :                 }
+<span class="lineNum">     166 </span>[<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if h[name] != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 33 times"> + </span>]
+<span class="lineNum">     167 </span>                :<span class="lineNoCov">          0 :                         e = &amp;Error{DuplicateHeaders, streamId}</span>
+<span class="lineNum">     168 </span>                :            :                 }
+<span class="lineNum">     169 </span>[<span class="branchCov" title="Branch 1 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if err := binary.Read(r, binary.BigEndian, &amp;length); err != nil {</span>
+<span class="lineNum">     170 </span>                :<span class="lineNoCov">          0 :                         return nil, err</span>
+<span class="lineNum">     171 </span>                :            :                 }
+<span class="lineNum">     172 </span>        [<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         33 :                 value := make([]byte, length)</span>
+<span class="lineNum">     173 </span>[<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 33 times"> + </span>]:<span class="lineCov">         33 :                 if _, err := io.ReadFull(r, value); err != nil {</span>
+<span class="lineNum">     174 </span>                :<span class="lineNoCov">          0 :                         return nil, err</span>
+<span class="lineNum">     175 </span>                :            :                 }
+<span class="lineNum">     176 </span>        [<span class="branchCov" title="Branch 1 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         33 :                 valueList := strings.Split(string(value), &quot;\x00&quot;)</span>
+<span class="lineNum">     177 </span>[<span class="branchCov" title="Branch 1 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 33 times"> + </span><span class="branchCov" title="Branch 4 was taken 33 times"> + </span>]:<span class="lineCov">         66 :                 for _, v := range valueList {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 33 times"> + </span>]
+<span class="lineNum">     178 </span>        [<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         33 :                         h.Add(name, v)</span>
+<span class="lineNum">     179 </span>                :            :                 }
+<span class="lineNum">     180 </span>                :            :         }
+<span class="lineNum">     181 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         if e != nil {</span>
+<span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :                 return h, e</span>
+<span class="lineNum">     183 </span>                :            :         }
+<span class="lineNum">     184 </span>                :<span class="lineCov">         11 :         return h, nil</span>
+<a name="185"><span class="lineNum">     185 </span>                :            : }</a>
+<span class="lineNum">     186 </span>                :            : 
+<span class="lineNum">     187 </span>                :<span class="lineCov">          4 : func (f *Framer) readSynStreamFrame(h ControlFrameHeader, frame *SynStreamFrame) error {</span>
+<span class="lineNum">     188 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :         frame.CFHeader = h</span>
+<span class="lineNum">     189 </span>                :<span class="lineCov">          4 :         var err error</span>
+<span class="lineNum">     190 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err = binary.Read(f.r, binary.BigEndian, &amp;frame.StreamId); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 4 times"> + </span>]
+<span class="lineNum">     191 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     192 </span>                :            :         }
+<span class="lineNum">     193 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err = binary.Read(f.r, binary.BigEndian, &amp;frame.AssociatedToStreamId); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 4 times"> + </span>]
+<span class="lineNum">     194 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     195 </span>                :            :         }
+<span class="lineNum">     196 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err = binary.Read(f.r, binary.BigEndian, &amp;frame.Priority); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 4 times"> + </span>]
+<span class="lineNum">     197 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     198 </span>                :            :         }
+<span class="lineNum">     199 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :         frame.Priority &gt;&gt;= 14</span>
+<span class="lineNum">     200 </span>                :            : 
+<span class="lineNum">     201 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :         reader := f.r</span>
+<span class="lineNum">     202 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          4 :         if !f.headerCompressionDisabled {</span>
+<span class="lineNum">     203 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :                 f.uncorkHeaderDecompressor(int64(h.length - 10))</span>
+<span class="lineNum">     204 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :                 reader = f.headerDecompressor</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">     205 </span>                :            :         }
+<span class="lineNum">     206 </span>                :            : 
+<span class="lineNum">     207 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :         frame.Headers, err = parseHeaderValueBlock(reader, frame.StreamId)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     208 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          4 :         if !f.headerCompressionDisabled &amp;&amp; ((err == io.EOF &amp;&amp; f.headerReader.N == 0) || f.headerReader.N != 0) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 3 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 9 was not executed"> # </span><span class="branchNoExec" title="Branch 10 was not executed"> # </span>][<span class="branchCov" title="Branch 11 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 13 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>][<span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 4 times"> + </span>]
+<span class="lineNum">     209 </span>                :<span class="lineNoCov">          0 :                 err = &amp;Error{WrongCompressedPayloadSize, 0}</span>
+<span class="lineNum">     210 </span>                :            :         }
+<span class="lineNum">     211 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err != nil {</span>
+<span class="lineNum">     212 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     213 </span>                :            :         }
+<span class="lineNum">     214 </span>                :            :         // Remove this condition when we bump Version to 3.
+<span class="lineNum">     215 </span>                :            :         if Version &gt;= 3 {
+<span class="lineNum">     216 </span>                :            :                 for h := range frame.Headers {
+<span class="lineNum">     217 </span>                :            :                         if invalidReqHeaders[h] {
+<span class="lineNum">     218 </span>                :            :                                 return &amp;Error{InvalidHeaderPresent, frame.StreamId}
+<span class="lineNum">     219 </span>                :            :                         }
+<span class="lineNum">     220 </span>                :            :                 }
+<span class="lineNum">     221 </span>                :            :         }
+<span class="lineNum">     222 </span>                :<span class="lineCov">          4 :         return nil</span>
+<a name="223"><span class="lineNum">     223 </span>                :            : }</a>
+<span class="lineNum">     224 </span>                :            : 
+<span class="lineNum">     225 </span>                :<span class="lineCov">          2 : func (f *Framer) readSynReplyFrame(h ControlFrameHeader, frame *SynReplyFrame) error {</span>
+<span class="lineNum">     226 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :         frame.CFHeader = h</span>
+<span class="lineNum">     227 </span>                :<span class="lineCov">          2 :         var err error</span>
+<span class="lineNum">     228 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 2 times"> + </span>]:<span class="lineCov">          2 :         if err = binary.Read(f.r, binary.BigEndian, &amp;frame.StreamId); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 2 times"> + </span>]
+<span class="lineNum">     229 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     230 </span>                :            :         }
+<span class="lineNum">     231 </span>                :<span class="lineCov">          2 :         var unused uint16</span>
+<span class="lineNum">     232 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 2 times"> + </span>]:<span class="lineCov">          2 :         if err = binary.Read(f.r, binary.BigEndian, &amp;unused); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 2 times"> + </span>]
+<span class="lineNum">     233 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     234 </span>                :            :         }
+<span class="lineNum">     235 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :         reader := f.r</span>
+<span class="lineNum">     236 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          2 :         if !f.headerCompressionDisabled {</span>
+<span class="lineNum">     237 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                 f.uncorkHeaderDecompressor(int64(h.length - 6))</span>
+<span class="lineNum">     238 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                 reader = f.headerDecompressor</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">     239 </span>                :            :         }
+<span class="lineNum">     240 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         frame.Headers, err = parseHeaderValueBlock(reader, frame.StreamId)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     241 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          2 :         if !f.headerCompressionDisabled &amp;&amp; ((err == io.EOF &amp;&amp; f.headerReader.N == 0) || f.headerReader.N != 0) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 1 time"> + </span>]
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 9 was not executed"> # </span><span class="branchNoExec" title="Branch 10 was not executed"> # </span>][<span class="branchCov" title="Branch 11 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 13 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>][<span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 2 times"> + </span>]
+<span class="lineNum">     242 </span>                :<span class="lineNoCov">          0 :                 err = &amp;Error{WrongCompressedPayloadSize, 0}</span>
+<span class="lineNum">     243 </span>                :            :         }
+<span class="lineNum">     244 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :         if err != nil {</span>
+<span class="lineNum">     245 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     246 </span>                :            :         }
+<span class="lineNum">     247 </span>                :            :         // Remove this condition when we bump Version to 3.
+<span class="lineNum">     248 </span>                :            :         if Version &gt;= 3 {
+<span class="lineNum">     249 </span>                :            :                 for h := range frame.Headers {
+<span class="lineNum">     250 </span>                :            :                         if invalidRespHeaders[h] {
+<span class="lineNum">     251 </span>                :            :                                 return &amp;Error{InvalidHeaderPresent, frame.StreamId}
+<span class="lineNum">     252 </span>                :            :                         }
+<span class="lineNum">     253 </span>                :            :                 }
+<span class="lineNum">     254 </span>                :            :         }
+<span class="lineNum">     255 </span>                :<span class="lineCov">          2 :         return nil</span>
+<a name="256"><span class="lineNum">     256 </span>                :            : }</a>
+<span class="lineNum">     257 </span>                :            : 
+<span class="lineNum">     258 </span>                :<span class="lineCov">          4 : func (f *Framer) readHeadersFrame(h ControlFrameHeader, frame *HeadersFrame) error {</span>
+<span class="lineNum">     259 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :         frame.CFHeader = h</span>
+<span class="lineNum">     260 </span>                :<span class="lineCov">          4 :         var err error</span>
+<span class="lineNum">     261 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err = binary.Read(f.r, binary.BigEndian, &amp;frame.StreamId); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 4 times"> + </span>]
+<span class="lineNum">     262 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     263 </span>                :            :         }
+<span class="lineNum">     264 </span>                :<span class="lineCov">          4 :         var unused uint16</span>
+<span class="lineNum">     265 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err = binary.Read(f.r, binary.BigEndian, &amp;unused); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 4 times"> + </span>]
+<span class="lineNum">     266 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     267 </span>                :            :         }
+<span class="lineNum">     268 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :         reader := f.r</span>
+<span class="lineNum">     269 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          4 :         if !f.headerCompressionDisabled {</span>
+<span class="lineNum">     270 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          3 :                 f.uncorkHeaderDecompressor(int64(h.length - 6))</span>
+<span class="lineNum">     271 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :                 reader = f.headerDecompressor</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">     272 </span>                :            :         }
+<span class="lineNum">     273 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :         frame.Headers, err = parseHeaderValueBlock(reader, frame.StreamId)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     274 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          4 :         if !f.headerCompressionDisabled &amp;&amp; ((err == io.EOF &amp;&amp; f.headerReader.N == 0) || f.headerReader.N != 0) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 3 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 9 was not executed"> # </span><span class="branchNoExec" title="Branch 10 was not executed"> # </span>][<span class="branchCov" title="Branch 11 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 13 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>][<span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 4 times"> + </span>]
+<span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 :                 err = &amp;Error{WrongCompressedPayloadSize, 0}</span>
+<span class="lineNum">     276 </span>                :            :         }
+<span class="lineNum">     277 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         if err != nil {</span>
+<span class="lineNum">     278 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     279 </span>                :            :         }
+<span class="lineNum">     280 </span>                :            : 
+<span class="lineNum">     281 </span>                :            :         // Remove this condition when we bump Version to 3.
+<span class="lineNum">     282 </span>                :            :         if Version &gt;= 3 {
+<span class="lineNum">     283 </span>                :            :                 var invalidHeaders map[string]bool
+<span class="lineNum">     284 </span>                :            :                 if frame.StreamId%2 == 0 {
+<span class="lineNum">     285 </span>                :            :                         invalidHeaders = invalidReqHeaders
+<span class="lineNum">     286 </span>                :            :                 } else {
+<span class="lineNum">     287 </span>                :            :                         invalidHeaders = invalidRespHeaders
+<span class="lineNum">     288 </span>                :            :                 }
+<span class="lineNum">     289 </span>                :            :                 for h := range frame.Headers {
+<span class="lineNum">     290 </span>                :            :                         if invalidHeaders[h] {
+<span class="lineNum">     291 </span>                :            :                                 return &amp;Error{InvalidHeaderPresent, frame.StreamId}
+<span class="lineNum">     292 </span>                :            :                         }
+<span class="lineNum">     293 </span>                :            :                 }
+<span class="lineNum">     294 </span>                :            :         }
+<span class="lineNum">     295 </span>                :<span class="lineCov">          4 :         return nil</span>
+<a name="296"><span class="lineNum">     296 </span>                :            : }</a>
+<span class="lineNum">     297 </span>                :            : 
+<span class="lineNum">     298 </span>                :<span class="lineCov">          1 : func (f *Framer) parseDataFrame(streamId uint32) (*DataFrame, error) {</span>
+<span class="lineNum">     299 </span>                :<span class="lineCov">          1 :         var length uint32</span>
+<span class="lineNum">     300 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := binary.Read(f.r, binary.BigEndian, &amp;length); err != nil {</span>
+<span class="lineNum">     301 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     302 </span>                :            :         }
+<span class="lineNum">     303 </span>                :<span class="lineCov">          1 :         var frame DataFrame</span>
+<span class="lineNum">     304 </span>                :<span class="lineCov">          1 :         frame.StreamId = streamId</span>
+<span class="lineNum">     305 </span>                :<span class="lineCov">          1 :         frame.Flags = DataFlags(length &gt;&gt; 24)</span>
+<span class="lineNum">     306 </span>                :<span class="lineCov">          1 :         length &amp;= 0xffffff</span>
+<span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         frame.Data = make([]byte, length)</span>
+<span class="lineNum">     308 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if _, err := io.ReadFull(f.r, frame.Data); err != nil {</span>
+<span class="lineNum">     309 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     310 </span>                :            :         }
+<span class="lineNum">     311 </span>                :<span class="lineCov">          1 :         return &amp;frame, nil</span>
+<span class="lineNum">     312 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

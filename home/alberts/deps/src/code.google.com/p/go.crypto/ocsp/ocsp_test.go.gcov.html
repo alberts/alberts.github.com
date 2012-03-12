@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ocsp/ocsp_test.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ocsp</a> - ocsp_test.go<span style="font-size: 80%;"> (source / <a href="ocsp_test.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryLo">70.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">60</td>
+            <td class="headerCovTableEntryLo">28.3 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2010 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package ocsp
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;bytes&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;encoding/hex&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;reflect&quot;
+<span class="lineNum">      11 </span>                :            :         &quot;testing&quot;
+<span class="lineNum">      12 </span>                :            :         &quot;time&quot;
+<a name="13"><span class="lineNum">      13 </span>                :            : )</a>
+<span class="lineNum">      14 </span>                :            : 
+<span class="lineNum">      15 </span>                :<span class="lineCov">          1 : func TestOCSPDecode(t *testing.T) {</span>
+<span class="lineNum">      16 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         responseBytes, _ := hex.DecodeString(ocspResponseHex)</span>
+<span class="lineNum">      17 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         resp, err := ParseResponse(responseBytes)</span>
+<span class="lineNum">      18 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err != nil {</span>
+<span class="lineNum">      19 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Error(err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">      20 </span>                :            :         }
+<span class="lineNum">      21 </span>                :            : 
+<span class="lineNum">      22 </span>                :<span class="lineCov">          2 :         expected := Response{</span>
+<span class="lineNum">      23 </span>                :            :                 Status:           0,
+<span class="lineNum">      24 </span>                :<span class="lineCov">          1 :                 SerialNumber:     []byte{0x1, 0xd0, 0xfa},</span>
+<span class="lineNum">      25 </span>                :            :                 RevocationReason: 0,
+<span class="lineNum">      26 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                 ThisUpdate:       time.Date(2010, 7, 7, 15, 1, 5, 0, time.UTC),</span>
+<span class="lineNum">      27 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                 NextUpdate:       time.Date(2010, 7, 7, 18, 35, 17, 0, time.UTC),</span>
+<span class="lineNum">      28 </span>                :            :         }
+<span class="lineNum">      29 </span>                :            : 
+<span class="lineNum">      30 </span>[<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          1 :         if !reflect.DeepEqual(resp.ThisUpdate, expected.ThisUpdate) {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 1 time"> + </span>]
+<span class="lineNum">      31 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Errorf(&quot;resp.ThisUpdate: got %d, want %d&quot;, resp.ThisUpdate, expected.ThisUpdate)</span>
+<span class="lineNum">      32 </span>                :            :         }
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>[<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          1 :         if !reflect.DeepEqual(resp.NextUpdate, expected.NextUpdate) {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 1 time"> + </span>]
+<span class="lineNum">      35 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Errorf(&quot;resp.NextUpdate: got %d, want %d&quot;, resp.NextUpdate, expected.NextUpdate)</span>
+<span class="lineNum">      36 </span>                :            :         }
+<span class="lineNum">      37 </span>                :            : 
+<span class="lineNum">      38 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if resp.Status != expected.Status {</span>
+<span class="lineNum">      39 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Errorf(&quot;resp.Status: got %d, want %d&quot;, resp.Status, expected.Status)</span>
+<span class="lineNum">      40 </span>                :            :         }
+<span class="lineNum">      41 </span>                :            : 
+<span class="lineNum">      42 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if !bytes.Equal(resp.SerialNumber, expected.SerialNumber) {</span>
+<span class="lineNum">      43 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Errorf(&quot;resp.SerialNumber: got %x, want %x&quot;, resp.SerialNumber, expected.SerialNumber)</span>
+<span class="lineNum">      44 </span>                :            :         }
+<span class="lineNum">      45 </span>                :            : 
+<span class="lineNum">      46 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if resp.RevocationReason != expected.RevocationReason {</span>
+<span class="lineNum">      47 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Errorf(&quot;resp.RevocationReason: got %d, want %d&quot;, resp.RevocationReason, expected.RevocationReason)</span>
+<span class="lineNum">      48 </span>                :            :         }
+<span class="lineNum">      49 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">      50 </span>                :            : 
+<span class="lineNum">      51 </span>                :            : // This OCSP response was taken from Thawte's public OCSP responder.
+<span class="lineNum">      52 </span>                :            : // To recreate:
+<span class="lineNum">      53 </span>                :            : //   $ openssl s_client -tls1 -showcerts -servername www.google.com -connect www.google.com:443
+<span class="lineNum">      54 </span>                :            : // Copy and paste the first certificate into /tmp/cert.crt and the second into
+<span class="lineNum">      55 </span>                :            : // /tmp/intermediate.crt
+<span class="lineNum">      56 </span>                :            : //   $ openssl ocsp -issuer /tmp/intermediate.crt -cert /tmp/cert.crt -url http://ocsp.thawte.com -resp_text -respout /tmp/ocsp.der
+<span class="lineNum">      57 </span>                :            : // Then hex encode the result:
+<span class="lineNum">      58 </span>                :            : //   $ python -c 'print file(&quot;/tmp/ocsp.der&quot;, &quot;r&quot;).read().encode(&quot;hex&quot;)'
+<span class="lineNum">      59 </span>                :            : 
+<span class="lineNum">      60 </span>                :            : const ocspResponseHex = &quot;308206bc0a0100a08206b5308206b106092b0601050507300101048206a23082069e3081&quot; +
+<span class="lineNum">      61 </span>                :            :         &quot;c9a14e304c310b300906035504061302494c31163014060355040a130d5374617274436f&quot; +
+<span class="lineNum">      62 </span>                :            :         &quot;6d204c74642e312530230603550403131c5374617274436f6d20436c6173732031204f43&quot; +
+<span class="lineNum">      63 </span>                :            :         &quot;5350205369676e6572180f32303130303730373137333531375a30663064303c30090605&quot; +
+<span class="lineNum">      64 </span>                :            :         &quot;2b0e03021a050004146568874f40750f016a3475625e1f5c93e5a26d580414eb4234d098&quot; +
+<span class="lineNum">      65 </span>                :            :         &quot;b0ab9ff41b6b08f7cc642eef0e2c45020301d0fa8000180f323031303037303731353031&quot; +
+<span class="lineNum">      66 </span>                :            :         &quot;30355aa011180f32303130303730373138333531375a300d06092a864886f70d01010505&quot; +
+<span class="lineNum">      67 </span>                :            :         &quot;000382010100ab557ff070d1d7cebbb5f0ec91a15c3fed22eb2e1b8244f1b84545f013a4&quot; +
+<span class="lineNum">      68 </span>                :            :         &quot;fb46214c5e3fbfbebb8a56acc2b9db19f68fd3c3201046b3824d5ba689f99864328710cb&quot; +
+<span class="lineNum">      69 </span>                :            :         &quot;467195eb37d84f539e49f859316b32964dc3e47e36814ce94d6c56dd02733b1d0802f7ff&quot; +
+<span class="lineNum">      70 </span>                :            :         &quot;4eebdbbd2927dcf580f16cbc290f91e81b53cb365e7223f1d6e20a88ea064104875e0145&quot; +
+<span class="lineNum">      71 </span>                :            :         &quot;672b20fc14829d51ca122f5f5d77d3ad6c83889c55c7dc43680ba2fe3cef8b05dbcabdc0&quot; +
+<span class="lineNum">      72 </span>                :            :         &quot;d3e09aaf9725597f8c858c2fa38c0d6aed2e6318194420dd1a1137445d13e1c97ab47896&quot; +
+<span class="lineNum">      73 </span>                :            :         &quot;17a4e08925f46f867b72e3a4dc1f08cb870b2b0717f7207faa0ac512e628a029aba7457a&quot; +
+<span class="lineNum">      74 </span>                :            :         &quot;e63dcf3281e2162d9349a08204ba308204b6308204b23082039aa003020102020101300d&quot; +
+<span class="lineNum">      75 </span>                :            :         &quot;06092a864886f70d010105050030818c310b300906035504061302494c31163014060355&quot; +
+<span class="lineNum">      76 </span>                :            :         &quot;040a130d5374617274436f6d204c74642e312b3029060355040b13225365637572652044&quot; +
+<span class="lineNum">      77 </span>                :            :         &quot;69676974616c204365727469666963617465205369676e696e6731383036060355040313&quot; +
+<span class="lineNum">      78 </span>                :            :         &quot;2f5374617274436f6d20436c6173732031205072696d61727920496e7465726d65646961&quot; +
+<span class="lineNum">      79 </span>                :            :         &quot;746520536572766572204341301e170d3037313032353030323330365a170d3132313032&quot; +
+<span class="lineNum">      80 </span>                :            :         &quot;333030323330365a304c310b300906035504061302494c31163014060355040a130d5374&quot; +
+<span class="lineNum">      81 </span>                :            :         &quot;617274436f6d204c74642e312530230603550403131c5374617274436f6d20436c617373&quot; +
+<span class="lineNum">      82 </span>                :            :         &quot;2031204f435350205369676e657230820122300d06092a864886f70d0101010500038201&quot; +
+<span class="lineNum">      83 </span>                :            :         &quot;0f003082010a0282010100b9561b4c45318717178084e96e178df2255e18ed8d8ecc7c2b&quot; +
+<span class="lineNum">      84 </span>                :            :         &quot;7b51a6c1c2e6bf0aa3603066f132fe10ae97b50e99fa24b83fc53dd2777496387d14e1c3&quot; +
+<span class="lineNum">      85 </span>                :            :         &quot;a9b6a4933e2ac12413d085570a95b8147414a0bc007c7bcf222446ef7f1a156d7ea1c577&quot; +
+<span class="lineNum">      86 </span>                :            :         &quot;fc5f0facdfd42eb0f5974990cb2f5cefebceef4d1bdc7ae5c1075c5a99a93171f2b0845b&quot; +
+<span class="lineNum">      87 </span>                :            :         &quot;4ff0864e973fcfe32f9d7511ff87a3e943410c90a4493a306b6944359340a9ca96f02b66&quot; +
+<span class="lineNum">      88 </span>                :            :         &quot;ce67f028df2980a6aaee8d5d5d452b8b0eb93f923cc1e23fcccbdbe7ffcb114d08fa7a6a&quot; +
+<span class="lineNum">      89 </span>                :            :         &quot;3c404f825d1a0e715935cf623a8c7b59670014ed0622f6089a9447a7a19010f7fe58f841&quot; +
+<span class="lineNum">      90 </span>                :            :         &quot;29a2765ea367824d1c3bb2fda308530203010001a382015c30820158300c0603551d1301&quot; +
+<span class="lineNum">      91 </span>                :            :         &quot;01ff04023000300b0603551d0f0404030203a8301e0603551d250417301506082b060105&quot; +
+<span class="lineNum">      92 </span>                :            :         &quot;0507030906092b0601050507300105301d0603551d0e0416041445e0a36695414c5dd449&quot; +
+<span class="lineNum">      93 </span>                :            :         &quot;bc00e33cdcdbd2343e173081a80603551d230481a030819d8014eb4234d098b0ab9ff41b&quot; +
+<span class="lineNum">      94 </span>                :            :         &quot;6b08f7cc642eef0e2c45a18181a47f307d310b300906035504061302494c311630140603&quot; +
+<span class="lineNum">      95 </span>                :            :         &quot;55040a130d5374617274436f6d204c74642e312b3029060355040b132253656375726520&quot; +
+<span class="lineNum">      96 </span>                :            :         &quot;4469676974616c204365727469666963617465205369676e696e67312930270603550403&quot; +
+<span class="lineNum">      97 </span>                :            :         &quot;13205374617274436f6d2043657274696669636174696f6e20417574686f726974798201&quot; +
+<span class="lineNum">      98 </span>                :            :         &quot;0a30230603551d12041c301a8618687474703a2f2f7777772e737461727473736c2e636f&quot; +
+<span class="lineNum">      99 </span>                :            :         &quot;6d2f302c06096086480186f842010d041f161d5374617274436f6d205265766f63617469&quot; +
+<span class="lineNum">     100 </span>                :            :         &quot;6f6e20417574686f72697479300d06092a864886f70d01010505000382010100182d2215&quot; +
+<span class="lineNum">     101 </span>                :            :         &quot;8f0fc0291324fa8574c49bb8ff2835085adcbf7b7fc4191c397ab6951328253fffe1e5ec&quot; +
+<span class="lineNum">     102 </span>                :            :         &quot;2a7da0d50fca1a404e6968481366939e666c0a6209073eca57973e2fefa9ed1718e8176f&quot; +
+<span class="lineNum">     103 </span>                :            :         &quot;1d85527ff522c08db702e3b2b180f1cbff05d98128252cf0f450f7dd2772f4188047f19d&quot; +
+<span class="lineNum">     104 </span>                :            :         &quot;c85317366f94bc52d60f453a550af58e308aaab00ced33040b62bf37f5b1ab2a4f7f0f80&quot; +
+<span class="lineNum">     105 </span>                :            :         &quot;f763bf4d707bc8841d7ad9385ee2a4244469260b6f2bf085977af9074796048ecc2f9d48&quot; +
+<span class="lineNum">     106 </span>                :            :         &quot;a1d24ce16e41a9941568fec5b42771e118f16c106a54ccc339a4b02166445a167902e75e&quot; +
+<span class="lineNum">     107 </span>                :            :         &quot;6d8620b0825dcd18a069b90fd851d10fa8effd409deec02860d26d8d833f304b10669b42&quot;
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

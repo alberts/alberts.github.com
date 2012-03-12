@@ -1,0 +1,454 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.net/spdy/types.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.net/spdy</a> - types.go<span style="font-size: 80%;"> (source / <a href="types.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package spdy
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;bytes&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;compress/zlib&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;io&quot;
+<span class="lineNum">      11 </span>                :            :         &quot;net/http&quot;
+<span class="lineNum">      12 </span>                :            : )
+<span class="lineNum">      13 </span>                :            : 
+<span class="lineNum">      14 </span>                :            : //  Data Frame Format
+<span class="lineNum">      15 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      16 </span>                :            : //  |0|       Stream-ID (31bits)       |
+<span class="lineNum">      17 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      18 </span>                :            : //  | flags (8)  |  Length (24 bits)   |
+<span class="lineNum">      19 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      20 </span>                :            : //  |               Data               |
+<span class="lineNum">      21 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      22 </span>                :            : //
+<span class="lineNum">      23 </span>                :            : //  Control Frame Format
+<span class="lineNum">      24 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      25 </span>                :            : //  |1| Version(15bits) | Type(16bits) |
+<span class="lineNum">      26 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      27 </span>                :            : //  | flags (8)  |  Length (24 bits)   |
+<span class="lineNum">      28 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      29 </span>                :            : //  |               Data               |
+<span class="lineNum">      30 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      31 </span>                :            : //
+<span class="lineNum">      32 </span>                :            : //  Control Frame: SYN_STREAM
+<span class="lineNum">      33 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      34 </span>                :            : //  |1|000000000000001|0000000000000001|
+<span class="lineNum">      35 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      36 </span>                :            : //  | flags (8)  |  Length (24 bits)   |  &gt;= 12
+<span class="lineNum">      37 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      38 </span>                :            : //  |X|       Stream-ID(31bits)        |
+<span class="lineNum">      39 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      40 </span>                :            : //  |X|Associated-To-Stream-ID (31bits)|
+<span class="lineNum">      41 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      42 </span>                :            : //  |Pri| unused      | Length (16bits)|
+<span class="lineNum">      43 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      44 </span>                :            : //
+<span class="lineNum">      45 </span>                :            : //  Control Frame: SYN_REPLY
+<span class="lineNum">      46 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      47 </span>                :            : //  |1|000000000000001|0000000000000010|
+<span class="lineNum">      48 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      49 </span>                :            : //  | flags (8)  |  Length (24 bits)   |  &gt;= 8
+<span class="lineNum">      50 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      51 </span>                :            : //  |X|       Stream-ID(31bits)        |
+<span class="lineNum">      52 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      53 </span>                :            : //  | unused (16 bits)| Length (16bits)|
+<span class="lineNum">      54 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      55 </span>                :            : //
+<span class="lineNum">      56 </span>                :            : //  Control Frame: RST_STREAM
+<span class="lineNum">      57 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      58 </span>                :            : //  |1|000000000000001|0000000000000011|
+<span class="lineNum">      59 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      60 </span>                :            : //  | flags (8)  |  Length (24 bits)   |  &gt;= 4
+<span class="lineNum">      61 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      62 </span>                :            : //  |X|       Stream-ID(31bits)        |
+<span class="lineNum">      63 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      64 </span>                :            : //  |        Status code (32 bits)     |
+<span class="lineNum">      65 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      66 </span>                :            : //
+<span class="lineNum">      67 </span>                :            : //  Control Frame: SETTINGS
+<span class="lineNum">      68 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      69 </span>                :            : //  |1|000000000000001|0000000000000100|
+<span class="lineNum">      70 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      71 </span>                :            : //  | flags (8)  |  Length (24 bits)   |
+<span class="lineNum">      72 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      73 </span>                :            : //  |        # of entries (32)         |
+<span class="lineNum">      74 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      75 </span>                :            : //
+<span class="lineNum">      76 </span>                :            : //  Control Frame: NOOP
+<span class="lineNum">      77 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      78 </span>                :            : //  |1|000000000000001|0000000000000101|
+<span class="lineNum">      79 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      80 </span>                :            : //  | flags (8)  |  Length (24 bits)   | = 0
+<span class="lineNum">      81 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      82 </span>                :            : //
+<span class="lineNum">      83 </span>                :            : //  Control Frame: PING
+<span class="lineNum">      84 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      85 </span>                :            : //  |1|000000000000001|0000000000000110|
+<span class="lineNum">      86 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      87 </span>                :            : //  | flags (8)  |  Length (24 bits)   | = 4
+<span class="lineNum">      88 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      89 </span>                :            : //  |        Unique id (32 bits)       |
+<span class="lineNum">      90 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      91 </span>                :            : //
+<span class="lineNum">      92 </span>                :            : //  Control Frame: GOAWAY
+<span class="lineNum">      93 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      94 </span>                :            : //  |1|000000000000001|0000000000000111|
+<span class="lineNum">      95 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      96 </span>                :            : //  | flags (8)  |  Length (24 bits)   | = 4
+<span class="lineNum">      97 </span>                :            : //  +----------------------------------+
+<span class="lineNum">      98 </span>                :            : //  |X|  Last-accepted-stream-id       |
+<span class="lineNum">      99 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     100 </span>                :            : //
+<span class="lineNum">     101 </span>                :            : //  Control Frame: HEADERS
+<span class="lineNum">     102 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     103 </span>                :            : //  |1|000000000000001|0000000000001000|
+<span class="lineNum">     104 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     105 </span>                :            : //  | flags (8)  |  Length (24 bits)   | &gt;= 8
+<span class="lineNum">     106 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     107 </span>                :            : //  |X|      Stream-ID (31 bits)       |
+<span class="lineNum">     108 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     109 </span>                :            : //  | unused (16 bits)| Length (16bits)|
+<span class="lineNum">     110 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     111 </span>                :            : //
+<span class="lineNum">     112 </span>                :            : //  Control Frame: WINDOW_UPDATE
+<span class="lineNum">     113 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     114 </span>                :            : //  |1|000000000000001|0000000000001001|
+<span class="lineNum">     115 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     116 </span>                :            : //  | flags (8)  |  Length (24 bits)   | = 8
+<span class="lineNum">     117 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     118 </span>                :            : //  |X|      Stream-ID (31 bits)       |
+<span class="lineNum">     119 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     120 </span>                :            : //  |   Delta-Window-Size (32 bits)    |
+<span class="lineNum">     121 </span>                :            : //  +----------------------------------+
+<span class="lineNum">     122 </span>                :            : 
+<span class="lineNum">     123 </span>                :            : // Version is the protocol version number that this package implements.
+<span class="lineNum">     124 </span>                :            : const Version = 2
+<span class="lineNum">     125 </span>                :            : 
+<span class="lineNum">     126 </span>                :            : // ControlFrameType stores the type field in a control frame header.
+<span class="lineNum">     127 </span>                :            : type ControlFrameType uint16
+<span class="lineNum">     128 </span>                :            : 
+<span class="lineNum">     129 </span>                :            : // Control frame type constants
+<span class="lineNum">     130 </span>                :            : const (
+<span class="lineNum">     131 </span>                :            :         TypeSynStream    ControlFrameType = 0x0001
+<span class="lineNum">     132 </span>                :            :         TypeSynReply                      = 0x0002
+<span class="lineNum">     133 </span>                :            :         TypeRstStream                     = 0x0003
+<span class="lineNum">     134 </span>                :            :         TypeSettings                      = 0x0004
+<span class="lineNum">     135 </span>                :            :         TypeNoop                          = 0x0005
+<span class="lineNum">     136 </span>                :            :         TypePing                          = 0x0006
+<span class="lineNum">     137 </span>                :            :         TypeGoAway                        = 0x0007
+<span class="lineNum">     138 </span>                :            :         TypeHeaders                       = 0x0008
+<span class="lineNum">     139 </span>                :            :         TypeWindowUpdate                  = 0x0009
+<span class="lineNum">     140 </span>                :            : )
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :            : // ControlFlags are the flags that can be set on a control frame.
+<span class="lineNum">     143 </span>                :            : type ControlFlags uint8
+<span class="lineNum">     144 </span>                :            : 
+<span class="lineNum">     145 </span>                :            : const (
+<span class="lineNum">     146 </span>                :            :         ControlFlagFin ControlFlags = 0x01
+<span class="lineNum">     147 </span>                :            : )
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :            : // DataFlags are the flags that can be set on a data frame.
+<span class="lineNum">     150 </span>                :            : type DataFlags uint8
+<span class="lineNum">     151 </span>                :            : 
+<span class="lineNum">     152 </span>                :            : const (
+<span class="lineNum">     153 </span>                :            :         DataFlagFin        DataFlags = 0x01
+<span class="lineNum">     154 </span>                :            :         DataFlagCompressed           = 0x02
+<span class="lineNum">     155 </span>                :            : )
+<span class="lineNum">     156 </span>                :            : 
+<span class="lineNum">     157 </span>                :            : // MaxDataLength is the maximum number of bytes that can be stored in one frame.
+<span class="lineNum">     158 </span>                :            : const MaxDataLength = 1&lt;&lt;24 - 1
+<span class="lineNum">     159 </span>                :            : 
+<span class="lineNum">     160 </span>                :            : // Frame is a single SPDY frame in its unpacked in-memory representation. Use
+<span class="lineNum">     161 </span>                :            : // Framer to read and write it.
+<span class="lineNum">     162 </span>                :            : type Frame interface {
+<span class="lineNum">     163 </span>                :            :         write(f *Framer) error
+<span class="lineNum">     164 </span>                :            : }
+<span class="lineNum">     165 </span>                :            : 
+<span class="lineNum">     166 </span>                :            : // ControlFrameHeader contains all the fields in a control frame header,
+<span class="lineNum">     167 </span>                :            : // in its unpacked in-memory representation.
+<span class="lineNum">     168 </span>                :            : type ControlFrameHeader struct {
+<span class="lineNum">     169 </span>                :            :         // Note, high bit is the &quot;Control&quot; bit.
+<span class="lineNum">     170 </span>                :            :         version   uint16
+<span class="lineNum">     171 </span>                :            :         frameType ControlFrameType
+<span class="lineNum">     172 </span>                :            :         Flags     ControlFlags
+<span class="lineNum">     173 </span>                :            :         length    uint32
+<span class="lineNum">     174 </span>                :            : }
+<span class="lineNum">     175 </span>                :            : 
+<span class="lineNum">     176 </span>                :            : type controlFrame interface {
+<span class="lineNum">     177 </span>                :            :         Frame
+<span class="lineNum">     178 </span>                :            :         read(h ControlFrameHeader, f *Framer) error
+<span class="lineNum">     179 </span>                :            : }
+<span class="lineNum">     180 </span>                :            : 
+<span class="lineNum">     181 </span>                :            : // SynStreamFrame is the unpacked, in-memory representation of a SYN_STREAM
+<span class="lineNum">     182 </span>                :            : // frame.
+<span class="lineNum">     183 </span>                :            : type SynStreamFrame struct {
+<span class="lineNum">     184 </span>                :            :         CFHeader             ControlFrameHeader
+<span class="lineNum">     185 </span>                :            :         StreamId             uint32
+<span class="lineNum">     186 </span>                :            :         AssociatedToStreamId uint32
+<span class="lineNum">     187 </span>                :            :         // Note, only 2 highest bits currently used
+<span class="lineNum">     188 </span>                :            :         // Rest of Priority is unused.
+<span class="lineNum">     189 </span>                :            :         Priority uint16
+<span class="lineNum">     190 </span>                :            :         Headers  http.Header
+<span class="lineNum">     191 </span>                :            : }
+<span class="lineNum">     192 </span>                :            : 
+<span class="lineNum">     193 </span>                :            : // SynReplyFrame is the unpacked, in-memory representation of a SYN_REPLY frame.
+<span class="lineNum">     194 </span>                :            : type SynReplyFrame struct {
+<span class="lineNum">     195 </span>                :            :         CFHeader ControlFrameHeader
+<span class="lineNum">     196 </span>                :            :         StreamId uint32
+<span class="lineNum">     197 </span>                :            :         Headers  http.Header
+<span class="lineNum">     198 </span>                :            : }
+<span class="lineNum">     199 </span>                :            : 
+<span class="lineNum">     200 </span>                :            : // StatusCode represents the status that led to a RST_STREAM
+<span class="lineNum">     201 </span>                :            : type StatusCode uint32
+<span class="lineNum">     202 </span>                :            : 
+<span class="lineNum">     203 </span>                :            : const (
+<span class="lineNum">     204 </span>                :            :         ProtocolError      StatusCode = 1
+<span class="lineNum">     205 </span>                :            :         InvalidStream                 = 2
+<span class="lineNum">     206 </span>                :            :         RefusedStream                 = 3
+<span class="lineNum">     207 </span>                :            :         UnsupportedVersion            = 4
+<span class="lineNum">     208 </span>                :            :         Cancel                        = 5
+<span class="lineNum">     209 </span>                :            :         InternalError                 = 6
+<span class="lineNum">     210 </span>                :            :         FlowControlError              = 7
+<span class="lineNum">     211 </span>                :            : )
+<span class="lineNum">     212 </span>                :            : 
+<span class="lineNum">     213 </span>                :            : // RstStreamFrame is the unpacked, in-memory representation of a RST_STREAM
+<span class="lineNum">     214 </span>                :            : // frame.
+<span class="lineNum">     215 </span>                :            : type RstStreamFrame struct {
+<span class="lineNum">     216 </span>                :            :         CFHeader ControlFrameHeader
+<span class="lineNum">     217 </span>                :            :         StreamId uint32
+<span class="lineNum">     218 </span>                :            :         Status   StatusCode
+<span class="lineNum">     219 </span>                :            : }
+<span class="lineNum">     220 </span>                :            : 
+<span class="lineNum">     221 </span>                :            : // SettingsFlag represents a flag in a SETTINGS frame.
+<span class="lineNum">     222 </span>                :            : type SettingsFlag uint8
+<span class="lineNum">     223 </span>                :            : 
+<span class="lineNum">     224 </span>                :            : const (
+<span class="lineNum">     225 </span>                :            :         FlagSettingsPersistValue SettingsFlag = 0x1
+<span class="lineNum">     226 </span>                :            :         FlagSettingsPersisted                 = 0x2
+<span class="lineNum">     227 </span>                :            : )
+<span class="lineNum">     228 </span>                :            : 
+<span class="lineNum">     229 </span>                :            : // SettingsFlag represents the id of an id/value pair in a SETTINGS frame.
+<span class="lineNum">     230 </span>                :            : type SettingsId uint32
+<span class="lineNum">     231 </span>                :            : 
+<span class="lineNum">     232 </span>                :            : const (
+<span class="lineNum">     233 </span>                :            :         SettingsUploadBandwidth      SettingsId = 1
+<span class="lineNum">     234 </span>                :            :         SettingsDownloadBandwidth               = 2
+<span class="lineNum">     235 </span>                :            :         SettingsRoundTripTime                   = 3
+<span class="lineNum">     236 </span>                :            :         SettingsMaxConcurrentStreams            = 4
+<span class="lineNum">     237 </span>                :            :         SettingsCurrentCwnd                     = 5
+<span class="lineNum">     238 </span>                :            : )
+<span class="lineNum">     239 </span>                :            : 
+<span class="lineNum">     240 </span>                :            : // SettingsFlagIdValue is the unpacked, in-memory representation of the
+<span class="lineNum">     241 </span>                :            : // combined flag/id/value for a setting in a SETTINGS frame.
+<span class="lineNum">     242 </span>                :            : type SettingsFlagIdValue struct {
+<span class="lineNum">     243 </span>                :            :         Flag  SettingsFlag
+<span class="lineNum">     244 </span>                :            :         Id    SettingsId
+<span class="lineNum">     245 </span>                :            :         Value uint32
+<span class="lineNum">     246 </span>                :            : }
+<span class="lineNum">     247 </span>                :            : 
+<span class="lineNum">     248 </span>                :            : // SettingsFrame is the unpacked, in-memory representation of a SPDY
+<span class="lineNum">     249 </span>                :            : // SETTINGS frame.
+<span class="lineNum">     250 </span>                :            : type SettingsFrame struct {
+<span class="lineNum">     251 </span>                :            :         CFHeader     ControlFrameHeader
+<span class="lineNum">     252 </span>                :            :         FlagIdValues []SettingsFlagIdValue
+<span class="lineNum">     253 </span>                :            : }
+<span class="lineNum">     254 </span>                :            : 
+<span class="lineNum">     255 </span>                :            : // NoopFrame is the unpacked, in-memory representation of a NOOP frame.
+<span class="lineNum">     256 </span>                :            : type NoopFrame struct {
+<span class="lineNum">     257 </span>                :            :         CFHeader ControlFrameHeader
+<span class="lineNum">     258 </span>                :            : }
+<span class="lineNum">     259 </span>                :            : 
+<span class="lineNum">     260 </span>                :            : // PingFrame is the unpacked, in-memory representation of a PING frame.
+<span class="lineNum">     261 </span>                :            : type PingFrame struct {
+<span class="lineNum">     262 </span>                :            :         CFHeader ControlFrameHeader
+<span class="lineNum">     263 </span>                :            :         Id       uint32
+<span class="lineNum">     264 </span>                :            : }
+<span class="lineNum">     265 </span>                :            : 
+<span class="lineNum">     266 </span>                :            : // GoAwayFrame is the unpacked, in-memory representation of a GOAWAY frame.
+<span class="lineNum">     267 </span>                :            : type GoAwayFrame struct {
+<span class="lineNum">     268 </span>                :            :         CFHeader         ControlFrameHeader
+<span class="lineNum">     269 </span>                :            :         LastGoodStreamId uint32
+<span class="lineNum">     270 </span>                :            : }
+<span class="lineNum">     271 </span>                :            : 
+<span class="lineNum">     272 </span>                :            : // HeadersFrame is the unpacked, in-memory representation of a HEADERS frame.
+<span class="lineNum">     273 </span>                :            : type HeadersFrame struct {
+<span class="lineNum">     274 </span>                :            :         CFHeader ControlFrameHeader
+<span class="lineNum">     275 </span>                :            :         StreamId uint32
+<span class="lineNum">     276 </span>                :            :         Headers  http.Header
+<span class="lineNum">     277 </span>                :            : }
+<span class="lineNum">     278 </span>                :            : 
+<span class="lineNum">     279 </span>                :            : // DataFrame is the unpacked, in-memory representation of a DATA frame.
+<span class="lineNum">     280 </span>                :            : type DataFrame struct {
+<span class="lineNum">     281 </span>                :            :         // Note, high bit is the &quot;Control&quot; bit. Should be 0 for data frames.
+<span class="lineNum">     282 </span>                :            :         StreamId uint32
+<span class="lineNum">     283 </span>                :            :         Flags    DataFlags
+<span class="lineNum">     284 </span>                :            :         Data     []byte
+<span class="lineNum">     285 </span>                :            : }
+<span class="lineNum">     286 </span>                :            : 
+<span class="lineNum">     287 </span>                :            : // HeaderDictionary is the dictionary sent to the zlib compressor/decompressor.
+<span class="lineNum">     288 </span>                :            : // Even though the specification states there is no null byte at the end, Chrome sends it.
+<span class="lineNum">     289 </span>                :            : const HeaderDictionary = &quot;optionsgetheadpostputdeletetrace&quot; +
+<span class="lineNum">     290 </span>                :            :         &quot;acceptaccept-charsetaccept-encodingaccept-languageauthorizationexpectfromhost&quot; +
+<span class="lineNum">     291 </span>                :            :         &quot;if-modified-sinceif-matchif-none-matchif-rangeif-unmodifiedsince&quot; +
+<span class="lineNum">     292 </span>                :            :         &quot;max-forwardsproxy-authorizationrangerefererteuser-agent&quot; +
+<span class="lineNum">     293 </span>                :            :         &quot;100101200201202203204205206300301302303304305306307400401402403404405406407408409410411412413414415416417500501502503504505&quot; +
+<span class="lineNum">     294 </span>                :            :         &quot;accept-rangesageetaglocationproxy-authenticatepublicretry-after&quot; +
+<span class="lineNum">     295 </span>                :            :         &quot;servervarywarningwww-authenticateallowcontent-basecontent-encodingcache-control&quot; +
+<span class="lineNum">     296 </span>                :            :         &quot;connectiondatetrailertransfer-encodingupgradeviawarning&quot; +
+<span class="lineNum">     297 </span>                :            :         &quot;content-languagecontent-lengthcontent-locationcontent-md5content-rangecontent-typeetagexpireslast-modifiedset-cookie&quot; +
+<span class="lineNum">     298 </span>                :            :         &quot;MondayTuesdayWednesdayThursdayFridaySaturdaySunday&quot; +
+<span class="lineNum">     299 </span>                :            :         &quot;JanFebMarAprMayJunJulAugSepOctNovDec&quot; +
+<span class="lineNum">     300 </span>                :            :         &quot;chunkedtext/htmlimage/pngimage/jpgimage/gifapplication/xmlapplication/xhtmltext/plainpublicmax-age&quot; +
+<span class="lineNum">     301 </span>                :            :         &quot;charset=iso-8859-1utf-8gzipdeflateHTTP/1.1statusversionurl\x00&quot;
+<span class="lineNum">     302 </span>                :            : 
+<span class="lineNum">     303 </span>                :            : // A SPDY specific error.
+<span class="lineNum">     304 </span>                :            : type ErrorCode string
+<span class="lineNum">     305 </span>                :            : 
+<span class="lineNum">     306 </span>                :            : const (
+<span class="lineNum">     307 </span>                :            :         UnlowercasedHeaderName     ErrorCode = &quot;header was not lowercased&quot;
+<span class="lineNum">     308 </span>                :            :         DuplicateHeaders           ErrorCode = &quot;multiple headers with same name&quot;
+<span class="lineNum">     309 </span>                :            :         WrongCompressedPayloadSize ErrorCode = &quot;compressed payload size was incorrect&quot;
+<span class="lineNum">     310 </span>                :            :         UnknownFrameType           ErrorCode = &quot;unknown frame type&quot;
+<span class="lineNum">     311 </span>                :            :         InvalidControlFrame        ErrorCode = &quot;invalid control frame&quot;
+<span class="lineNum">     312 </span>                :            :         InvalidDataFrame           ErrorCode = &quot;invalid data frame&quot;
+<span class="lineNum">     313 </span>                :            :         InvalidHeaderPresent       ErrorCode = &quot;frame contained invalid header&quot;
+<span class="lineNum">     314 </span>                :            : )
+<span class="lineNum">     315 </span>                :            : 
+<span class="lineNum">     316 </span>                :            : // Error contains both the type of error and additional values. StreamId is 0
+<span class="lineNum">     317 </span>                :            : // if Error is not associated with a stream.
+<span class="lineNum">     318 </span>                :            : type Error struct {
+<span class="lineNum">     319 </span>                :            :         Err      ErrorCode
+<span class="lineNum">     320 </span>                :            :         StreamId uint32
+<a name="321"><span class="lineNum">     321 </span>                :            : }</a>
+<span class="lineNum">     322 </span>                :            : 
+<span class="lineNum">     323 </span>                :<span class="lineNoCov">          0 : func (e *Error) Error() string {</span>
+<span class="lineNum">     324 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return string(e.Err)</span>
+<span class="lineNum">     325 </span>                :            : }
+<span class="lineNum">     326 </span>                :            : 
+<span class="lineNum">     327 </span>                :            : var invalidReqHeaders = map[string]bool{
+<span class="lineNum">     328 </span>                :            :         &quot;Connection&quot;:        true,
+<span class="lineNum">     329 </span>                :            :         &quot;Keep-Alive&quot;:        true,
+<span class="lineNum">     330 </span>                :            :         &quot;Proxy-Connection&quot;:  true,
+<span class="lineNum">     331 </span>                :            :         &quot;Transfer-Encoding&quot;: true,
+<span class="lineNum">     332 </span>                :            : }
+<span class="lineNum">     333 </span>                :            : 
+<span class="lineNum">     334 </span>                :            : var invalidRespHeaders = map[string]bool{
+<span class="lineNum">     335 </span>                :            :         &quot;Connection&quot;:        true,
+<span class="lineNum">     336 </span>                :            :         &quot;Keep-Alive&quot;:        true,
+<span class="lineNum">     337 </span>                :            :         &quot;Transfer-Encoding&quot;: true,
+<span class="lineNum">     338 </span>                :            : }
+<span class="lineNum">     339 </span>                :            : 
+<span class="lineNum">     340 </span>                :            : // Framer handles serializing/deserializing SPDY frames, including compressing/
+<span class="lineNum">     341 </span>                :            : // decompressing payloads.
+<span class="lineNum">     342 </span>                :            : type Framer struct {
+<span class="lineNum">     343 </span>                :            :         headerCompressionDisabled bool
+<span class="lineNum">     344 </span>                :            :         w                         io.Writer
+<span class="lineNum">     345 </span>                :            :         headerBuf                 *bytes.Buffer
+<span class="lineNum">     346 </span>                :            :         headerCompressor          *zlib.Writer
+<span class="lineNum">     347 </span>                :            :         r                         io.Reader
+<span class="lineNum">     348 </span>                :            :         headerReader              io.LimitedReader
+<span class="lineNum">     349 </span>                :            :         headerDecompressor        io.ReadCloser
+<span class="lineNum">     350 </span>                :            : }
+<span class="lineNum">     351 </span>                :            : 
+<span class="lineNum">     352 </span>                :            : // NewFramer allocates a new Framer for a given SPDY connection, repesented by
+<span class="lineNum">     353 </span>                :            : // a io.Writer and io.Reader. Note that Framer will read and write individual fields 
+<a name="354"><span class="lineNum">     354 </span>                :            : // from/to the Reader and Writer, so the caller should pass in an appropriately </a>
+<span class="lineNum">     355 </span>                :            : // buffered implementation to optimize performance.
+<span class="lineNum">     356 </span>                :<span class="lineCov">         12 : func NewFramer(w io.Writer, r io.Reader) (*Framer, error) {</span>
+<span class="lineNum">     357 </span>                :<span class="lineCov">         12 :         compressBuf := new(bytes.Buffer)</span>
+<span class="lineNum">     358 </span>        [<span class="branchCov" title="Branch 1 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         12 :         compressor, err := zlib.NewWriterLevelDict(compressBuf, zlib.BestCompression, []byte(HeaderDictionary))</span>
+<span class="lineNum">     359 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>]:<span class="lineCov">         12 :         if err != nil {</span>
+<span class="lineNum">     360 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     361 </span>                :            :         }
+<span class="lineNum">     362 </span>                :<span class="lineCov">         12 :         framer := &amp;Framer{</span>
+<span class="lineNum">     363 </span>                :            :                 w:                w,
+<span class="lineNum">     364 </span>                :            :                 headerBuf:        compressBuf,
+<span class="lineNum">     365 </span>                :            :                 headerCompressor: compressor,
+<span class="lineNum">     366 </span>                :            :                 r:                r,
+<span class="lineNum">     367 </span>                :            :         }
+<span class="lineNum">     368 </span>                :<span class="lineCov">         12 :         return framer, nil</span>
+<span class="lineNum">     369 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ssh/client_func_test.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ssh</a> - client_func_test.go<span style="font-size: 80%;"> (source / <a href="client_func_test.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryLo">37.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">64</td>
+            <td class="headerCovTableEntryLo">12.5 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package ssh
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : // ClientConn functional tests.
+<span class="lineNum">       8 </span>                :            : // These tests require a running ssh server listening on port 22
+<span class="lineNum">       9 </span>                :            : // on the local host. Functional tests will be skipped unless
+<span class="lineNum">      10 </span>                :            : // -ssh.user and -ssh.pass must be passed to gotest.
+<span class="lineNum">      11 </span>                :            : 
+<span class="lineNum">      12 </span>                :            : import (
+<span class="lineNum">      13 </span>                :            :         &quot;flag&quot;
+<span class="lineNum">      14 </span>                :            :         &quot;testing&quot;
+<span class="lineNum">      15 </span>                :            : )
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : var (
+<span class="lineNum">      18 </span>                :            :         sshuser    = flag.String(&quot;ssh.user&quot;, &quot;&quot;, &quot;ssh username&quot;)
+<span class="lineNum">      19 </span>                :            :         sshpass    = flag.String(&quot;ssh.pass&quot;, &quot;&quot;, &quot;ssh password&quot;)
+<span class="lineNum">      20 </span>                :            :         sshprivkey = flag.String(&quot;ssh.privkey&quot;, &quot;&quot;, &quot;ssh privkey file&quot;)
+<a name="21"><span class="lineNum">      21 </span>                :            : )</a>
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :<span class="lineCov">          1 : func TestFuncPasswordAuth(t *testing.T) {</span>
+<span class="lineNum">      24 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          1 :         if *sshuser == &quot;&quot; {</span>
+<span class="lineNum">      25 </span>        [<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                 t.Log(&quot;ssh.user not defined, skipping test&quot;)</span>
+<span class="lineNum">      26 </span>                :            :                 return
+<span class="lineNum">      27 </span>                :            :         }
+<span class="lineNum">      28 </span>                :<span class="lineNoCov">          0 :         config := &amp;ClientConfig{</span>
+<span class="lineNum">      29 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 User: *sshuser,</span>
+<span class="lineNum">      30 </span>                :<span class="lineNoCov">          0 :                 Auth: []ClientAuth{</span>
+<span class="lineNum">      31 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         ClientAuthPassword(password(*sshpass)),</span>
+<span class="lineNum">      32 </span>                :            :                 },
+<span class="lineNum">      33 </span>                :            :         }
+<span class="lineNum">      34 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         conn, err := Dial(&quot;tcp&quot;, &quot;localhost:22&quot;, config)</span>
+<span class="lineNum">      35 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if err != nil {</span>
+<a name="36"><span class="lineNum">      36 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Fatalf(&quot;Unable to connect: %s&quot;, err)</span></a>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">      37 </span>                :            :         }
+<span class="lineNum">      38 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineCov">          1 :         defer conn.Close()</span>
+<a name="39"><span class="lineNum">      39 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">      40 </span>                :            : 
+<span class="lineNum">      41 </span>                :<span class="lineCov">          1 : func TestFuncPublickeyAuth(t *testing.T) {</span>
+<span class="lineNum">      42 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          1 :         if *sshuser == &quot;&quot; {</span>
+<span class="lineNum">      43 </span>        [<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                 t.Log(&quot;ssh.user not defined, skipping test&quot;)</span>
+<span class="lineNum">      44 </span>                :            :                 return
+<span class="lineNum">      45 </span>                :            :         }
+<span class="lineNum">      46 </span>                :<span class="lineNoCov">          0 :         kc := new(keychain)</span>
+<span class="lineNum">      47 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if err := kc.loadPEM(*sshprivkey); err != nil {</span>
+<span class="lineNum">      48 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Fatalf(&quot;unable to load private key: %s&quot;, err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">      49 </span>                :            :         }
+<span class="lineNum">      50 </span>                :<span class="lineNoCov">          0 :         config := &amp;ClientConfig{</span>
+<span class="lineNum">      51 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 User: *sshuser,</span>
+<span class="lineNum">      52 </span>                :<span class="lineNoCov">          0 :                 Auth: []ClientAuth{</span>
+<span class="lineNum">      53 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         ClientAuthKeyring(kc),</span>
+<span class="lineNum">      54 </span>                :            :                 },
+<span class="lineNum">      55 </span>                :            :         }
+<span class="lineNum">      56 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         conn, err := Dial(&quot;tcp&quot;, &quot;localhost:22&quot;, config)</span>
+<span class="lineNum">      57 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if err != nil {</span>
+<a name="58"><span class="lineNum">      58 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 t.Fatalf(&quot;unable to connect: %s&quot;, err)</span></a>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">      59 </span>                :            :         }
+<span class="lineNum">      60 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineCov">          1 :         defer conn.Close()</span>
+<span class="lineNum">      61 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 : }</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

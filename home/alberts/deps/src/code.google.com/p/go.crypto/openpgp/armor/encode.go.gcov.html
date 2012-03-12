@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/openpgp/armor/encode.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/openpgp/armor</a> - encode.go<span style="font-size: 80%;"> (source / <a href="encode.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">58</td>
+            <td class="headerCovTableEntry">68</td>
+            <td class="headerCovTableEntryMed">85.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">95</td>
+            <td class="headerCovTableEntry">188</td>
+            <td class="headerCovTableEntryLo">50.5 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2010 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package armor
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;encoding/base64&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;io&quot;
+<span class="lineNum">      10 </span>                :            : )
+<span class="lineNum">      11 </span>                :            : 
+<span class="lineNum">      12 </span>                :            : var armorHeaderSep = []byte(&quot;: &quot;)
+<span class="lineNum">      13 </span>                :            : var blockEnd = []byte(&quot;\n=&quot;)
+<span class="lineNum">      14 </span>                :            : var newline = []byte(&quot;\n&quot;)
+<span class="lineNum">      15 </span>                :            : var armorEndOfLineOut = []byte(&quot;-----\n&quot;)
+<a name="16"><span class="lineNum">      16 </span>                :            : </a>
+<span class="lineNum">      17 </span>                :            : // writeSlices writes its arguments to the given Writer.
+<span class="lineNum">      18 </span>                :<span class="lineCov">         13 : func writeSlices(out io.Writer, slices ...[]byte) (err error) {</span>
+<span class="lineNum">      19 </span>[<span class="branchCov" title="Branch 1 was taken 58 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 58 times"> + </span><span class="branchCov" title="Branch 4 was taken 13 times"> + </span>]:<span class="lineCov">         71 :         for _, s := range slices {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 58 times"> + </span>]
+<span class="lineNum">      20 </span>[<span class="branchCov" title="Branch 0 was taken 58 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 58 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         58 :                 _, err = out.Write(s)</span>
+<span class="lineNum">      21 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 58 times"> + </span>]:<span class="lineCov">         58 :                 if err != nil {</span>
+<span class="lineNum">      22 </span>                :<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">      23 </span>                :            :                 }
+<span class="lineNum">      24 </span>                :            :         }
+<span class="lineNum">      25 </span>                :<span class="lineCov">         13 :         return</span>
+<span class="lineNum">      26 </span>                :            : }
+<span class="lineNum">      27 </span>                :            : 
+<span class="lineNum">      28 </span>                :            : // lineBreaker breaks data across several lines, all of the same byte length
+<span class="lineNum">      29 </span>                :            : // (except possibly the last). Lines are broken with a single '\n'.
+<span class="lineNum">      30 </span>                :            : type lineBreaker struct {
+<span class="lineNum">      31 </span>                :            :         lineLength  int
+<span class="lineNum">      32 </span>                :            :         line        []byte
+<span class="lineNum">      33 </span>                :            :         used        int
+<span class="lineNum">      34 </span>                :            :         out         io.Writer
+<span class="lineNum">      35 </span>                :            :         haveWritten bool
+<a name="36"><span class="lineNum">      36 </span>                :            : }</a>
+<span class="lineNum">      37 </span>                :            : 
+<span class="lineNum">      38 </span>                :<span class="lineCov">          6 : func newLineBreaker(out io.Writer, lineLength int) *lineBreaker {</span>
+<span class="lineNum">      39 </span>                :<span class="lineCov">         12 :         return &amp;lineBreaker{</span>
+<span class="lineNum">      40 </span>                :            :                 lineLength: lineLength,
+<span class="lineNum">      41 </span>                :<span class="lineCov">          6 :                 line:       make([]byte, lineLength),</span>
+<span class="lineNum">      42 </span>                :            :                 used:       0,
+<span class="lineNum">      43 </span>                :            :                 out:        out,
+<span class="lineNum">      44 </span>                :            :         }
+<a name="45"><span class="lineNum">      45 </span>                :            : }</a>
+<span class="lineNum">      46 </span>                :            : 
+<span class="lineNum">      47 </span>                :<span class="lineCov">         50 : func (l *lineBreaker) Write(b []byte) (n int, err error) {</span>
+<span class="lineNum">      48 </span>                :<span class="lineCov">         50 :         n = len(b)</span>
+<span class="lineNum">      49 </span>                :            : 
+<span class="lineNum">      50 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 50 times"> + </span>]:<span class="lineCov">         50 :         if n == 0 {</span>
+<span class="lineNum">      51 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">      52 </span>                :            :         }
+<span class="lineNum">      53 </span>                :            : 
+<span class="lineNum">      54 </span>[<span class="branchCov" title="Branch 0 was taken 50 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 24 times"> + </span><span class="branchCov" title="Branch 3 was taken 26 times"> + </span>]:<span class="lineCov">         50 :         if l.used == 0 &amp;&amp; l.haveWritten {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 24 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 18 times"> + </span><span class="branchCov" title="Branch 7 was taken 32 times"> + </span>]
+<span class="lineNum">      55 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :                 _, err = l.out.Write([]byte{'\n'})</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">      56 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         18 :                 if err != nil {</span>
+<span class="lineNum">      57 </span>                :<span class="lineNoCov">          0 :                         return</span>
+<span class="lineNum">      58 </span>                :            :                 }
+<span class="lineNum">      59 </span>                :            :         }
+<span class="lineNum">      60 </span>                :            : 
+<span class="lineNum">      61 </span>[<span class="branchCov" title="Branch 0 was taken 50 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 50 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         50 :         if l.used+len(b) &lt; l.lineLength {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 32 times"> + </span><span class="branchCov" title="Branch 5 was taken 18 times"> + </span>]
+<span class="lineNum">      62 </span>[<span class="branchCov" title="Branch 0 was taken 32 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 32 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         32 :                 l.used += copy(l.line[l.used:], b)</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 32 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 32 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 10 was taken 32 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">      63 </span>                :<span class="lineCov">         32 :                 return</span>
+<span class="lineNum">      64 </span>                :            :         }
+<span class="lineNum">      65 </span>                :            : 
+<span class="lineNum">      66 </span>        [<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         18 :         l.haveWritten = true</span>
+<span class="lineNum">      67 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         _, err = l.out.Write(l.line[0:l.used])</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 8 was not taken"> - </span><span class="branchCov" title="Branch 9 was taken 18 times"> + </span>][<span class="branchCov" title="Branch 11 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">      68 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         18 :         if err != nil {</span>
+<span class="lineNum">      69 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">      70 </span>                :            :         }
+<span class="lineNum">      71 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         excess := l.lineLength - l.used</span>
+<span class="lineNum">      72 </span>        [<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         18 :         l.used = 0</span>
+<span class="lineNum">      73 </span>                :            : 
+<span class="lineNum">      74 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         _, err = l.out.Write(b[0:excess])</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 18 times"> + </span>][<span class="branchCov" title="Branch 7 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">      75 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         18 :         if err != nil {</span>
+<span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">      77 </span>                :            :         }
+<span class="lineNum">      78 </span>                :            : 
+<span class="lineNum">      79 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         18 :         _, err = l.Write(b[excess:])</span>
+<span class="lineNum">      80 </span>                :<span class="lineCov">         50 :         return</span>
+<a name="81"><span class="lineNum">      81 </span>                :            : }</a>
+<span class="lineNum">      82 </span>                :            : 
+<span class="lineNum">      83 </span>                :<span class="lineCov">          6 : func (l *lineBreaker) Close() (err error) {</span>
+<span class="lineNum">      84 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :         if l.used &gt; 0 {</span>
+<span class="lineNum">      85 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :                 _, err = l.out.Write(l.line[0:l.used])</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 8 was not taken"> - </span><span class="branchCov" title="Branch 9 was taken 6 times"> + </span>][<span class="branchCov" title="Branch 11 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">      86 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :                 if err != nil {</span>
+<span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :                         return</span>
+<span class="lineNum">      88 </span>                :            :                 }
+<span class="lineNum">      89 </span>                :            :         }
+<span class="lineNum">      90 </span>                :            : 
+<span class="lineNum">      91 </span>                :<span class="lineCov">          6 :         return</span>
+<span class="lineNum">      92 </span>                :            : }
+<span class="lineNum">      93 </span>                :            : 
+<span class="lineNum">      94 </span>                :            : // encoding keeps track of a running CRC24 over the data which has been written
+<span class="lineNum">      95 </span>                :            : // to it and outputs a OpenPGP checksum when closed, followed by an armor
+<span class="lineNum">      96 </span>                :            : // trailer.
+<span class="lineNum">      97 </span>                :            : //
+<span class="lineNum">      98 </span>                :            : // It's built into a stack of io.Writers:
+<span class="lineNum">      99 </span>                :            : //    encoding -&gt; base64 encoder -&gt; lineBreaker -&gt; out
+<span class="lineNum">     100 </span>                :            : type encoding struct {
+<span class="lineNum">     101 </span>                :            :         out       io.Writer
+<span class="lineNum">     102 </span>                :            :         breaker   *lineBreaker
+<span class="lineNum">     103 </span>                :            :         b64       io.WriteCloser
+<span class="lineNum">     104 </span>                :            :         crc       uint32
+<span class="lineNum">     105 </span>                :            :         blockType []byte
+<a name="106"><span class="lineNum">     106 </span>                :            : }</a>
+<span class="lineNum">     107 </span>                :            : 
+<span class="lineNum">     108 </span>                :<span class="lineCov">         31 : func (e *encoding) Write(data []byte) (n int, err error) {</span>
+<span class="lineNum">     109 </span>[<span class="branchCov" title="Branch 0 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         31 :         e.crc = crc24(e.crc, data)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     110 </span>[<span class="branchCov" title="Branch 0 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         31 :         return e.b64.Write(data)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="111"><span class="lineNum">     111 </span>                :            : }</a>
+<span class="lineNum">     112 </span>                :            : 
+<span class="lineNum">     113 </span>                :<span class="lineCov">          6 : func (e *encoding) Close() (err error) {</span>
+<span class="lineNum">     114 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :         err = e.b64.Close()</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 6 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 9 was not executed"> # </span><span class="branchNoExec" title="Branch 10 was not executed"> # </span>][<span class="branchCov" title="Branch 11 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">     115 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :         if err != nil {</span>
+<span class="lineNum">     116 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">     117 </span>                :            :         }
+<span class="lineNum">     118 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :         e.breaker.Close()</span>
+<span class="lineNum">     119 </span>                :            : 
+<span class="lineNum">     120 </span>                :<span class="lineCov">          6 :         var checksumBytes [3]byte</span>
+<span class="lineNum">     121 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :         checksumBytes[0] = byte(e.crc &gt;&gt; 16)</span>
+<span class="lineNum">     122 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :         checksumBytes[1] = byte(e.crc &gt;&gt; 8)</span>
+<span class="lineNum">     123 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :         checksumBytes[2] = byte(e.crc)</span>
+<span class="lineNum">     124 </span>                :            : 
+<span class="lineNum">     125 </span>                :<span class="lineCov">          6 :         var b64ChecksumBytes [4]byte</span>
+<span class="lineNum">     126 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :         base64.StdEncoding.Encode(b64ChecksumBytes[:], checksumBytes[:])</span>
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>[<span class="branchCov" title="Branch 1 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          6 :         return writeSlices(e.out, blockEnd, b64ChecksumBytes[:], newline, armorEnd, e.blockType, armorEndOfLine)</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 6 times"> + </span>][<span class="branchNoExec" title="Branch 8 was not executed"> # </span><span class="branchNoExec" title="Branch 9 was not executed"> # </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 10 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">     129 </span>                :            : }
+<span class="lineNum">     130 </span>                :            : 
+<a name="131"><span class="lineNum">     131 </span>                :            : // Encode returns a WriteCloser which will encode the data written to it in</a>
+<span class="lineNum">     132 </span>                :            : // OpenPGP armor.
+<span class="lineNum">     133 </span>                :<span class="lineCov">          6 : func Encode(out io.Writer, blockType string, headers map[string]string) (w io.WriteCloser, err error) {</span>
+<span class="lineNum">     134 </span>                :<span class="lineCov">          6 :         bType := []byte(blockType)</span>
+<span class="lineNum">     135 </span>[<span class="branchCov" title="Branch 1 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 6 times"> + </span>]:<span class="lineCov">          6 :         err = writeSlices(out, armorStart, bType, armorEndOfLineOut)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchCov" title="Branch 8 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     136 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :         if err != nil {</span>
+<span class="lineNum">     137 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">     138 </span>                :            :         }
+<span class="lineNum">     139 </span>                :            : 
+<span class="lineNum">     140 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          7 :         for k, v := range headers {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchCov" title="Branch 7 was taken 6 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     141 </span>[<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>][<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                 err = writeSlices(out, []byte(k), armorHeaderSep, []byte(v), newline)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 8 was not executed"> # </span><span class="branchNoExec" title="Branch 9 was not executed"> # </span>][<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">     142 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                 if err != nil {</span>
+<span class="lineNum">     143 </span>                :<span class="lineNoCov">          0 :                         return</span>
+<span class="lineNum">     144 </span>                :            :                 }
+<span class="lineNum">     145 </span>                :            :         }
+<span class="lineNum">     146 </span>                :            : 
+<span class="lineNum">     147 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :         _, err = out.Write(newline)</span>
+<span class="lineNum">     148 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">          6 :         if err != nil {</span>
+<span class="lineNum">     149 </span>                :<span class="lineNoCov">          0 :                 return</span>
+<span class="lineNum">     150 </span>                :            :         }
+<span class="lineNum">     151 </span>                :            : 
+<span class="lineNum">     152 </span>                :<span class="lineCov">          6 :         e := &amp;encoding{</span>
+<span class="lineNum">     153 </span>                :            :                 out:       out,
+<span class="lineNum">     154 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          6 :                 breaker:   newLineBreaker(out, 64),</span>
+<span class="lineNum">     155 </span>                :            :                 crc:       crc24Init,
+<span class="lineNum">     156 </span>                :            :                 blockType: bType,
+<span class="lineNum">     157 </span>                :            :         }
+<span class="lineNum">     158 </span>[<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          6 :         e.b64 = base64.NewEncoder(base64.StdEncoding, e.breaker)</span>
+<span class="lineNum">     159 </span>                :<span class="lineCov">          6 :         return e, nil</span>
+<span class="lineNum">     160 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

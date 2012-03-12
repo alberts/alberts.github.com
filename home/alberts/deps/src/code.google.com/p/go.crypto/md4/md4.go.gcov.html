@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/md4/md4.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/md4</a> - md4.go<span style="font-size: 80%;"> (source / <a href="md4.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">54</td>
+            <td class="headerCovTableEntry">57</td>
+            <td class="headerCovTableEntryHi">94.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryLo">71.4 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">51</td>
+            <td class="headerCovTableEntry">86</td>
+            <td class="headerCovTableEntryLo">59.3 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2009 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : // Package md4 implements the MD4 hash algorithm as defined in RFC 1320.
+<span class="lineNum">       6 </span>                :            : package md4
+<span class="lineNum">       7 </span>                :            : 
+<span class="lineNum">       8 </span>                :            : import (
+<span class="lineNum">       9 </span>                :            :         &quot;crypto&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;hash&quot;
+<a name="11"><span class="lineNum">      11 </span>                :            : )</a>
+<span class="lineNum">      12 </span>                :            : 
+<span class="lineNum">      13 </span>                :<span class="lineCov">          1 : func init() {</span>
+<span class="lineNum">      14 </span>                :<span class="lineCov">          1 :         crypto.RegisterHash(crypto.MD4, New)</span>
+<span class="lineNum">      15 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : // The size of an MD4 checksum in bytes.
+<span class="lineNum">      18 </span>                :            : const Size = 16
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>                :            : // The blocksize of MD4 in bytes.
+<span class="lineNum">      21 </span>                :            : const BlockSize = 64
+<span class="lineNum">      22 </span>                :            : 
+<span class="lineNum">      23 </span>                :            : const (
+<span class="lineNum">      24 </span>                :            :         _Chunk = 64
+<span class="lineNum">      25 </span>                :            :         _Init0 = 0x67452301
+<span class="lineNum">      26 </span>                :            :         _Init1 = 0xEFCDAB89
+<span class="lineNum">      27 </span>                :            :         _Init2 = 0x98BADCFE
+<span class="lineNum">      28 </span>                :            :         _Init3 = 0x10325476
+<span class="lineNum">      29 </span>                :            : )
+<span class="lineNum">      30 </span>                :            : 
+<span class="lineNum">      31 </span>                :            : // digest represents the partial evaluation of a checksum.
+<span class="lineNum">      32 </span>                :            : type digest struct {
+<span class="lineNum">      33 </span>                :            :         s   [4]uint32
+<span class="lineNum">      34 </span>                :            :         x   [_Chunk]byte
+<span class="lineNum">      35 </span>                :            :         nx  int
+<span class="lineNum">      36 </span>                :            :         len uint64
+<a name="37"><span class="lineNum">      37 </span>                :            : }</a>
+<span class="lineNum">      38 </span>                :            : 
+<span class="lineNum">      39 </span>                :<span class="lineCov">        124 : func (d *digest) Reset() {</span>
+<span class="lineNum">      40 </span>                :<span class="lineCov">        124 :         d.s[0] = _Init0</span>
+<span class="lineNum">      41 </span>                :<span class="lineCov">        124 :         d.s[1] = _Init1</span>
+<span class="lineNum">      42 </span>                :<span class="lineCov">        124 :         d.s[2] = _Init2</span>
+<span class="lineNum">      43 </span>                :<span class="lineCov">        124 :         d.s[3] = _Init3</span>
+<span class="lineNum">      44 </span>                :<span class="lineCov">        124 :         d.nx = 0</span>
+<span class="lineNum">      45 </span>                :<span class="lineCov">        124 :         d.len = 0</span>
+<span class="lineNum">      46 </span>                :<span class="lineCov">        124 : }</span>
+<a name="47"><span class="lineNum">      47 </span>                :            : </a>
+<span class="lineNum">      48 </span>                :            : // New returns a new hash.Hash computing the MD4 checksum.
+<span class="lineNum">      49 </span>                :<span class="lineCov">         31 : func New() hash.Hash {</span>
+<span class="lineNum">      50 </span>                :<span class="lineCov">         31 :         d := new(digest)</span>
+<span class="lineNum">      51 </span>        [<span class="branchCov" title="Branch 0 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         31 :         d.Reset()</span>
+<span class="lineNum">      52 </span>                :<span class="lineCov">         31 :         return d</span>
+<a name="53"><span class="lineNum">      53 </span>                :            : }</a>
+<span class="lineNum">      54 </span>                :            : 
+<a name="55"><span class="lineNum">      55 </span>                :<span class="lineNoCov">          0 : func (d *digest) Size() int { return Size }</span></a>
+<span class="lineNum">      56 </span>                :            : 
+<a name="57"><span class="lineNum">      57 </span>                :<span class="lineNoCov">          0 : func (d *digest) BlockSize() int { return BlockSize }</span></a>
+<span class="lineNum">      58 </span>                :            : 
+<span class="lineNum">      59 </span>                :<span class="lineCov">        372 : func (d *digest) Write(p []byte) (nn int, err error) {</span>
+<span class="lineNum">      60 </span>                :<span class="lineCov">        372 :         nn = len(p)</span>
+<span class="lineNum">      61 </span>[<span class="branchCov" title="Branch 0 was taken 372 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 372 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        372 :         d.len += uint64(nn)</span>
+<span class="lineNum">      62 </span>[<span class="branchCov" title="Branch 0 was taken 372 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 272 times"> + </span><span class="branchCov" title="Branch 3 was taken 100 times"> + </span>]:<span class="lineCov">        372 :         if d.nx &gt; 0 {</span>
+<span class="lineNum">      63 </span>                :<span class="lineCov">        272 :                 n := len(p)</span>
+<span class="lineNum">      64 </span>[<span class="branchCov" title="Branch 0 was taken 272 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 23 times"> + </span><span class="branchCov" title="Branch 3 was taken 249 times"> + </span>]:<span class="lineCov">        272 :                 if n &gt; _Chunk-d.nx {</span>
+<span class="lineNum">      65 </span>        [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         23 :                         n = _Chunk - d.nx</span>
+<span class="lineNum">      66 </span>                :            :                 }
+<span class="lineNum">      67 </span>        [<span class="branchCov" title="Branch 0 was taken 5713 times"> + </span><span class="branchCov" title="Branch 1 was taken 272 times"> + </span>]:<span class="lineCov">       5985 :                 for i := 0; i &lt; n; i++ {</span>
+<span class="lineNum">      68 </span>[<span class="branchCov" title="Branch 0 was taken 5713 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 5713 times"> + </span>]:<span class="lineCov">       5713 :                         d.x[d.nx+i] = p[i]</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 5713 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 5713 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 10 was taken 5713 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">      69 </span>                :            :                 }
+<span class="lineNum">      70 </span>[<span class="branchCov" title="Branch 0 was taken 272 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 272 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        272 :                 d.nx += n</span>
+<span class="lineNum">      71 </span>[<span class="branchCov" title="Branch 0 was taken 272 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 147 times"> + </span><span class="branchCov" title="Branch 3 was taken 125 times"> + </span>]:<span class="lineCov">        272 :                 if d.nx == _Chunk {</span>
+<span class="lineNum">      72 </span>        [<span class="branchCov" title="Branch 0 was taken 147 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        147 :                         _Block(d, d.x[0:])</span>
+<span class="lineNum">      73 </span>        [<span class="branchCov" title="Branch 0 was taken 147 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        147 :                         d.nx = 0</span>
+<span class="lineNum">      74 </span>                :            :                 }
+<span class="lineNum">      75 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 272 times"> + </span>]:<span class="lineCov">        272 :                 p = p[n:]</span>
+<span class="lineNum">      76 </span>                :            :         }
+<span class="lineNum">      77 </span>        [<span class="branchCov" title="Branch 0 was taken 372 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        372 :         n := _Block(d, p)</span>
+<span class="lineNum">      78 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 372 times"> + </span>]:<span class="lineCov">        372 :         p = p[n:]</span>
+<span class="lineNum">      79 </span>        [<span class="branchCov" title="Branch 0 was taken 118 times"> + </span><span class="branchCov" title="Branch 1 was taken 254 times"> + </span>]:<span class="lineCov">        372 :         if len(p) &gt; 0 {</span>
+<span class="lineNum">      80 </span>        [<span class="branchCov" title="Branch 1 was taken 118 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">        118 :                 d.nx = copy(d.x[:], p)</span>
+<span class="lineNum">      81 </span>                :            :         }
+<span class="lineNum">      82 </span>                :<span class="lineCov">        372 :         return</span>
+<a name="83"><span class="lineNum">      83 </span>                :            : }</a>
+<span class="lineNum">      84 </span>                :            : 
+<span class="lineNum">      85 </span>                :<span class="lineCov">        124 : func (d0 *digest) Sum(in []byte) []byte {</span>
+<span class="lineNum">      86 </span>                :            :         // Make a copy of d0, so that caller can keep writing and summing.
+<span class="lineNum">      87 </span>                :<span class="lineCov">        124 :         d := new(digest)</span>
+<span class="lineNum">      88 </span>        [<span class="branchCov" title="Branch 0 was taken 124 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        124 :         *d = *d0</span>
+<span class="lineNum">      89 </span>                :            : 
+<span class="lineNum">      90 </span>                :            :         // Padding.  Add a 1 bit and 0 bits until 56 bytes mod 64.
+<span class="lineNum">      91 </span>        [<span class="branchCov" title="Branch 0 was taken 124 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        124 :         len := d.len</span>
+<span class="lineNum">      92 </span>                :<span class="lineCov">        124 :         var tmp [64]byte</span>
+<span class="lineNum">      93 </span>                :<span class="lineCov">        124 :         tmp[0] = 0x80</span>
+<span class="lineNum">      94 </span>        [<span class="branchCov" title="Branch 0 was taken 109 times"> + </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>]:<span class="lineCov">        124 :         if len%64 &lt; 56 {</span>
+<span class="lineNum">      95 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 109 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 109 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">        109 :                 d.Write(tmp[0 : 56-len%64])</span>
+<span class="lineNum">      96 </span>                :            :         } else {
+<span class="lineNum">      97 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         15 :                 d.Write(tmp[0 : 64+56-len%64])</span>
+<span class="lineNum">      98 </span>                :            :         }
+<span class="lineNum">      99 </span>                :            : 
+<span class="lineNum">     100 </span>                :            :         // Length in bits.
+<span class="lineNum">     101 </span>                :<span class="lineCov">        124 :         len &lt;&lt;= 3</span>
+<span class="lineNum">     102 </span>        [<span class="branchCov" title="Branch 0 was taken 992 times"> + </span><span class="branchCov" title="Branch 1 was taken 124 times"> + </span>]:<span class="lineCov">       1116 :         for i := uint(0); i &lt; 8; i++ {</span>
+<span class="lineNum">     103 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 992 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 992 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">        992 :                 tmp[i] = byte(len &gt;&gt; (8 * i))</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 992 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     104 </span>                :            :         }
+<span class="lineNum">     105 </span>        [<span class="branchCov" title="Branch 0 was taken 124 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        124 :         d.Write(tmp[0:8])</span>
+<span class="lineNum">     106 </span>                :            : 
+<span class="lineNum">     107 </span>[<span class="branchCov" title="Branch 0 was taken 124 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 124 times"> + </span>]:<span class="lineCov">        124 :         if d.nx != 0 {</span>
+<span class="lineNum">     108 </span>                :<span class="lineNoCov">          0 :                 panic(&quot;d.nx != 0&quot;)</span>
+<span class="lineNum">     109 </span>                :            :         }
+<span class="lineNum">     110 </span>                :            : 
+<span class="lineNum">     111 </span>[<span class="branchCov" title="Branch 0 was taken 124 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 496 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">        620 :         for _, s := range d.s {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 496 times"> + </span><span class="branchCov" title="Branch 6 was taken 124 times"> + </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 496 times"> + </span>]
+<span class="lineNum">     112 </span>                :<span class="lineCov">        496 :                 in = append(in, byte(s&gt;&gt;0))</span>
+<span class="lineNum">     113 </span>                :<span class="lineCov">        496 :                 in = append(in, byte(s&gt;&gt;8))</span>
+<span class="lineNum">     114 </span>                :<span class="lineCov">        496 :                 in = append(in, byte(s&gt;&gt;16))</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">        496 :                 in = append(in, byte(s&gt;&gt;24))</span>
+<span class="lineNum">     116 </span>                :            :         }
+<span class="lineNum">     117 </span>                :<span class="lineCov">        124 :         return in</span>
+<span class="lineNum">     118 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

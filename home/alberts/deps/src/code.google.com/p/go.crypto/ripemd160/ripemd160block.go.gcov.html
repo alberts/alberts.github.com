@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ripemd160/ripemd160block.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ripemd160</a> - ripemd160block.go<span style="font-size: 80%;"> (source / <a href="ripemd160block.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">120</td>
+            <td class="headerCovTableEntry">226</td>
+            <td class="headerCovTableEntryLo">53.1 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2010 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : // RIPEMD-160 block step.
+<span class="lineNum">       6 </span>                :            : // In its own file so that a faster assembly or C version
+<span class="lineNum">       7 </span>                :            : // can be substituted easily.
+<span class="lineNum">       8 </span>                :            : 
+<span class="lineNum">       9 </span>                :            : package ripemd160
+<span class="lineNum">      10 </span>                :            : 
+<span class="lineNum">      11 </span>                :            : // work buffer indices and roll amounts for one line
+<span class="lineNum">      12 </span>                :            : var _n = [80]uint{
+<span class="lineNum">      13 </span>                :            :         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+<span class="lineNum">      14 </span>                :            :         7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+<span class="lineNum">      15 </span>                :            :         3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+<span class="lineNum">      16 </span>                :            :         1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
+<span class="lineNum">      17 </span>                :            :         4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13,
+<span class="lineNum">      18 </span>                :            : }
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>                :            : var _r = [80]uint{
+<span class="lineNum">      21 </span>                :            :         11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
+<span class="lineNum">      22 </span>                :            :         7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+<span class="lineNum">      23 </span>                :            :         11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+<span class="lineNum">      24 </span>                :            :         11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
+<span class="lineNum">      25 </span>                :            :         9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6,
+<span class="lineNum">      26 </span>                :            : }
+<span class="lineNum">      27 </span>                :            : 
+<span class="lineNum">      28 </span>                :            : // same for the other parallel one
+<span class="lineNum">      29 </span>                :            : var n_ = [80]uint{
+<span class="lineNum">      30 </span>                :            :         5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
+<span class="lineNum">      31 </span>                :            :         6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+<span class="lineNum">      32 </span>                :            :         15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+<span class="lineNum">      33 </span>                :            :         8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
+<span class="lineNum">      34 </span>                :            :         12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11,
+<span class="lineNum">      35 </span>                :            : }
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : var r_ = [80]uint{
+<span class="lineNum">      38 </span>                :            :         8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
+<span class="lineNum">      39 </span>                :            :         9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+<span class="lineNum">      40 </span>                :            :         9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+<span class="lineNum">      41 </span>                :            :         15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
+<span class="lineNum">      42 </span>                :            :         8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11,
+<a name="43"><span class="lineNum">      43 </span>                :            : }</a>
+<span class="lineNum">      44 </span>                :            : 
+<span class="lineNum">      45 </span>                :<span class="lineCov">     115763 : func _Block(md *digest, p []byte) int {</span>
+<span class="lineNum">      46 </span>                :<span class="lineCov">     115763 :         n := 0</span>
+<span class="lineNum">      47 </span>                :<span class="lineCov">     115763 :         var x [16]uint32</span>
+<span class="lineNum">      48 </span>                :<span class="lineCov">     115763 :         var alpha, beta uint32</span>
+<span class="lineNum">      49 </span>        [<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchCov" title="Branch 1 was taken 115763 times"> + </span>]:<span class="lineCov">     131430 :         for len(p) &gt;= BlockSize {</span>
+<span class="lineNum">      50 </span>[<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      15667 :                 a, b, c, d, e := md.s[0], md.s[1], md.s[2], md.s[3], md.s[4]</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 6 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 8 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      51 </span>                :<span class="lineCov">      15667 :                 aa, bb, cc, dd, ee := a, b, c, d, e</span>
+<span class="lineNum">      52 </span>                :<span class="lineCov">      15667 :                 j := 0</span>
+<span class="lineNum">      53 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i := 0; i &lt; 16; i++ {</span>
+<span class="lineNum">      54 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         x[i] = uint32(p[j]) | uint32(p[j+1])&lt;&lt;8 | uint32(p[j+2])&lt;&lt;16 | uint32(p[j+3])&lt;&lt;24</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 10 was not taken"> - </span><span class="branchCov" title="Branch 11 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 13 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 250672 times"> + </span>][<span class="branchNoCov" title="Branch 18 was not taken"> - </span><span class="branchCov" title="Branch 19 was taken 250672 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 21 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 22 was not taken"> - </span>][<span class="branchCov" title="Branch 23 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 24 was not taken"> - </span>]
+<span class="lineNum">      55 </span>                :<span class="lineCov">     250672 :                         j += 4</span>
+<span class="lineNum">      56 </span>                :            :                 }
+<span class="lineNum">      57 </span>                :            : 
+<span class="lineNum">      58 </span>                :            :                 // round 1
+<span class="lineNum">      59 </span>                :<span class="lineCov">      15667 :                 i := 0</span>
+<span class="lineNum">      60 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i &lt; 16 {</span>
+<span class="lineNum">      61 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = a + (b ^ c ^ d) + x[_n[i]]</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      62 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s := _r[i]</span>
+<span class="lineNum">      63 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + e</span>
+<span class="lineNum">      64 </span>                :<span class="lineCov">     250672 :                         beta = c&lt;&lt;10 | c&gt;&gt;22</span>
+<span class="lineNum">      65 </span>                :<span class="lineCov">     250672 :                         a, b, c, d, e = e, alpha, b, beta, d</span>
+<span class="lineNum">      66 </span>                :            : 
+<span class="lineNum">      67 </span>                :            :                         // parallel line
+<span class="lineNum">      68 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = aa + (bb ^ (cc | ^dd)) + x[n_[i]] + 0x50a28be6</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      69 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s = r_[i]</span>
+<span class="lineNum">      70 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + ee</span>
+<span class="lineNum">      71 </span>                :<span class="lineCov">     250672 :                         beta = cc&lt;&lt;10 | cc&gt;&gt;22</span>
+<span class="lineNum">      72 </span>                :<span class="lineCov">     250672 :                         aa, bb, cc, dd, ee = ee, alpha, bb, beta, dd</span>
+<span class="lineNum">      73 </span>                :            : 
+<span class="lineNum">      74 </span>                :<span class="lineCov">     250672 :                         i++</span>
+<span class="lineNum">      75 </span>                :            :                 }
+<span class="lineNum">      76 </span>                :            : 
+<span class="lineNum">      77 </span>                :            :                 // round 2
+<span class="lineNum">      78 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i &lt; 32 {</span>
+<span class="lineNum">      79 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = a + (b&amp;c | ^b&amp;d) + x[_n[i]] + 0x5a827999</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      80 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s := _r[i]</span>
+<span class="lineNum">      81 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + e</span>
+<span class="lineNum">      82 </span>                :<span class="lineCov">     250672 :                         beta = c&lt;&lt;10 | c&gt;&gt;22</span>
+<span class="lineNum">      83 </span>                :<span class="lineCov">     250672 :                         a, b, c, d, e = e, alpha, b, beta, d</span>
+<span class="lineNum">      84 </span>                :            : 
+<span class="lineNum">      85 </span>                :            :                         // parallel line
+<span class="lineNum">      86 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = aa + (bb&amp;dd | cc&amp;^dd) + x[n_[i]] + 0x5c4dd124</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      87 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s = r_[i]</span>
+<span class="lineNum">      88 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + ee</span>
+<span class="lineNum">      89 </span>                :<span class="lineCov">     250672 :                         beta = cc&lt;&lt;10 | cc&gt;&gt;22</span>
+<span class="lineNum">      90 </span>                :<span class="lineCov">     250672 :                         aa, bb, cc, dd, ee = ee, alpha, bb, beta, dd</span>
+<span class="lineNum">      91 </span>                :            : 
+<span class="lineNum">      92 </span>                :<span class="lineCov">     250672 :                         i++</span>
+<span class="lineNum">      93 </span>                :            :                 }
+<span class="lineNum">      94 </span>                :            : 
+<span class="lineNum">      95 </span>                :            :                 // round 3
+<span class="lineNum">      96 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i &lt; 48 {</span>
+<span class="lineNum">      97 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = a + (b | ^c ^ d) + x[_n[i]] + 0x6ed9eba1</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      98 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s := _r[i]</span>
+<span class="lineNum">      99 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + e</span>
+<span class="lineNum">     100 </span>                :<span class="lineCov">     250672 :                         beta = c&lt;&lt;10 | c&gt;&gt;22</span>
+<span class="lineNum">     101 </span>                :<span class="lineCov">     250672 :                         a, b, c, d, e = e, alpha, b, beta, d</span>
+<span class="lineNum">     102 </span>                :            : 
+<span class="lineNum">     103 </span>                :            :                         // parallel line
+<span class="lineNum">     104 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = aa + (bb | ^cc ^ dd) + x[n_[i]] + 0x6d703ef3</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     105 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s = r_[i]</span>
+<span class="lineNum">     106 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + ee</span>
+<span class="lineNum">     107 </span>                :<span class="lineCov">     250672 :                         beta = cc&lt;&lt;10 | cc&gt;&gt;22</span>
+<span class="lineNum">     108 </span>                :<span class="lineCov">     250672 :                         aa, bb, cc, dd, ee = ee, alpha, bb, beta, dd</span>
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :<span class="lineCov">     250672 :                         i++</span>
+<span class="lineNum">     111 </span>                :            :                 }
+<span class="lineNum">     112 </span>                :            : 
+<span class="lineNum">     113 </span>                :            :                 // round 4
+<span class="lineNum">     114 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i &lt; 64 {</span>
+<span class="lineNum">     115 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = a + (b&amp;d | c&amp;^d) + x[_n[i]] + 0x8f1bbcdc</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     116 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s := _r[i]</span>
+<span class="lineNum">     117 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + e</span>
+<span class="lineNum">     118 </span>                :<span class="lineCov">     250672 :                         beta = c&lt;&lt;10 | c&gt;&gt;22</span>
+<span class="lineNum">     119 </span>                :<span class="lineCov">     250672 :                         a, b, c, d, e = e, alpha, b, beta, d</span>
+<span class="lineNum">     120 </span>                :            : 
+<span class="lineNum">     121 </span>                :            :                         // parallel line
+<span class="lineNum">     122 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = aa + (bb&amp;cc | ^bb&amp;dd) + x[n_[i]] + 0x7a6d76e9</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     123 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s = r_[i]</span>
+<span class="lineNum">     124 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + ee</span>
+<span class="lineNum">     125 </span>                :<span class="lineCov">     250672 :                         beta = cc&lt;&lt;10 | cc&gt;&gt;22</span>
+<span class="lineNum">     126 </span>                :<span class="lineCov">     250672 :                         aa, bb, cc, dd, ee = ee, alpha, bb, beta, dd</span>
+<span class="lineNum">     127 </span>                :            : 
+<span class="lineNum">     128 </span>                :<span class="lineCov">     250672 :                         i++</span>
+<span class="lineNum">     129 </span>                :            :                 }
+<span class="lineNum">     130 </span>                :            : 
+<span class="lineNum">     131 </span>                :            :                 // round 5
+<span class="lineNum">     132 </span>        [<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">     266339 :                 for i &lt; 80 {</span>
+<span class="lineNum">     133 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = a + (b ^ (c | ^d)) + x[_n[i]] + 0xa953fd4e</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     134 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s := _r[i]</span>
+<span class="lineNum">     135 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + e</span>
+<span class="lineNum">     136 </span>                :<span class="lineCov">     250672 :                         beta = c&lt;&lt;10 | c&gt;&gt;22</span>
+<span class="lineNum">     137 </span>                :<span class="lineCov">     250672 :                         a, b, c, d, e = e, alpha, b, beta, d</span>
+<span class="lineNum">     138 </span>                :            : 
+<span class="lineNum">     139 </span>                :            :                         // parallel line
+<span class="lineNum">     140 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = aa + (bb ^ cc ^ dd) + x[n_[i]]</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     141 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 250672 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">     250672 :                         s = r_[i]</span>
+<span class="lineNum">     142 </span>[<span class="branchCov" title="Branch 0 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 250672 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     250672 :                         alpha = (alpha&lt;&lt;s | alpha&gt;&gt;(32-s)) + ee</span>
+<span class="lineNum">     143 </span>                :<span class="lineCov">     250672 :                         beta = cc&lt;&lt;10 | cc&gt;&gt;22</span>
+<span class="lineNum">     144 </span>                :<span class="lineCov">     250672 :                         aa, bb, cc, dd, ee = ee, alpha, bb, beta, dd</span>
+<span class="lineNum">     145 </span>                :            : 
+<span class="lineNum">     146 </span>                :<span class="lineCov">     250672 :                         i++</span>
+<span class="lineNum">     147 </span>                :            :                 }
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :            :                 // combine results
+<span class="lineNum">     150 </span>        [<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      15667 :                 dd += c + md.s[1]</span>
+<span class="lineNum">     151 </span>[<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      15667 :                 md.s[1] = md.s[2] + d + ee</span>
+<span class="lineNum">     152 </span>[<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      15667 :                 md.s[2] = md.s[3] + e + aa</span>
+<span class="lineNum">     153 </span>[<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      15667 :                 md.s[3] = md.s[4] + a + bb</span>
+<span class="lineNum">     154 </span>[<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      15667 :                 md.s[4] = md.s[0] + b + cc</span>
+<span class="lineNum">     155 </span>        [<span class="branchCov" title="Branch 0 was taken 15667 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      15667 :                 md.s[0] = dd</span>
+<span class="lineNum">     156 </span>                :            : 
+<span class="lineNum">     157 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 15667 times"> + </span>]:<span class="lineCov">      15667 :                 p = p[BlockSize:]</span>
+<span class="lineNum">     158 </span>                :<span class="lineCov">      15667 :                 n += BlockSize</span>
+<span class="lineNum">     159 </span>                :            :         }
+<span class="lineNum">     160 </span>                :<span class="lineCov">     115763 :         return n</span>
+<span class="lineNum">     161 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

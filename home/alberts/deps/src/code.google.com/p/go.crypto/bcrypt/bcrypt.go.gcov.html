@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/bcrypt/bcrypt.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/bcrypt</a> - bcrypt.go<span style="font-size: 80%;"> (source / <a href="bcrypt.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">113</td>
+            <td class="headerCovTableEntry">129</td>
+            <td class="headerCovTableEntryMed">87.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryLo">71.4 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">146</td>
+            <td class="headerCovTableEntry">294</td>
+            <td class="headerCovTableEntryLo">49.7 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : // Package bcrypt implements Provos and Mazières's bcrypt adaptive hashing
+<span class="lineNum">       6 </span>                :            : // algorithm. See http://www.usenix.org/event/usenix99/provos/provos.pdf
+<span class="lineNum">       7 </span>                :            : package bcrypt
+<span class="lineNum">       8 </span>                :            : 
+<span class="lineNum">       9 </span>                :            : // The code is a port of Provos and Mazières's C implementation. 
+<span class="lineNum">      10 </span>                :            : import (
+<span class="lineNum">      11 </span>                :            :         &quot;code.google.com/p/go.crypto/blowfish&quot;
+<span class="lineNum">      12 </span>                :            :         &quot;crypto/rand&quot;
+<span class="lineNum">      13 </span>                :            :         &quot;crypto/subtle&quot;
+<span class="lineNum">      14 </span>                :            :         &quot;errors&quot;
+<span class="lineNum">      15 </span>                :            :         &quot;fmt&quot;
+<span class="lineNum">      16 </span>                :            :         &quot;io&quot;
+<span class="lineNum">      17 </span>                :            :         &quot;strconv&quot;
+<span class="lineNum">      18 </span>                :            : )
+<span class="lineNum">      19 </span>                :            : 
+<span class="lineNum">      20 </span>                :            : const (
+<span class="lineNum">      21 </span>                :            :         MinCost     int = 4  // the minimum allowable cost as passed in to GenerateFromPassword
+<span class="lineNum">      22 </span>                :            :         MaxCost     int = 31 // the maximum allowable cost as passed in to GenerateFromPassword
+<span class="lineNum">      23 </span>                :            :         DefaultCost int = 10 // the cost that will actually be set if a cost below MinCost is passed into GenerateFromPassword
+<span class="lineNum">      24 </span>                :            : )
+<span class="lineNum">      25 </span>                :            : 
+<span class="lineNum">      26 </span>                :            : // The error returned from CompareHashAndPassword when a password and hash do
+<span class="lineNum">      27 </span>                :            : // not match.
+<span class="lineNum">      28 </span>                :            : var ErrMismatchedHashAndPassword = errors.New(&quot;crypto/bcrypt: hashedPassword is not the hash of the given password&quot;)
+<span class="lineNum">      29 </span>                :            : 
+<span class="lineNum">      30 </span>                :            : // The error returned from CompareHashAndPassword when a hash is too short to
+<span class="lineNum">      31 </span>                :            : // be a bcrypt hash.
+<span class="lineNum">      32 </span>                :            : var ErrHashTooShort = errors.New(&quot;crypto/bcrypt: hashedSecret too short to be a bcrypted password&quot;)
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :            : // The error returned from CompareHashAndPassword when a hash was created with
+<span class="lineNum">      35 </span>                :            : // a bcrypt algorithm newer than this implementation.
+<a name="36"><span class="lineNum">      36 </span>                :            : type HashVersionTooNewError byte</a>
+<span class="lineNum">      37 </span>                :            : 
+<span class="lineNum">      38 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 : func (hv HashVersionTooNewError) Error() string {</span>
+<span class="lineNum">      39 </span>        [<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return fmt.Sprintf(&quot;crypto/bcrypt: bcrypt algorithm version '%c' requested is newer than current version '%c'&quot;, byte(hv), majorVersion)</span>
+<span class="lineNum">      40 </span>                :            : }
+<span class="lineNum">      41 </span>                :            : 
+<span class="lineNum">      42 </span>                :            : // The error returned from CompareHashAndPassword when a hash starts with something other than '$'
+<a name="43"><span class="lineNum">      43 </span>                :            : type InvalidHashPrefixError byte</a>
+<span class="lineNum">      44 </span>                :            : 
+<span class="lineNum">      45 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 : func (ih InvalidHashPrefixError) Error() string {</span>
+<span class="lineNum">      46 </span>        [<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return fmt.Sprintf(&quot;crypto/bcrypt: bcrypt hashes must start with '$', but hashedSecret started with '%c'&quot;, byte(ih))</span>
+<span class="lineNum">      47 </span>                :            : }
+<span class="lineNum">      48 </span>                :            : 
+<a name="49"><span class="lineNum">      49 </span>                :            : type InvalidCostError int</a>
+<span class="lineNum">      50 </span>                :            : 
+<span class="lineNum">      51 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 : func (ic InvalidCostError) Error() string {</span>
+<span class="lineNum">      52 </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return fmt.Sprintf(&quot;crypto/bcrypt: cost %d is outside allowed range (%d,%d)&quot;, int(ic), int(MinCost), int(MaxCost))</span>
+<span class="lineNum">      53 </span>                :            : }
+<span class="lineNum">      54 </span>                :            : 
+<span class="lineNum">      55 </span>                :            : const (
+<span class="lineNum">      56 </span>                :            :         majorVersion       = '2'
+<span class="lineNum">      57 </span>                :            :         minorVersion       = 'a'
+<span class="lineNum">      58 </span>                :            :         maxSaltSize        = 16
+<span class="lineNum">      59 </span>                :            :         maxCryptedHashSize = 23
+<span class="lineNum">      60 </span>                :            :         encodedSaltSize    = 22
+<span class="lineNum">      61 </span>                :            :         encodedHashSize    = 31
+<span class="lineNum">      62 </span>                :            :         minHashSize        = 59
+<span class="lineNum">      63 </span>                :            : )
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>                :            : // magicCipherData is an IV for the 64 Blowfish encryption calls in
+<span class="lineNum">      66 </span>                :            : // bcrypt(). It's the string &quot;OrpheanBeholderScryDoubt&quot; in big-endian bytes.
+<span class="lineNum">      67 </span>                :            : var magicCipherData = []byte{
+<span class="lineNum">      68 </span>                :            :         0x4f, 0x72, 0x70, 0x68,
+<span class="lineNum">      69 </span>                :            :         0x65, 0x61, 0x6e, 0x42,
+<span class="lineNum">      70 </span>                :            :         0x65, 0x68, 0x6f, 0x6c,
+<span class="lineNum">      71 </span>                :            :         0x64, 0x65, 0x72, 0x53,
+<span class="lineNum">      72 </span>                :            :         0x63, 0x72, 0x79, 0x44,
+<span class="lineNum">      73 </span>                :            :         0x6f, 0x75, 0x62, 0x74,
+<span class="lineNum">      74 </span>                :            : }
+<span class="lineNum">      75 </span>                :            : 
+<span class="lineNum">      76 </span>                :            : type hashed struct {
+<span class="lineNum">      77 </span>                :            :         hash  []byte
+<span class="lineNum">      78 </span>                :            :         salt  []byte
+<span class="lineNum">      79 </span>                :            :         cost  uint32 // allowed range is MinCost to MaxCost
+<span class="lineNum">      80 </span>                :            :         major byte
+<span class="lineNum">      81 </span>                :            :         minor byte
+<span class="lineNum">      82 </span>                :            : }
+<span class="lineNum">      83 </span>                :            : 
+<span class="lineNum">      84 </span>                :            : // GenerateFromPassword returns the bcrypt hash of the password at the given
+<span class="lineNum">      85 </span>                :            : // cost. If the cost given is less than MinCost, the cost will be set to
+<a name="86"><span class="lineNum">      86 </span>                :            : // MinCost, instead. Use CompareHashAndPassword, as defined in this package,</a>
+<span class="lineNum">      87 </span>                :            : // to compare the returned hashed password with its cleartext version.
+<span class="lineNum">      88 </span>                :<span class="lineCov">          1 : func GenerateFromPassword(password []byte, cost int) ([]byte, error) {</span>
+<span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         p, err := newFromPassword(password, cost)</span>
+<span class="lineNum">      90 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err != nil {</span>
+<span class="lineNum">      91 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">      92 </span>                :            :         }
+<span class="lineNum">      93 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         return p.Hash(), nil</span>
+<span class="lineNum">      94 </span>                :            : }
+<span class="lineNum">      95 </span>                :            : 
+<span class="lineNum">      96 </span>                :            : // CompareHashAndPassword compares a bcrypt hashed password with its possible
+<a name="97"><span class="lineNum">      97 </span>                :            : // plaintext equivalent. Note: Using bytes.Equal for this job is</a>
+<span class="lineNum">      98 </span>                :            : // insecure. Returns nil on success, or an error on failure.
+<span class="lineNum">      99 </span>                :<span class="lineCov">          7 : func CompareHashAndPassword(hashedPassword, password []byte) error {</span>
+<span class="lineNum">     100 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         p, err := newFromHash(hashedPassword)</span>
+<span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     102 </span>[<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          5 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     103 </span>                :            :         }
+<span class="lineNum">     104 </span>                :            : 
+<span class="lineNum">     105 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          2 :         otherHash, err := bcrypt(password, p.cost, p.salt)</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 2 times"> + </span>][<span class="branchNoExec" title="Branch 7 was not executed"> # </span><span class="branchNoExec" title="Branch 8 was not executed"> # </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 9 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">     106 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :         if err != nil {</span>
+<span class="lineNum">     107 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     108 </span>                :            :         }
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          2 :         otherP := &amp;hashed{otherHash, p.salt, p.cost, p.major, p.minor}</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     111 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          2 :         if subtle.ConstantTimeCompare(p.Hash(), otherP.Hash()) == 1 {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 9 was taken 1 time"> + </span><span class="branchCov" title="Branch 10 was taken 1 time"> + </span>]
+<span class="lineNum">     112 </span>                :<span class="lineCov">          1 :                 return nil</span>
+<span class="lineNum">     113 </span>                :            :         }
+<span class="lineNum">     114 </span>                :            : 
+<span class="lineNum">     115 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          7 :         return ErrMismatchedHashAndPassword</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="116"><span class="lineNum">     116 </span>                :            : }</a>
+<span class="lineNum">     117 </span>                :            : 
+<span class="lineNum">     118 </span>                :<span class="lineCov">          8 : func newFromPassword(password []byte, cost int) (*hashed, error) {</span>
+<span class="lineNum">     119 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          8 :         if cost &lt; MinCost {</span>
+<span class="lineNum">     120 </span>                :<span class="lineCov">          5 :                 cost = DefaultCost</span>
+<span class="lineNum">     121 </span>                :            :         }
+<span class="lineNum">     122 </span>                :<span class="lineCov">          8 :         p := new(hashed)</span>
+<span class="lineNum">     123 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          8 :         p.major = majorVersion</span>
+<span class="lineNum">     124 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          8 :         p.minor = minorVersion</span>
+<span class="lineNum">     125 </span>                :            : 
+<span class="lineNum">     126 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          8 :         err := checkCost(cost)</span>
+<span class="lineNum">     127 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          8 :         if err != nil {</span>
+<span class="lineNum">     128 </span>                :<span class="lineCov">          1 :                 return nil, err</span>
+<span class="lineNum">     129 </span>                :            :         }
+<span class="lineNum">     130 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         p.cost = uint32(cost)</span>
+<span class="lineNum">     131 </span>                :            : 
+<span class="lineNum">     132 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         unencodedSalt := make([]byte, maxSaltSize)</span>
+<span class="lineNum">     133 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         _, err = io.ReadFull(rand.Reader, unencodedSalt)</span>
+<span class="lineNum">     134 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     135 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     136 </span>                :            :         }
+<span class="lineNum">     137 </span>                :            : 
+<span class="lineNum">     138 </span>[<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          7 :         p.salt = base64Encode(unencodedSalt)</span>
+<span class="lineNum">     139 </span>[<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          7 :         hash, err := bcrypt(password, p.cost, p.salt)</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 7 times"> + </span>][<span class="branchNoExec" title="Branch 7 was not executed"> # </span><span class="branchNoExec" title="Branch 8 was not executed"> # </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 9 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">     140 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     141 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     142 </span>                :            :         }
+<span class="lineNum">     143 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         p.hash = hash</span>
+<span class="lineNum">     144 </span>                :<span class="lineCov">          8 :         return p, err</span>
+<a name="145"><span class="lineNum">     145 </span>                :            : }</a>
+<span class="lineNum">     146 </span>                :            : 
+<span class="lineNum">     147 </span>                :<span class="lineCov">         15 : func newFromHash(hashedSecret []byte) (*hashed, error) {</span>
+<span class="lineNum">     148 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         15 :         if len(hashedSecret) &lt; minHashSize {</span>
+<span class="lineNum">     149 </span>                :<span class="lineCov">          4 :                 return nil, ErrHashTooShort</span>
+<span class="lineNum">     150 </span>                :            :         }
+<span class="lineNum">     151 </span>                :<span class="lineCov">         11 :         p := new(hashed)</span>
+<span class="lineNum">     152 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         n, err := p.decodeVersion(hashedSecret)</span>
+<span class="lineNum">     153 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">         11 :         if err != nil {</span>
+<span class="lineNum">     154 </span>                :<span class="lineCov">          4 :                 return nil, err</span>
+<span class="lineNum">     155 </span>                :            :         }
+<span class="lineNum">     156 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          7 :         hashedSecret = hashedSecret[n:]</span>
+<span class="lineNum">     157 </span>        [<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          7 :         n, err = p.decodeCost(hashedSecret)</span>
+<span class="lineNum">     158 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     159 </span>                :<span class="lineCov">          2 :                 return nil, err</span>
+<span class="lineNum">     160 </span>                :            :         }
+<span class="lineNum">     161 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          5 :         hashedSecret = hashedSecret[n:]</span>
+<span class="lineNum">     162 </span>                :            : 
+<span class="lineNum">     163 </span>                :            :         // The &quot;+2&quot; is here because we'll have to append at most 2 '=' to the salt
+<span class="lineNum">     164 </span>                :            :         // when base64 decoding it in expensiveBlowfishSetup().
+<span class="lineNum">     165 </span>[<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          5 :         p.salt = make([]byte, encodedSaltSize, encodedSaltSize+2)</span>
+<span class="lineNum">     166 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          5 :         copy(p.salt, hashedSecret[:encodedSaltSize])</span>
+<span class="lineNum">     167 </span>                :            : 
+<span class="lineNum">     168 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          5 :         hashedSecret = hashedSecret[encodedSaltSize:]</span>
+<span class="lineNum">     169 </span>[<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          5 :         p.hash = make([]byte, len(hashedSecret))</span>
+<span class="lineNum">     170 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          5 :         copy(p.hash, hashedSecret)</span>
+<span class="lineNum">     171 </span>                :            : 
+<span class="lineNum">     172 </span>                :<span class="lineCov">         15 :         return p, nil</span>
+<a name="173"><span class="lineNum">     173 </span>                :            : }</a>
+<span class="lineNum">     174 </span>                :            : 
+<span class="lineNum">     175 </span>                :<span class="lineCov">         11 : func bcrypt(password []byte, cost uint32, salt []byte) ([]byte, error) {</span>
+<span class="lineNum">     176 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         cipherData := make([]byte, len(magicCipherData))</span>
+<span class="lineNum">     177 </span>                :<span class="lineCov">         11 :         copy(cipherData, magicCipherData)</span>
+<span class="lineNum">     178 </span>                :            : 
+<span class="lineNum">     179 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         c, err := expensiveBlowfishSetup(password, cost, salt)</span>
+<span class="lineNum">     180 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         if err != nil {</span>
+<span class="lineNum">     181 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     182 </span>                :            :         }
+<span class="lineNum">     183 </span>                :            : 
+<span class="lineNum">     184 </span>        [<span class="branchCov" title="Branch 0 was taken 33 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         44 :         for i := 0; i &lt; 24; i += 8 {</span>
+<span class="lineNum">     185 </span>        [<span class="branchCov" title="Branch 0 was taken 2112 times"> + </span><span class="branchCov" title="Branch 1 was taken 33 times"> + </span>]:<span class="lineCov">       2145 :                 for j := 0; j &lt; 64; j++ {</span>
+<span class="lineNum">     186 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2112 times"> + </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2112 times"> + </span>]:<span class="lineCov">       2112 :                         c.Encrypt(cipherData[i:i+8], cipherData[i:i+8])</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 6 was taken 2112 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<span class="lineNum">     187 </span>                :            :                 }
+<span class="lineNum">     188 </span>                :            :         }
+<span class="lineNum">     189 </span>                :            : 
+<span class="lineNum">     190 </span>                :            :         // Bug compatibility with C bcrypt implementations. We only encode 23 of
+<span class="lineNum">     191 </span>                :            :         // the 24 bytes encrypted.
+<span class="lineNum">     192 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         11 :         hsh := base64Encode(cipherData[:maxCryptedHashSize])</span>
+<span class="lineNum">     193 </span>                :<span class="lineCov">         11 :         return hsh, nil</span>
+<a name="194"><span class="lineNum">     194 </span>                :            : }</a>
+<span class="lineNum">     195 </span>                :            : 
+<span class="lineNum">     196 </span>                :<span class="lineCov">         11 : func expensiveBlowfishSetup(key []byte, cost uint32, salt []byte) (*blowfish.Cipher, error) {</span>
+<span class="lineNum">     197 </span>                :            : 
+<span class="lineNum">     198 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         csalt, err := base64Decode(salt)</span>
+<span class="lineNum">     199 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         if err != nil {</span>
+<span class="lineNum">     200 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     201 </span>                :            :         }
+<span class="lineNum">     202 </span>                :            : 
+<span class="lineNum">     203 </span>                :            :         // Bug compatibility with C bcrypt implementations. They use the trailing
+<span class="lineNum">     204 </span>                :            :         // NULL in the key string during expansion.
+<span class="lineNum">     205 </span>                :<span class="lineCov">         11 :         ckey := append(key, 0)</span>
+<span class="lineNum">     206 </span>                :            : 
+<span class="lineNum">     207 </span>[<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         c, err := blowfish.NewSaltedCipher(ckey, csalt)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     208 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         11 :         if err != nil {</span>
+<span class="lineNum">     209 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">     210 </span>                :            :         }
+<span class="lineNum">     211 </span>                :            : 
+<span class="lineNum">     212 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         rounds := 1 &lt;&lt; cost</span>
+<span class="lineNum">     213 </span>        [<span class="branchCov" title="Branch 0 was taken 25728 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">      25739 :         for i := 0; i &lt; rounds; i++ {</span>
+<span class="lineNum">     214 </span>        [<span class="branchCov" title="Branch 0 was taken 25728 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      25728 :                 blowfish.ExpandKey(ckey, c)</span>
+<span class="lineNum">     215 </span>        [<span class="branchCov" title="Branch 0 was taken 25728 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      25728 :                 blowfish.ExpandKey(csalt, c)</span>
+<span class="lineNum">     216 </span>                :            :         }
+<span class="lineNum">     217 </span>                :            : 
+<span class="lineNum">     218 </span>                :<span class="lineCov">         11 :         return c, nil</span>
+<a name="219"><span class="lineNum">     219 </span>                :            : }</a>
+<span class="lineNum">     220 </span>                :            : 
+<span class="lineNum">     221 </span>                :<span class="lineCov">          9 : func (p *hashed) Hash() []byte {</span>
+<span class="lineNum">     222 </span>        [<span class="branchCov" title="Branch 0 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          9 :         arr := make([]byte, 60)</span>
+<span class="lineNum">     223 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          9 :         arr[0] = '$'</span>
+<span class="lineNum">     224 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          9 :         arr[1] = p.major</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     225 </span>                :<span class="lineCov">          9 :         n := 2</span>
+<span class="lineNum">     226 </span>[<span class="branchCov" title="Branch 0 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 8 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          9 :         if p.minor != 0 {</span>
+<span class="lineNum">     227 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 8 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          8 :                 arr[2] = p.minor</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     228 </span>                :<span class="lineCov">          8 :                 n = 3</span>
+<span class="lineNum">     229 </span>                :            :         }
+<span class="lineNum">     230 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          9 :         arr[n] = '$'</span>
+<span class="lineNum">     231 </span>                :<span class="lineCov">          9 :         n += 1</span>
+<span class="lineNum">     232 </span>[<span class="branchCov" title="Branch 2 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          9 :         copy(arr[n:], []byte(fmt.Sprintf(&quot;%02d&quot;, p.cost)))</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 8 was not taken"> - </span><span class="branchCov" title="Branch 9 was taken 9 times"> + </span>]
+<span class="lineNum">     233 </span>                :<span class="lineCov">          9 :         n += 2</span>
+<span class="lineNum">     234 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          9 :         arr[n] = '$'</span>
+<span class="lineNum">     235 </span>                :<span class="lineCov">          9 :         n += 1</span>
+<span class="lineNum">     236 </span>[<span class="branchCov" title="Branch 0 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 9 times"> + </span>]:<span class="lineCov">          9 :         copy(arr[n:], p.salt)</span>
+<span class="lineNum">     237 </span>                :<span class="lineCov">          9 :         n += encodedSaltSize</span>
+<span class="lineNum">     238 </span>[<span class="branchCov" title="Branch 0 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 9 times"> + </span>]:<span class="lineCov">          9 :         copy(arr[n:], p.hash)</span>
+<span class="lineNum">     239 </span>                :<span class="lineCov">          9 :         n += encodedHashSize</span>
+<span class="lineNum">     240 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>]:<span class="lineCov">          9 :         return arr[:n]</span>
+<a name="241"><span class="lineNum">     241 </span>                :            : }</a>
+<span class="lineNum">     242 </span>                :            : 
+<span class="lineNum">     243 </span>                :<span class="lineCov">         11 : func (p *hashed) decodeVersion(sbytes []byte) (int, error) {</span>
+<span class="lineNum">     244 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         11 :         if sbytes[0] != '$' {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchCov" title="Branch 6 was taken 9 times"> + </span>]
+<span class="lineNum">     245 </span>[<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 4 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          2 :                 return -1, InvalidHashPrefixError(sbytes[0])</span>
+<span class="lineNum">     246 </span>                :            :         }
+<span class="lineNum">     247 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 9 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          9 :         if sbytes[1] &gt; majorVersion {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchCov" title="Branch 6 was taken 7 times"> + </span>]
+<span class="lineNum">     248 </span>[<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2 times"> + </span>][<span class="branchCov" title="Branch 4 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          2 :                 return -1, HashVersionTooNewError(sbytes[1])</span>
+<span class="lineNum">     249 </span>                :            :         }
+<span class="lineNum">     250 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          7 :         p.major = sbytes[1]</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     251 </span>                :<span class="lineCov">          7 :         n := 3</span>
+<span class="lineNum">     252 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          7 :         if sbytes[2] != '$' {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 6 times"> + </span><span class="branchCov" title="Branch 6 was taken 1 time"> + </span>]
+<span class="lineNum">     253 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          6 :                 p.minor = sbytes[2]</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     254 </span>                :<span class="lineCov">          6 :                 n++</span>
+<span class="lineNum">     255 </span>                :            :         }
+<span class="lineNum">     256 </span>                :<span class="lineCov">         11 :         return n, nil</span>
+<span class="lineNum">     257 </span>                :            : }
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<span class="lineNum">     259 </span>                :            : // sbytes should begin where decodeVersion left off.
+<span class="lineNum">     260 </span>                :<span class="lineCov">          7 : func (p *hashed) decodeCost(sbytes []byte) (int, error) {</span>
+<span class="lineNum">     261 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>][<span class="branchCov" title="Branch 4 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          7 :         cost, err := strconv.Atoi(string(sbytes[0:2]))</span>
+<span class="lineNum">     262 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 7 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     263 </span>                :<span class="lineNoCov">          0 :                 return -1, err</span>
+<span class="lineNum">     264 </span>                :            :         }
+<span class="lineNum">     265 </span>[<span class="branchCov" title="Branch 0 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchCov" title="Branch 4 was taken 5 times"> + </span>]:<span class="lineCov">          7 :         err = checkCost(cost)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 7 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     266 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          7 :         if err != nil {</span>
+<span class="lineNum">     267 </span>                :<span class="lineCov">          2 :                 return -1, err</span>
+<span class="lineNum">     268 </span>                :            :         }
+<span class="lineNum">     269 </span>        [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          5 :         p.cost = uint32(cost)</span>
+<span class="lineNum">     270 </span>                :<span class="lineCov">          7 :         return 3, nil</span>
+<a name="271"><span class="lineNum">     271 </span>                :            : }</a>
+<span class="lineNum">     272 </span>                :            : 
+<span class="lineNum">     273 </span>                :<span class="lineNoCov">          0 : func (p *hashed) String() string {</span>
+<span class="lineNum">     274 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return fmt.Sprintf(&quot;&amp;{hash: %#v, salt: %#v, cost: %d, major: %c, minor: %c}&quot;, string(p.hash), p.salt, p.cost, p.major, p.minor)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 9 was not executed"> # </span><span class="branchNoExec" title="Branch 10 was not executed"> # </span>][<span class="branchNoExec" title="Branch 12 was not executed"> # </span><span class="branchNoExec" title="Branch 13 was not executed"> # </span>]
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 15 was not executed"> # </span><span class="branchNoExec" title="Branch 16 was not executed"> # </span>][<span class="branchNoExec" title="Branch 17 was not executed"> # </span><span class="branchNoExec" title="Branch 18 was not executed"> # </span>]
+<a name="275"><span class="lineNum">     275 </span>                :            : }</a>
+<span class="lineNum">     276 </span>                :            : 
+<span class="lineNum">     277 </span>                :<span class="lineCov">         15 : func checkCost(cost int) error {</span>
+<span class="lineNum">     278 </span>[<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchCov" title="Branch 3 was taken 12 times"> + </span>]:<span class="lineCov">         15 :         if cost &lt; MinCost || cost &gt; MaxCost {</span>
+<span class="lineNum">     279 </span>                :<span class="lineCov">          3 :                 return InvalidCostError(cost)</span>
+<span class="lineNum">     280 </span>                :            :         }
+<span class="lineNum">     281 </span>                :<span class="lineCov">         15 :         return nil</span>
+<span class="lineNum">     282 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

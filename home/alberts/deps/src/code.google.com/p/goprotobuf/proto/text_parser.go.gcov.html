@@ -1,0 +1,646 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/goprotobuf/proto/text_parser.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/goprotobuf/proto</a> - text_parser.go<span style="font-size: 80%;"> (source / <a href="text_parser.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">230</td>
+            <td class="headerCovTableEntry">269</td>
+            <td class="headerCovTableEntryMed">85.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryHi">93.8 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">310</td>
+            <td class="headerCovTableEntry">590</td>
+            <td class="headerCovTableEntryLo">52.5 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Go support for Protocol Buffers - Google's data interchange format</a>
+<span class="lineNum">       2 </span>                :            : //
+<span class="lineNum">       3 </span>                :            : // Copyright 2010 Google Inc.  All rights reserved.
+<span class="lineNum">       4 </span>                :            : // http://code.google.com/p/goprotobuf/
+<span class="lineNum">       5 </span>                :            : //
+<span class="lineNum">       6 </span>                :            : // Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>                :            : // modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>                :            : // met:
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>                :            : // notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>                :            : //     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      13 </span>                :            : // copyright notice, this list of conditions and the following disclaimer
+<span class="lineNum">      14 </span>                :            : // in the documentation and/or other materials provided with the
+<span class="lineNum">      15 </span>                :            : // distribution.
+<span class="lineNum">      16 </span>                :            : //     * Neither the name of Google Inc. nor the names of its
+<span class="lineNum">      17 </span>                :            : // contributors may be used to endorse or promote products derived from
+<span class="lineNum">      18 </span>                :            : // this software without specific prior written permission.
+<span class="lineNum">      19 </span>                :            : //
+<span class="lineNum">      20 </span>                :            : // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      21 </span>                :            : // &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      22 </span>                :            : // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      23 </span>                :            : // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      24 </span>                :            : // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      25 </span>                :            : // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      26 </span>                :            : // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      27 </span>                :            : // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      28 </span>                :            : // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      29 </span>                :            : // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      30 </span>                :            : // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      31 </span>                :            : 
+<span class="lineNum">      32 </span>                :            : package proto
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :            : // Functions for parsing the Text protocol buffer format.
+<span class="lineNum">      35 </span>                :            : // TODO: message sets.
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : import (
+<span class="lineNum">      38 </span>                :            :         &quot;fmt&quot;
+<span class="lineNum">      39 </span>                :            :         &quot;reflect&quot;
+<span class="lineNum">      40 </span>                :            :         &quot;strconv&quot;
+<span class="lineNum">      41 </span>                :            : )
+<span class="lineNum">      42 </span>                :            : 
+<span class="lineNum">      43 </span>                :            : type ParseError struct {
+<span class="lineNum">      44 </span>                :            :         Message string
+<span class="lineNum">      45 </span>                :            :         Line    int // 1-based line number
+<span class="lineNum">      46 </span>                :            :         Offset  int // 0-based byte offset from start of input
+<a name="47"><span class="lineNum">      47 </span>                :            : }</a>
+<span class="lineNum">      48 </span>                :            : 
+<span class="lineNum">      49 </span>                :<span class="lineCov">         11 : func (p *ParseError) Error() string {</span>
+<span class="lineNum">      50 </span>[<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         11 :         if p.Line == 1 {</span>
+<span class="lineNum">      51 </span>                :            :                 // show offset only for first line
+<span class="lineNum">      52 </span>[<span class="branchCov" title="Branch 2 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 5 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]:<span class="lineCov">         11 :                 return fmt.Sprintf(&quot;line 1.%d: %v&quot;, p.Offset, p.Message)</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 7 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">      53 </span>                :            :         }
+<span class="lineNum">      54 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineCov">         11 :         return fmt.Sprintf(&quot;line %d: %v&quot;, p.Line, p.Message)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 7 was not executed"> # </span><span class="branchNoExec" title="Branch 8 was not executed"> # </span>]
+<span class="lineNum">      55 </span>                :            : }
+<span class="lineNum">      56 </span>                :            : 
+<span class="lineNum">      57 </span>                :            : type token struct {
+<span class="lineNum">      58 </span>                :            :         value    string
+<span class="lineNum">      59 </span>                :            :         err      *ParseError
+<span class="lineNum">      60 </span>                :            :         line     int    // line number
+<span class="lineNum">      61 </span>                :            :         offset   int    // byte number from start of input, not start of line
+<span class="lineNum">      62 </span>                :            :         unquoted string // the unquoted version of value, if it was a quoted string
+<a name="63"><span class="lineNum">      63 </span>                :            : }</a>
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 : func (t *token) String() string {</span>
+<span class="lineNum">      66 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :         if t.err == nil {</span>
+<span class="lineNum">      67 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return fmt.Sprintf(&quot;%q (line=%d, offset=%d)&quot;, t.value, t.line, t.offset)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 8 was not executed"> # </span><span class="branchNoExec" title="Branch 9 was not executed"> # </span>][<span class="branchNoExec" title="Branch 10 was not executed"> # </span><span class="branchNoExec" title="Branch 11 was not executed"> # </span>]
+<span class="lineNum">      68 </span>                :            :         }
+<span class="lineNum">      69 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return fmt.Sprintf(&quot;parse error: %v&quot;, t.err)</span>
+<span class="lineNum">      70 </span>                :            : }
+<span class="lineNum">      71 </span>                :            : 
+<span class="lineNum">      72 </span>                :            : type textParser struct {
+<span class="lineNum">      73 </span>                :            :         s            string // remaining input
+<span class="lineNum">      74 </span>                :            :         done         bool   // whether the parsing is finished (success or error)
+<span class="lineNum">      75 </span>                :            :         backed       bool   // whether back() was called
+<span class="lineNum">      76 </span>                :            :         offset, line int
+<span class="lineNum">      77 </span>                :            :         cur          token
+<a name="78"><span class="lineNum">      78 </span>                :            : }</a>
+<span class="lineNum">      79 </span>                :            : 
+<span class="lineNum">      80 </span>                :<span class="lineCov">         25 : func newTextParser(s string) *textParser {</span>
+<span class="lineNum">      81 </span>                :<span class="lineCov">         25 :         p := new(textParser)</span>
+<span class="lineNum">      82 </span>                :<span class="lineCov">         25 :         p.s = s</span>
+<span class="lineNum">      83 </span>                :<span class="lineCov">         25 :         p.line = 1</span>
+<span class="lineNum">      84 </span>                :<span class="lineCov">         25 :         p.cur.line = 1</span>
+<span class="lineNum">      85 </span>                :<span class="lineCov">         25 :         return p</span>
+<a name="86"><span class="lineNum">      86 </span>                :            : }</a>
+<span class="lineNum">      87 </span>                :            : 
+<span class="lineNum">      88 </span>                :<span class="lineCov">         11 : func (p *textParser) errorf(format string, a ...interface{}) *ParseError {</span>
+<span class="lineNum">      89 </span>                :<span class="lineCov">         11 :         pe := &amp;ParseError{fmt.Sprintf(format, a...), p.cur.line, p.cur.offset}</span>
+<span class="lineNum">      90 </span>                :<span class="lineCov">         11 :         p.cur.err = pe</span>
+<span class="lineNum">      91 </span>                :<span class="lineCov">         11 :         p.done = true</span>
+<span class="lineNum">      92 </span>                :<span class="lineCov">         11 :         return pe</span>
+<span class="lineNum">      93 </span>                :            : }
+<a name="94"><span class="lineNum">      94 </span>                :            : </a>
+<span class="lineNum">      95 </span>                :            : // Numbers and identifiers are matched by [-+._A-Za-z0-9]
+<span class="lineNum">      96 </span>                :<span class="lineCov">       4619 : func isIdentOrNumberChar(c byte) bool {</span>
+<span class="lineNum">      97 </span>                :            :         switch {
+<span class="lineNum">      98 </span>[<span class="branchCov" title="Branch 0 was taken 3388 times"> + </span><span class="branchCov" title="Branch 1 was taken 1231 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 4606 times"> + </span><span class="branchCov" title="Branch 3 was taken 13 times"> + </span>]:<span class="lineCov">       4619 :         case 'A' &lt;= c &amp;&amp; c &lt;= 'Z', 'a' &lt;= c &amp;&amp; c &lt;= 'z':</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 3370 times"> + </span><span class="branchCov" title="Branch 5 was taken 1236 times"> + </span>][<span class="branchCov" title="Branch 6 was taken 1237 times"> + </span><span class="branchCov" title="Branch 7 was taken 3382 times"> + </span>]
+<span class="lineNum">      99 </span>                :<span class="lineCov">       3382 :                 return true</span>
+<span class="lineNum">     100 </span>[<span class="branchCov" title="Branch 0 was taken 1203 times"> + </span><span class="branchCov" title="Branch 1 was taken 34 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1097 times"> + </span><span class="branchCov" title="Branch 3 was taken 140 times"> + </span>]:<span class="lineCov">       1237 :         case '0' &lt;= c &amp;&amp; c &lt;= '9':</span>
+<span class="lineNum">     101 </span>                :<span class="lineCov">        140 :                 return true</span>
+<span class="lineNum">     102 </span>                :            :         }
+<span class="lineNum">     103 </span>        [<span class="branchCov" title="Branch 0 was taken 10 times"> + </span><span class="branchCov" title="Branch 1 was taken 1087 times"> + </span>]:<span class="lineCov">       1097 :         switch c {</span>
+<span class="lineNum">     104 </span>                :            :         case '-', '+', '.', '_':
+<span class="lineNum">     105 </span>                :<span class="lineCov">         10 :                 return true</span>
+<span class="lineNum">     106 </span>                :            :         }
+<span class="lineNum">     107 </span>                :<span class="lineCov">       4619 :         return false</span>
+<a name="108"><span class="lineNum">     108 </span>                :            : }</a>
+<span class="lineNum">     109 </span>                :            : 
+<span class="lineNum">     110 </span>                :<span class="lineCov">       6329 : func isWhitespace(c byte) bool {</span>
+<span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 0 was taken 2101 times"> + </span><span class="branchCov" title="Branch 1 was taken 4228 times"> + </span>]:<span class="lineCov">       6329 :         switch c {</span>
+<span class="lineNum">     112 </span>                :            :         case ' ', '\t', '\n', '\r':
+<span class="lineNum">     113 </span>                :<span class="lineCov">       2101 :                 return true</span>
+<span class="lineNum">     114 </span>                :            :         }
+<span class="lineNum">     115 </span>                :<span class="lineCov">       6329 :         return false</span>
+<a name="116"><span class="lineNum">     116 </span>                :            : }</a>
+<span class="lineNum">     117 </span>                :            : 
+<span class="lineNum">     118 </span>                :<span class="lineCov">       4248 : func (p *textParser) skipWhitespace() {</span>
+<span class="lineNum">     119 </span>                :<span class="lineCov">       4248 :         i := 0</span>
+<span class="lineNum">     120 </span>[<span class="branchCov" title="Branch 0 was taken 6329 times"> + </span><span class="branchCov" title="Branch 1 was taken 22 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 6329 times"> + </span>]:<span class="lineCov">       6351 :         for i &lt; len(p.s) &amp;&amp; (isWhitespace(p.s[i]) || p.s[i] == '#') {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 4228 times"> + </span><span class="branchCov" title="Branch 7 was taken 2101 times"> + </span>][<span class="branchNoCov" title="Branch 8 was not taken"> - </span><span class="branchCov" title="Branch 9 was taken 4228 times"> + </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 11 was taken 2103 times"> + </span><span class="branchCov" title="Branch 12 was taken 4248 times"> + </span>]
+<span class="lineNum">     121 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2103 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchCov" title="Branch 4 was taken 2101 times"> + </span>]:<span class="lineCov">       2103 :                 if p.s[i] == '#' {</span>
+<span class="lineNum">     122 </span>                :            :                         // comment; skip to end of line or input
+<span class="lineNum">     123 </span>[<span class="branchCov" title="Branch 0 was taken 32 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 32 times"> + </span>]:<span class="lineCov">         32 :                         for i &lt; len(p.s) &amp;&amp; p.s[i] != '\n' {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 30 times"> + </span><span class="branchCov" title="Branch 6 was taken 2 times"> + </span>]
+<span class="lineNum">     124 </span>                :<span class="lineCov">         30 :                                 i++</span>
+<span class="lineNum">     125 </span>                :            :                         }
+<span class="lineNum">     126 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                         if i == len(p.s) {</span>
+<span class="lineNum">     127 </span>                :<span class="lineNoCov">          0 :                                 break</span>
+<span class="lineNum">     128 </span>                :            :                         }
+<span class="lineNum">     129 </span>                :            :                 }
+<span class="lineNum">     130 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2103 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 1005 times"> + </span><span class="branchCov" title="Branch 4 was taken 1098 times"> + </span>]:<span class="lineCov">       2103 :                 if p.s[i] == '\n' {</span>
+<span class="lineNum">     131 </span>                :<span class="lineCov">       1005 :                         p.line++</span>
+<span class="lineNum">     132 </span>                :            :                 }
+<span class="lineNum">     133 </span>                :<span class="lineCov">       2103 :                 i++</span>
+<span class="lineNum">     134 </span>                :            :         }
+<span class="lineNum">     135 </span>                :<span class="lineCov">       4248 :         p.offset += i</span>
+<span class="lineNum">     136 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4248 times"> + </span>]:<span class="lineCov">       4248 :         p.s = p.s[i:len(p.s)]</span>
+<span class="lineNum">     137 </span>        [<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchCov" title="Branch 1 was taken 4226 times"> + </span>]:<span class="lineCov">       4248 :         if len(p.s) == 0 {</span>
+<span class="lineNum">     138 </span>                :<span class="lineCov">         22 :                 p.done = true</span>
+<span class="lineNum">     139 </span>                :            :         }
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineCov">       4248 : }</span></a>
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :<span class="lineCov">       3226 : func (p *textParser) advance() {</span>
+<span class="lineNum">     143 </span>                :            :         // Skip whitespace
+<span class="lineNum">     144 </span>                :<span class="lineCov">       3226 :         p.skipWhitespace()</span>
+<span class="lineNum">     145 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 3211 times"> + </span>]:<span class="lineCov">       3226 :         if p.done {</span>
+<span class="lineNum">     146 </span>                :<span class="lineCov">         15 :                 return</span>
+<span class="lineNum">     147 </span>                :            :         }
+<span class="lineNum">     148 </span>                :            : 
+<span class="lineNum">     149 </span>                :            :         // Start of non-whitespace
+<span class="lineNum">     150 </span>                :<span class="lineCov">       3211 :         p.cur.err = nil</span>
+<span class="lineNum">     151 </span>                :<span class="lineCov">       3211 :         p.cur.offset, p.cur.line = p.offset, p.line</span>
+<span class="lineNum">     152 </span>                :<span class="lineCov">       3211 :         p.cur.unquoted = &quot;&quot;</span>
+<span class="lineNum">     153 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 3211 times"> + </span>]:<span class="lineCov">       3211 :         switch p.s[0] {</span>
+<span class="lineNum">         </span>     [<span class="branchCov" title="Branch 3 was taken 1095 times"> + </span><span class="branchCov" title="Branch 4 was taken 1023 times"> + </span><span class="branchCov" title="Branch 5 was taken 1093 times"> + </span>]
+<span class="lineNum">     154 </span>                :<span class="lineCov">       1095 :         case '&lt;', '&gt;', '{', '}', ':', '[', ']':</span>
+<span class="lineNum">     155 </span>                :            :                 // Single symbol
+<span class="lineNum">     156 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1095 times"> + </span>]:<span class="lineCov">       1095 :                 p.cur.value, p.s = p.s[0:1], p.s[1:len(p.s)]</span>
+<span class="lineNum">     157 </span>                :<span class="lineCov">       1023 :         case '&quot;':</span>
+<span class="lineNum">     158 </span>                :            :                 // Quoted string
+<span class="lineNum">     159 </span>                :<span class="lineCov">       1023 :                 i := 1</span>
+<span class="lineNum">     160 </span>[<span class="branchCov" title="Branch 0 was taken 5190 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 5190 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       5190 :                 for i &lt; len(p.s) &amp;&amp; p.s[i] != '&quot;' &amp;&amp; p.s[i] != '\n' {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 5190 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 5190 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 5190 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchCov" title="Branch 11 was taken 4167 times"> + </span><span class="branchCov" title="Branch 12 was taken 1023 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 13 was taken 4167 times"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>][<span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 4167 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 18 was taken 4167 times"> + </span><span class="branchNoCov" title="Branch 19 was not taken"> - </span>][<span class="branchCov" title="Branch 20 was taken 4167 times"> + </span><span class="branchCov" title="Branch 21 was taken 1023 times"> + </span>]
+<span class="lineNum">     161 </span>[<span class="branchCov" title="Branch 0 was taken 4167 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 4167 times"> + </span>]:<span class="lineCov">       4167 :                         if p.s[i] == '\\' &amp;&amp; i+1 &lt; len(p.s) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 4167 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 6 times"> + </span><span class="branchCov" title="Branch 8 was taken 4161 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchCov" title="Branch 11 was taken 6 times"> + </span><span class="branchCov" title="Branch 12 was taken 4161 times"> + </span>]
+<span class="lineNum">     162 </span>                :            :                                 // skip escaped char
+<span class="lineNum">     163 </span>                :<span class="lineCov">          6 :                                 i++</span>
+<span class="lineNum">     164 </span>                :            :                         }
+<span class="lineNum">     165 </span>                :<span class="lineCov">       4167 :                         i++</span>
+<span class="lineNum">     166 </span>                :            :                 }
+<span class="lineNum">     167 </span>[<span class="branchCov" title="Branch 0 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       1023 :                 if i &gt;= len(p.s) || p.s[i] != '&quot;' {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 1023 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 1023 times"> + </span>]
+<span class="lineNum">     168 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         p.errorf(&quot;unmatched quote&quot;)</span>
+<span class="lineNum">     169 </span>                :            :                         return
+<span class="lineNum">     170 </span>                :            :                 }
+<span class="lineNum">     171 </span>                :            :                 // TODO: Should be UnquoteC.
+<span class="lineNum">     172 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1023 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">       1023 :                 unq, err := strconv.Unquote(p.s[0 : i+1])</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 1023 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     173 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 1022 times"> + </span>]:<span class="lineCov">       1023 :                 if err != nil {</span>
+<span class="lineNum">     174 </span>[<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 5 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]:<span class="lineCov">          1 :                         p.errorf(&quot;invalid quoted string %v&quot;, p.s[0:i+1])</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 7 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>][<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span>]
+<span class="lineNum">     175 </span>                :            :                         return
+<span class="lineNum">     176 </span>                :            :                 }
+<span class="lineNum">     177 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1022 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">       1022 :                 p.cur.value, p.s = p.s[0:i+1], p.s[i+1:len(p.s)]</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 10 was not taken"> - </span><span class="branchCov" title="Branch 11 was taken 1022 times"> + </span>][<span class="branchCov" title="Branch 13 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 14 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 15 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 16 was not taken"> - </span>][<span class="branchCov" title="Branch 18 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 19 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 20 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 21 was not taken"> - </span>]
+<span class="lineNum">     178 </span>        [<span class="branchCov" title="Branch 0 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1022 :                 p.cur.unquoted = unq</span>
+<span class="lineNum">     179 </span>                :<span class="lineCov">       1093 :         default:</span>
+<span class="lineNum">     180 </span>                :<span class="lineCov">       1093 :                 i := 0</span>
+<span class="lineNum">     181 </span>[<span class="branchCov" title="Branch 0 was taken 4619 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 4619 times"> + </span>]:<span class="lineCov">       4625 :                 for i &lt; len(p.s) &amp;&amp; isIdentOrNumberChar(p.s[i]) {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 6 was taken 3532 times"> + </span><span class="branchCov" title="Branch 7 was taken 1093 times"> + </span>]
+<span class="lineNum">     182 </span>                :<span class="lineCov">       3532 :                         i++</span>
+<span class="lineNum">     183 </span>                :            :                 }
+<span class="lineNum">     184 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1093 times"> + </span>]:<span class="lineCov">       1093 :                 if i == 0 {</span>
+<span class="lineNum">     185 </span>        [<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         p.errorf(&quot;unexpected byte %#x&quot;, p.s[0])</span>
+<span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :                         return</span>
+<span class="lineNum">     187 </span>                :            :                 }
+<span class="lineNum">     188 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1093 times"> + </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1093 times"> + </span>]:<span class="lineCov">       1093 :                 p.cur.value, p.s = p.s[0:i], p.s[i:len(p.s)]</span>
+<span class="lineNum">     189 </span>                :            :         }
+<span class="lineNum">     190 </span>                :<span class="lineCov">       3226 :         p.offset += len(p.cur.value)</span>
+<span class="lineNum">     191 </span>                :            : }
+<span class="lineNum">     192 </span>                :            : 
+<a name="193"><span class="lineNum">     193 </span>                :            : // Back off the parser by one token. Can only be done between calls to next().</a>
+<span class="lineNum">     194 </span>                :            : // It makes the next advance() a no-op.
+<span class="lineNum">     195 </span>                :<span class="lineCov">       1073 : func (p *textParser) back() { p.backed = true }</span>
+<a name="196"><span class="lineNum">     196 </span>                :            : </a>
+<span class="lineNum">     197 </span>                :            : // Advances the parser and returns the new current token.
+<span class="lineNum">     198 </span>                :<span class="lineCov">       4298 : func (p *textParser) next() *token {</span>
+<span class="lineNum">     199 </span>[<span class="branchCov" title="Branch 0 was taken 3225 times"> + </span><span class="branchCov" title="Branch 1 was taken 1073 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 1073 times"> + </span><span class="branchCov" title="Branch 3 was taken 3225 times"> + </span>]:<span class="lineCov">       4298 :         if p.backed || p.done {</span>
+<span class="lineNum">     200 </span>                :<span class="lineCov">       1073 :                 p.backed = false</span>
+<span class="lineNum">     201 </span>                :<span class="lineCov">       1073 :                 return &amp;p.cur</span>
+<span class="lineNum">     202 </span>                :            :         }
+<span class="lineNum">     203 </span>                :<span class="lineCov">       3225 :         p.advance()</span>
+<span class="lineNum">     204 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchCov" title="Branch 1 was taken 3209 times"> + </span>]:<span class="lineCov">       3225 :         if p.done {</span>
+<span class="lineNum">     205 </span>                :<span class="lineCov">         16 :                 p.cur.value = &quot;&quot;</span>
+<span class="lineNum">     206 </span>[<span class="branchCov" title="Branch 0 was taken 3209 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 3209 times"> + </span>]:<span class="lineCov">       3209 :         } else if len(p.cur.value) &gt; 0 &amp;&amp; p.cur.value[0] == '&quot;' {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 1021 times"> + </span><span class="branchCov" title="Branch 6 was taken 2188 times"> + </span>]
+<span class="lineNum">     207 </span>                :            :                 // Look for multiple quoted strings separated by whitespace,
+<span class="lineNum">     208 </span>                :            :                 // and concatenate them.
+<span class="lineNum">     209 </span>        [<span class="branchCov" title="Branch 0 was taken 1021 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1021 :                 cat := p.cur</span>
+<span class="lineNum">     210 </span>                :            :                 for {
+<span class="lineNum">     211 </span>        [<span class="branchCov" title="Branch 0 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1022 :                         p.skipWhitespace()</span>
+<span class="lineNum">     212 </span>[<span class="branchCov" title="Branch 0 was taken 1022 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1015 times"> + </span><span class="branchCov" title="Branch 3 was taken 7 times"> + </span>]:<span class="lineCov">       1022 :                         if p.done || p.s[0] != '&quot;' {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 1015 times"> + </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchCov" title="Branch 11 was taken 1021 times"> + </span><span class="branchCov" title="Branch 12 was taken 1 time"> + </span>]
+<span class="lineNum">     213 </span>                :<span class="lineCov">       1021 :                                 break</span>
+<span class="lineNum">     214 </span>                :            :                         }
+<span class="lineNum">     215 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                         p.advance()</span>
+<span class="lineNum">     216 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                         if p.cur.err != nil {</span>
+<span class="lineNum">     217 </span>                :<span class="lineNoCov">          0 :                                 return &amp;p.cur</span>
+<span class="lineNum">     218 </span>                :            :                         }
+<span class="lineNum">     219 </span>                :<span class="lineCov">          1 :                         cat.value += &quot; &quot; + p.cur.value</span>
+<span class="lineNum">     220 </span>                :<span class="lineCov">          1 :                         cat.unquoted += p.cur.unquoted</span>
+<span class="lineNum">     221 </span>                :<span class="lineCov">          1 :                 }</span>
+<span class="lineNum">     222 </span>        [<span class="branchCov" title="Branch 0 was taken 1021 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1021 :                 p.done = false // parser may have seen EOF, but we want to return cat</span>
+<span class="lineNum">     223 </span>        [<span class="branchCov" title="Branch 0 was taken 1021 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1021 :                 p.cur = cat</span>
+<span class="lineNum">     224 </span>                :            :         }
+<span class="lineNum">     225 </span>                :<span class="lineCov">       4298 :         return &amp;p.cur</span>
+<span class="lineNum">     226 </span>                :            : }
+<a name="227"><span class="lineNum">     227 </span>                :            : </a>
+<span class="lineNum">     228 </span>                :            : // Return an error indicating which required field was not set.
+<span class="lineNum">     229 </span>                :<span class="lineCov">          1 : func (p *textParser) missingRequiredFieldError(sv reflect.Value) *ParseError {</span>
+<span class="lineNum">     230 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         st := sv.Type()</span>
+<span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :         sprops := GetProperties(st)</span>
+<span class="lineNum">     232 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :         for i := 0; i &lt; st.NumField(); i++ {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     233 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 :                 if !isNil(sv.Field(i)) {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 1 time"> + </span>]
+<span class="lineNum">     234 </span>                :<span class="lineNoCov">          0 :                         continue</span>
+<span class="lineNum">     235 </span>                :            :                 }
+<span class="lineNum">     236 </span>                :            : 
+<span class="lineNum">     237 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                 props := sprops.Prop[i]</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     238 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                 if props.Required {</span>
+<span class="lineNum">     239 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 :                         return p.errorf(&quot;message %v missing required field %q&quot;, st, props.OrigName)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     240 </span>                :            :                 }
+<span class="lineNum">     241 </span>                :            :         }
+<span class="lineNum">     242 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineCov">          1 :         return p.errorf(&quot;message %v missing required field&quot;, st) // should not happen</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>]
+<span class="lineNum">     243 </span>                :            : }
+<a name="244"><span class="lineNum">     244 </span>                :            : </a>
+<span class="lineNum">     245 </span>                :            : // Returns the index in the struct for the named field, as well as the parsed tag properties.
+<span class="lineNum">     246 </span>                :<span class="lineCov">       1062 : func structFieldByName(st reflect.Type, name string) (int, *Properties, bool) {</span>
+<span class="lineNum">     247 </span>                :<span class="lineCov">       1062 :         sprops := GetProperties(st)</span>
+<span class="lineNum">     248 </span>                :<span class="lineCov">       1062 :         i, ok := sprops.origNames[name]</span>
+<span class="lineNum">     249 </span>        [<span class="branchCov" title="Branch 0 was taken 1062 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1062 :         if ok {</span>
+<span class="lineNum">     250 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1062 times"> + </span>]:<span class="lineCov">       1062 :                 return i, sprops.Prop[i], true</span>
+<span class="lineNum">     251 </span>                :            :         }
+<span class="lineNum">     252 </span>                :<span class="lineCov">       1062 :         return -1, nil, false</span>
+<span class="lineNum">     253 </span>                :            : }
+<span class="lineNum">     254 </span>                :            : 
+<a name="255"><span class="lineNum">     255 </span>                :            : // Consume a ':' from the input stream (if the next token is a colon),</a>
+<span class="lineNum">     256 </span>                :            : // returning an error if a colon is needed but not present.
+<span class="lineNum">     257 </span>                :<span class="lineCov">       1065 : func (p *textParser) checkForColon(props *Properties, typ reflect.Type) *ParseError {</span>
+<span class="lineNum">     258 </span>                :<span class="lineCov">       1065 :         tok := p.next()</span>
+<span class="lineNum">     259 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1065 times"> + </span>]:<span class="lineCov">       1065 :         if tok.err != nil {</span>
+<span class="lineNum">     260 </span>                :<span class="lineNoCov">          0 :                 return tok.err</span>
+<span class="lineNum">     261 </span>                :            :         }
+<span class="lineNum">     262 </span>        [<span class="branchCov" title="Branch 1 was taken 6 times"> + </span><span class="branchCov" title="Branch 2 was taken 1059 times"> + </span>]:<span class="lineCov">       1065 :         if tok.value != &quot;:&quot; {</span>
+<span class="lineNum">     263 </span>                :            :                 // Colon is optional when the field is a group or message.
+<span class="lineNum">     264 </span>                :<span class="lineCov">          6 :                 needColon := true</span>
+<span class="lineNum">     265 </span>                :<span class="lineCov">          6 :                 switch props.Wire {</span>
+<span class="lineNum">     266 </span>        [<span class="branchCov" title="Branch 1 was taken 5 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          6 :                 case &quot;group&quot;:</span>
+<span class="lineNum">     267 </span>                :<span class="lineCov">          1 :                         needColon = false</span>
+<span class="lineNum">     268 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          8 :                 case &quot;bytes&quot;:</span>
+<span class="lineNum">     269 </span>                :            :                         // A &quot;bytes&quot; field is either a message, a string, or a repeated field;
+<span class="lineNum">     270 </span>                :            :                         // those three become *T, *string and []T respectively, so we can check for
+<span class="lineNum">     271 </span>                :            :                         // this field being a pointer to a non-string.
+<span class="lineNum">     272 </span>        [<span class="branchCov" title="Branch 1 was taken 3 times"> + </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>]:<span class="lineCov">          4 :                         if typ.Kind() == reflect.Ptr {</span>
+<span class="lineNum">     273 </span>                :            :                                 // *T or *string
+<span class="lineNum">     274 </span>        [<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          3 :                                 if typ.Elem().Kind() == reflect.String {</span>
+<span class="lineNum">     275 </span>                :<span class="lineCov">          1 :                                         break</span>
+<span class="lineNum">     276 </span>                :            :                                 }
+<span class="lineNum">     277 </span>        [<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">          1 :                         } else if typ.Kind() == reflect.Slice {</span>
+<span class="lineNum">     278 </span>                :            :                                 // []T or []*T
+<span class="lineNum">     279 </span>        [<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                                 if typ.Elem().Kind() != reflect.Ptr {</span>
+<span class="lineNum">     280 </span>                :<span class="lineNoCov">          0 :                                         break</span>
+<span class="lineNum">     281 </span>                :            :                                 }
+<span class="lineNum">     282 </span>                :            :                         }
+<span class="lineNum">     283 </span>                :<span class="lineCov">          3 :                         needColon = false</span>
+<span class="lineNum">     284 </span>                :            :                 }
+<span class="lineNum">     285 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          6 :                 if needColon {</span>
+<span class="lineNum">     286 </span>                :<span class="lineCov">          2 :                         return p.errorf(&quot;expected ':', found %q&quot;, tok.value)</span>
+<span class="lineNum">     287 </span>                :            :                 }
+<span class="lineNum">     288 </span>                :<span class="lineCov">          4 :                 p.back()</span>
+<span class="lineNum">     289 </span>                :            :         }
+<span class="lineNum">     290 </span>                :<span class="lineCov">       1065 :         return nil</span>
+<a name="291"><span class="lineNum">     291 </span>                :            : }</a>
+<span class="lineNum">     292 </span>                :            : 
+<span class="lineNum">     293 </span>                :<span class="lineCov">         41 : func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError {</span>
+<span class="lineNum">     294 </span>        [<span class="branchCov" title="Branch 0 was taken 41 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         41 :         st := sv.Type()</span>
+<span class="lineNum">     295 </span>[<span class="branchCov" title="Branch 0 was taken 41 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 41 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         41 :         reqCount := GetProperties(st).reqCount</span>
+<span class="lineNum">     296 </span>                :            :         // A struct is a sequence of &quot;name: value&quot;, terminated by one of
+<span class="lineNum">     297 </span>                :            :         // '&gt;' or '}', or the end of the input.  A name may also be
+<span class="lineNum">     298 </span>                :            :         // &quot;[extension]&quot;.
+<span class="lineNum">     299 </span>                :            :         for {
+<span class="lineNum">     300 </span>        [<span class="branchCov" title="Branch 0 was taken 1093 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1093 :                 tok := p.next()</span>
+<span class="lineNum">     301 </span>[<span class="branchCov" title="Branch 0 was taken 1093 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1093 times"> + </span>]:<span class="lineCov">       1093 :                 if tok.err != nil {</span>
+<span class="lineNum">     302 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return tok.err</span>
+<span class="lineNum">     303 </span>                :            :                 }
+<span class="lineNum">     304 </span>        [<span class="branchCov" title="Branch 1 was taken 27 times"> + </span><span class="branchCov" title="Branch 2 was taken 1066 times"> + </span>]:<span class="lineCov">       1093 :                 if tok.value == terminator {</span>
+<span class="lineNum">     305 </span>                :<span class="lineCov">         27 :                         break</span>
+<span class="lineNum">     306 </span>                :            :                 }
+<span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchCov" title="Branch 2 was taken 1062 times"> + </span>]:<span class="lineCov">       1066 :                 if tok.value == &quot;[&quot; {</span>
+<span class="lineNum">     308 </span>                :            :                         // Looks like an extension.
+<span class="lineNum">     309 </span>                :            :                         //
+<span class="lineNum">     310 </span>                :            :                         // TODO: Check whether we need to handle
+<span class="lineNum">     311 </span>                :            :                         // namespace rooted names (e.g. &quot;.something.Foo&quot;).
+<span class="lineNum">     312 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :                         tok = p.next()</span>
+<span class="lineNum">     313 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if tok.err != nil {</span>
+<span class="lineNum">     314 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return tok.err</span>
+<span class="lineNum">     315 </span>                :            :                         }
+<span class="lineNum">     316 </span>                :<span class="lineCov">          4 :                         var desc *ExtensionDesc</span>
+<span class="lineNum">     317 </span>                :            :                         // This could be faster, but it's functional.
+<span class="lineNum">     318 </span>                :            :                         // TODO: Do something smarter than a linear scan.
+<span class="lineNum">     319 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          8 :                         for _, d := range RegisteredExtensions(reflect.New(st).Interface()) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 9 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 12 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>][<span class="branchCov" title="Branch 15 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 16 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 17 was taken 8 times"> + </span><span class="branchNoCov" title="Branch 18 was not taken"> - </span>]
+<span class="lineNum">     320 </span>        [<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          8 :                                 if d.Name == tok.value {</span>
+<span class="lineNum">     321 </span>                :<span class="lineCov">          4 :                                         desc = d</span>
+<span class="lineNum">     322 </span>                :<span class="lineCov">          4 :                                         break</span>
+<span class="lineNum">     323 </span>                :            :                                 }
+<span class="lineNum">     324 </span>                :            :                         }
+<span class="lineNum">     325 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if desc == nil {</span>
+<span class="lineNum">     326 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return p.errorf(&quot;unrecognized extension %q&quot;, tok.value)</span>
+<span class="lineNum">     327 </span>                :            :                         }
+<span class="lineNum">     328 </span>                :            :                         // Check the extension terminator.
+<span class="lineNum">     329 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :                         tok = p.next()</span>
+<span class="lineNum">     330 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if tok.err != nil {</span>
+<span class="lineNum">     331 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return tok.err</span>
+<span class="lineNum">     332 </span>                :            :                         }
+<span class="lineNum">     333 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if tok.value != &quot;]&quot; {</span>
+<span class="lineNum">     334 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return p.errorf(&quot;unrecognized extension terminator %q&quot;, tok.value)</span>
+<span class="lineNum">     335 </span>                :            :                         }
+<span class="lineNum">     336 </span>                :            : 
+<span class="lineNum">     337 </span>                :<span class="lineCov">          4 :                         props := &amp;Properties{}</span>
+<span class="lineNum">     338 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :                         props.Parse(desc.Tag)</span>
+<span class="lineNum">     339 </span>                :            : 
+<span class="lineNum">     340 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :                         typ := reflect.TypeOf(desc.ExtensionType)</span>
+<span class="lineNum">     341 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if err := p.checkForColon(props, typ); err != nil {</span>
+<span class="lineNum">     342 </span>                :<span class="lineNoCov">          0 :                                 return err</span>
+<span class="lineNum">     343 </span>                :            :                         }
+<span class="lineNum">     344 </span>                :            : 
+<span class="lineNum">     345 </span>                :            :                         // Read the extension structure, and set it in
+<span class="lineNum">     346 </span>                :            :                         // the value we're constructing.
+<span class="lineNum">     347 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          4 :                         ext := reflect.New(typ).Elem()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 7 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     348 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 4 times"> + </span>]:<span class="lineCov">          4 :                         if err := p.readAny(ext, props); err != nil {</span>
+<span class="lineNum">     349 </span>                :<span class="lineNoCov">          0 :                                 return err</span>
+<span class="lineNum">     350 </span>                :            :                         }
+<span class="lineNum">     351 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          8 :                         SetExtension(sv.Addr().Interface().(extendableProto),</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 9 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">     352 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :                                 desc, ext.Interface())</span>
+<span class="lineNum">     353 </span>                :            :                 } else {
+<span class="lineNum">     354 </span>                :            :                         // This is a normal, non-extension field.
+<span class="lineNum">     355 </span>        [<span class="branchCov" title="Branch 0 was taken 1062 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1062 :                         fi, props, ok := structFieldByName(st, tok.value)</span>
+<span class="lineNum">     356 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1062 times"> + </span>]:<span class="lineCov">       1062 :                         if !ok {</span>
+<span class="lineNum">     357 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return p.errorf(&quot;unknown field name %q in %v&quot;, tok.value, st)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>][<span class="branchNoExec" title="Branch 8 was not executed"> # </span><span class="branchNoExec" title="Branch 9 was not executed"> # </span>]
+<span class="lineNum">     358 </span>                :            :                         }
+<span class="lineNum">     359 </span>                :            : 
+<span class="lineNum">     360 </span>                :            :                         // Check that it's not already set if it's not a repeated field.
+<span class="lineNum">     361 </span>[<span class="branchCov" title="Branch 0 was taken 1062 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 48 times"> + </span><span class="branchCov" title="Branch 3 was taken 1014 times"> + </span>]:<span class="lineCov">       1062 :                         if !props.Repeated &amp;&amp; !isNil(sv.Field(fi)) {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 48 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 48 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchCov" title="Branch 11 was taken 1061 times"> + </span>]
+<span class="lineNum">     362 </span>[<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          1 :                                 return p.errorf(&quot;non-repeated field %q was repeated&quot;, tok.value)</span>
+<span class="lineNum">     363 </span>                :            :                         }
+<span class="lineNum">     364 </span>                :            : 
+<span class="lineNum">     365 </span>[<span class="branchCov" title="Branch 0 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       1061 :                         if err := p.checkForColon(props, st.Field(fi).Type); err != nil {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchCov" title="Branch 12 was taken 1061 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 15 was taken 2 times"> + </span><span class="branchCov" title="Branch 16 was taken 1059 times"> + </span>]
+<span class="lineNum">     366 </span>                :<span class="lineCov">          2 :                                 return err</span>
+<span class="lineNum">     367 </span>                :            :                         }
+<span class="lineNum">     368 </span>                :            : 
+<span class="lineNum">     369 </span>                :            :                         // Parse into the field.
+<span class="lineNum">     370 </span>[<span class="branchCov" title="Branch 0 was taken 1059 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1059 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">       1059 :                         if err := p.readAny(sv.Field(fi), props); err != nil {</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 6 was taken 11 times"> + </span><span class="branchCov" title="Branch 7 was taken 1048 times"> + </span>]
+<span class="lineNum">     371 </span>                :<span class="lineCov">         11 :                                 return err</span>
+<span class="lineNum">     372 </span>                :            :                         }
+<span class="lineNum">     373 </span>                :            : 
+<span class="lineNum">     374 </span>[<span class="branchCov" title="Branch 0 was taken 1048 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 16 times"> + </span><span class="branchCov" title="Branch 3 was taken 1032 times"> + </span>]:<span class="lineCov">       1048 :                         if props.Required {</span>
+<span class="lineNum">     375 </span>                :<span class="lineCov">         16 :                                 reqCount--</span>
+<span class="lineNum">     376 </span>                :            :                         }
+<span class="lineNum">     377 </span>                :            :                 }
+<span class="lineNum">     378 </span>                :<span class="lineCov">       1052 :         }</span>
+<span class="lineNum">     379 </span>                :            : 
+<span class="lineNum">     380 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 26 times"> + </span>]:<span class="lineCov">         27 :         if reqCount &gt; 0 {</span>
+<span class="lineNum">     381 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                 return p.missingRequiredFieldError(sv)</span>
+<span class="lineNum">     382 </span>                :            :         }
+<span class="lineNum">     383 </span>                :<span class="lineCov">         41 :         return nil</span>
+<a name="384"><span class="lineNum">     384 </span>                :            : }</a>
+<span class="lineNum">     385 </span>                :            : 
+<span class="lineNum">     386 </span>                :<span class="lineCov">       2132 : func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {</span>
+<span class="lineNum">     387 </span>                :<span class="lineCov">       2132 :         tok := p.next()</span>
+<span class="lineNum">     388 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2131 times"> + </span>]:<span class="lineCov">       2132 :         if tok.err != nil {</span>
+<span class="lineNum">     389 </span>                :<span class="lineCov">          1 :                 return tok.err</span>
+<span class="lineNum">     390 </span>                :            :         }
+<span class="lineNum">     391 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2131 times"> + </span>]:<span class="lineCov">       2131 :         if tok.value == &quot;&quot; {</span>
+<span class="lineNum">     392 </span>                :<span class="lineNoCov">          0 :                 return p.errorf(&quot;unexpected EOF&quot;)</span>
+<span class="lineNum">     393 </span>                :            :         }
+<span class="lineNum">     394 </span>                :            : 
+<span class="lineNum">     395 </span>  [<span class="branchCov" title="Branch 2 was taken 1015 times"> + </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchCov" title="Branch 5 was taken 22 times"> + </span> :<span class="lineCov">       2131 :         switch fv := v; fv.Kind() {</span>
+<span class="lineNum">         </span><span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchCov" title="Branch 7 was taken 55 times"> + </span><span class="branchCov" title="Branch 8 was taken 1018 times"> + </span><span class="branchCov" title="Branch 9 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span> 
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchNoCov" title="Branch 12 was not taken"> - </span>]
+<span class="lineNum">     396 </span>                :            :         case reflect.Slice:
+<span class="lineNum">     397 </span>        [<span class="branchCov" title="Branch 0 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1015 :                 at := v.Type()</span>
+<span class="lineNum">     398 </span>[<span class="branchCov" title="Branch 0 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       1015 :                 if at.Elem().Kind() == reflect.Uint8 {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 1015 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 10 was taken 1 time"> + </span><span class="branchCov" title="Branch 11 was taken 1014 times"> + </span>]
+<span class="lineNum">     399 </span>                :            :                         // Special case for []byte
+<span class="lineNum">     400 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                         if tok.value[0] != '&quot;' {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 1 time"> + </span>]
+<span class="lineNum">     401 </span>                :            :                                 // Deliberately written out here, as the error after
+<span class="lineNum">     402 </span>                :            :                                 // this switch statement would write &quot;invalid []byte: ...&quot;,
+<span class="lineNum">     403 </span>                :            :                                 // which is not as user-friendly.
+<span class="lineNum">     404 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return p.errorf(&quot;invalid string: %v&quot;, tok.value)</span>
+<span class="lineNum">     405 </span>                :            :                         }
+<span class="lineNum">     406 </span>                :<span class="lineCov">          1 :                         bytes := []byte(tok.unquoted)</span>
+<span class="lineNum">     407 </span>[<span class="branchCov" title="Branch 1 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]:<span class="lineCov">          1 :                         fv.Set(reflect.ValueOf(bytes))</span>
+<span class="lineNum">     408 </span>                :<span class="lineCov">          1 :                         return nil</span>
+<span class="lineNum">     409 </span>                :            :                 }
+<span class="lineNum">     410 </span>                :            :                 // Repeated field. May already exist.
+<span class="lineNum">     411 </span>        [<span class="branchCov" title="Branch 0 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1014 :                 flen := fv.Len()</span>
+<span class="lineNum">     412 </span>[<span class="branchCov" title="Branch 0 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 22 times"> + </span><span class="branchCov" title="Branch 4 was taken 992 times"> + </span>]:<span class="lineCov">       1014 :                 if flen == fv.Cap() {</span>
+<span class="lineNum">     413 </span>        [<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         22 :                         nav := reflect.MakeSlice(at, flen, 2*flen+1)</span>
+<span class="lineNum">     414 </span>        [<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         22 :                         reflect.Copy(nav, fv)</span>
+<span class="lineNum">     415 </span>        [<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         22 :                         fv.Set(nav)</span>
+<span class="lineNum">     416 </span>                :            :                 }
+<span class="lineNum">     417 </span>        [<span class="branchCov" title="Branch 0 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1014 :                 fv.SetLen(flen + 1)</span>
+<span class="lineNum">     418 </span>                :            : 
+<span class="lineNum">     419 </span>                :            :                 // Read one.
+<span class="lineNum">     420 </span>        [<span class="branchCov" title="Branch 0 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1014 :                 p.back()</span>
+<span class="lineNum">     421 </span>[<span class="branchCov" title="Branch 0 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1014 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">       1015 :                 return p.readAny(fv.Index(flen), props)</span>
+<span class="lineNum">     422 </span>                :<span class="lineNoCov">          0 :         case reflect.Bool:</span>
+<span class="lineNum">     423 </span>                :            :                 // Either &quot;true&quot;, &quot;false&quot;, 1 or 0.
+<span class="lineNum">     424 </span>                :<span class="lineCov">          1 :                 switch tok.value {</span>
+<span class="lineNum">     425 </span>[<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 1 time"> + </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 1 time"> + </span>]:<span class="lineCov">          1 :                 case &quot;true&quot;, &quot;1&quot;:</span>
+<span class="lineNum">     426 </span>                :<span class="lineCov">          1 :                         fv.SetBool(true)</span>
+<span class="lineNum">     427 </span>                :<span class="lineCov">          1 :                         return nil</span>
+<span class="lineNum">     428 </span>[<span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 case &quot;false&quot;, &quot;0&quot;:</span>
+<span class="lineNum">     429 </span>                :<span class="lineNoCov">          0 :                         fv.SetBool(false)</span>
+<span class="lineNum">     430 </span>                :<span class="lineNoCov">          0 :                         return nil</span>
+<span class="lineNum">     431 </span>                :            :                 }
+<span class="lineNum">     432 </span>                :<span class="lineCov">          2 :         case reflect.Float32, reflect.Float64:</span>
+<span class="lineNum">     433 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          3 :                 if f, err := strconv.ParseFloat(tok.value, fv.Type().Bits()); err == nil {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 11 was taken 1 time"> + </span><span class="branchCov" title="Branch 12 was taken 2 times"> + </span>]
+<span class="lineNum">     434 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                         fv.SetFloat(f)</span>
+<span class="lineNum">     435 </span>                :<span class="lineCov">          1 :                         return nil</span>
+<span class="lineNum">     436 </span>                :            :                 }
+<span class="lineNum">     437 </span>                :            :         case reflect.Int32:
+<span class="lineNum">     438 </span>[<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 17 times"> + </span><span class="branchCov" title="Branch 4 was taken 5 times"> + </span>]:<span class="lineCov">         22 :                 if x, err := strconv.ParseInt(tok.value, 10, 32); err == nil {</span>
+<span class="lineNum">     439 </span>        [<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         17 :                         fv.SetInt(x)</span>
+<span class="lineNum">     440 </span>                :<span class="lineCov">         17 :                         return nil</span>
+<span class="lineNum">     441 </span>                :            :                 }
+<span class="lineNum">     442 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          5 :                 if len(props.Enum) == 0 {</span>
+<span class="lineNum">     443 </span>                :<span class="lineCov">          3 :                         break</span>
+<span class="lineNum">     444 </span>                :            :                 }
+<span class="lineNum">     445 </span>                :<span class="lineCov">          2 :                 m, ok := enumValueMaps[props.Enum]</span>
+<span class="lineNum">     446 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !ok {</span>
+<span class="lineNum">     447 </span>                :<span class="lineNoCov">          0 :                         break</span>
+<span class="lineNum">     448 </span>                :            :                 }
+<span class="lineNum">     449 </span>                :<span class="lineCov">          2 :                 x, ok := m[tok.value]</span>
+<span class="lineNum">     450 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !ok {</span>
+<span class="lineNum">     451 </span>                :<span class="lineNoCov">          0 :                         break</span>
+<span class="lineNum">     452 </span>                :            :                 }
+<span class="lineNum">     453 </span>                :<span class="lineCov">          2 :                 fv.SetInt(int64(x))</span>
+<span class="lineNum">     454 </span>                :<span class="lineCov">          2 :                 return nil</span>
+<span class="lineNum">     455 </span>                :<span class="lineNoCov">          0 :         case reflect.Int64:</span>
+<span class="lineNum">     456 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          1 :                 if x, err := strconv.ParseInt(tok.value, 10, 64); err == nil {</span>
+<span class="lineNum">     457 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          1 :                         fv.SetInt(x)</span>
+<span class="lineNum">     458 </span>                :<span class="lineCov">          1 :                         return nil</span>
+<span class="lineNum">     459 </span>                :            :                 }
+<span class="lineNum">     460 </span>                :            :         case reflect.Ptr:
+<span class="lineNum">     461 </span>                :            :                 // A basic field (indirected through pointer), or a repeated message/group
+<span class="lineNum">     462 </span>                :<span class="lineCov">         55 :                 p.back()</span>
+<span class="lineNum">     463 </span>        [<span class="branchCov" title="Branch 2 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         55 :                 fv.Set(reflect.New(fv.Type().Elem()))</span>
+<span class="lineNum">     464 </span>                :<span class="lineCov">         55 :                 return p.readAny(fv.Elem(), props)</span>
+<span class="lineNum">     465 </span>                :<span class="lineCov">          1 :         case reflect.String:</span>
+<span class="lineNum">     466 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1018 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 1017 times"> + </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">       1018 :                 if tok.value[0] == '&quot;' {</span>
+<span class="lineNum">     467 </span>                :<span class="lineCov">       1017 :                         fv.SetString(tok.unquoted)</span>
+<span class="lineNum">     468 </span>                :<span class="lineCov">       1017 :                         return nil</span>
+<span class="lineNum">     469 </span>                :            :                 }
+<span class="lineNum">     470 </span>                :            :         case reflect.Struct:
+<span class="lineNum">     471 </span>                :<span class="lineCov">         16 :                 var terminator string</span>
+<span class="lineNum">     472 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 :                 switch tok.value {</span>
+<span class="lineNum">     473 </span>        [<span class="branchCov" title="Branch 1 was taken 11 times"> + </span><span class="branchCov" title="Branch 2 was taken 5 times"> + </span>]:<span class="lineCov">         16 :                 case &quot;{&quot;:</span>
+<span class="lineNum">     474 </span>                :<span class="lineCov">          5 :                         terminator = &quot;}&quot;</span>
+<span class="lineNum">     475 </span>        [<span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 11 times"> + </span>]:<span class="lineCov">         11 :                 case &quot;&lt;&quot;:</span>
+<span class="lineNum">     476 </span>                :<span class="lineCov">         11 :                         terminator = &quot;&gt;&quot;</span>
+<span class="lineNum">     477 </span>                :            :                 default:
+<span class="lineNum">     478 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return p.errorf(&quot;expected '{' or '&lt;', found %q&quot;, tok.value)</span>
+<span class="lineNum">     479 </span>                :            :                 }
+<span class="lineNum">     480 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 :                 return p.readStruct(fv, terminator)</span>
+<span class="lineNum">     481 </span>                :<span class="lineNoCov">          0 :         case reflect.Uint32:</span>
+<span class="lineNum">     482 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 if x, err := strconv.ParseUint(tok.value, 10, 32); err == nil {</span>
+<span class="lineNum">     483 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         fv.SetUint(uint64(x))</span>
+<span class="lineNum">     484 </span>                :<span class="lineNoCov">          0 :                         return nil</span>
+<span class="lineNum">     485 </span>                :            :                 }
+<span class="lineNum">     486 </span>                :<span class="lineNoCov">          0 :         case reflect.Uint64:</span>
+<span class="lineNum">     487 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 if x, err := strconv.ParseUint(tok.value, 10, 64); err == nil {</span>
+<span class="lineNum">     488 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         fv.SetUint(x)</span>
+<span class="lineNum">     489 </span>                :<span class="lineNoCov">          0 :                         return nil</span>
+<span class="lineNum">     490 </span>                :            :                 }
+<span class="lineNum">     491 </span>                :            :         }
+<span class="lineNum">     492 </span>        [<span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       2132 :         return p.errorf(&quot;invalid %v: %v&quot;, v.Type(), tok.value)</span>
+<span class="lineNum">     493 </span>                :            : }
+<span class="lineNum">     494 </span>                :            : 
+<span class="lineNum">     495 </span>                :            : var notPtrStruct error = &amp;ParseError{&quot;destination is not a pointer to a struct&quot;, 0, 0}
+<a name="496"><span class="lineNum">     496 </span>                :            : </a>
+<span class="lineNum">     497 </span>                :            : // UnmarshalText reads a protobuffer in Text format.
+<span class="lineNum">     498 </span>                :<span class="lineCov">         25 : func UnmarshalText(s string, pb interface{}) error {</span>
+<span class="lineNum">     499 </span>        [<span class="branchCov" title="Branch 1 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         25 :         v := reflect.ValueOf(pb)</span>
+<span class="lineNum">     500 </span>[<span class="branchCov" title="Branch 0 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         25 :         if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 25 times"> + </span>]
+<span class="lineNum">     501 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return notPtrStruct</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     502 </span>                :            :         }
+<span class="lineNum">     503 </span>[<span class="branchCov" title="Branch 0 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         25 :         if pe := newTextParser(s).readStruct(v.Elem(), &quot;&quot;); pe != nil {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 25 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 9 was taken 11 times"> + </span><span class="branchCov" title="Branch 10 was taken 14 times"> + </span>]
+<span class="lineNum">     504 </span>                :<span class="lineCov">         11 :                 return pe</span>
+<span class="lineNum">     505 </span>                :            :         }
+<span class="lineNum">     506 </span>                :<span class="lineCov">         25 :         return nil</span>
+<span class="lineNum">     507 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

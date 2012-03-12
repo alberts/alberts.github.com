@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/ssh/cipher.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/ssh</a> - cipher.go<span style="font-size: 80%;"> (source / <a href="cipher.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntryMed">84.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntryLo">54.5 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package ssh
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;crypto/aes&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;crypto/cipher&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;crypto/rc4&quot;
+<span class="lineNum">      11 </span>                :            : )
+<span class="lineNum">      12 </span>                :            : 
+<span class="lineNum">      13 </span>                :            : // streamDump is used to dump the initial keystream for stream ciphers. It is a
+<span class="lineNum">      14 </span>                :            : // a write-only buffer, and not intended for reading so do not require a mutex.
+<span class="lineNum">      15 </span>                :            : var streamDump [512]byte
+<span class="lineNum">      16 </span>                :            : 
+<span class="lineNum">      17 </span>                :            : // noneCipher implements cipher.Stream and provides no encryption. It is used
+<span class="lineNum">      18 </span>                :            : // by the transport before the first key-exchange.
+<a name="19"><span class="lineNum">      19 </span>                :            : type noneCipher struct{}</a>
+<span class="lineNum">      20 </span>                :            : 
+<span class="lineNum">      21 </span>                :<span class="lineCov">        450 : func (c noneCipher) XORKeyStream(dst, src []byte) {</span>
+<span class="lineNum">      22 </span>                :<span class="lineCov">        450 :         copy(dst, src)</span>
+<a name="23"><span class="lineNum">      23 </span>                :<span class="lineCov">        450 : }</span></a>
+<span class="lineNum">      24 </span>                :            : 
+<span class="lineNum">      25 </span>                :<span class="lineCov">         66 : func newAESCTR(key, iv []byte) (cipher.Stream, error) {</span>
+<span class="lineNum">      26 </span>        [<span class="branchCov" title="Branch 0 was taken 66 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         66 :         c, err := aes.NewCipher(key)</span>
+<span class="lineNum">      27 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 66 times"> + </span>]:<span class="lineCov">         66 :         if err != nil {</span>
+<span class="lineNum">      28 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">      29 </span>                :            :         }
+<span class="lineNum">      30 </span>        [<span class="branchCov" title="Branch 0 was taken 66 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         66 :         return cipher.NewCTR(c, iv), nil</span>
+<a name="31"><span class="lineNum">      31 </span>                :            : }</a>
+<span class="lineNum">      32 </span>                :            : 
+<span class="lineNum">      33 </span>                :<span class="lineCov">          4 : func newRC4(key, iv []byte) (cipher.Stream, error) {</span>
+<span class="lineNum">      34 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          4 :         return rc4.NewCipher(key)</span>
+<span class="lineNum">      35 </span>                :            : }
+<span class="lineNum">      36 </span>                :            : 
+<span class="lineNum">      37 </span>                :            : type cipherMode struct {
+<span class="lineNum">      38 </span>                :            :         keySize  int
+<span class="lineNum">      39 </span>                :            :         ivSize   int
+<span class="lineNum">      40 </span>                :            :         skip     int
+<span class="lineNum">      41 </span>                :            :         createFn func(key, iv []byte) (cipher.Stream, error)
+<a name="42"><span class="lineNum">      42 </span>                :            : }</a>
+<span class="lineNum">      43 </span>                :            : 
+<span class="lineNum">      44 </span>                :<span class="lineCov">         70 : func (c *cipherMode) createCipher(key, iv []byte) (cipher.Stream, error) {</span>
+<span class="lineNum">      45 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 70 times"> + </span>]:<span class="lineCov">         70 :         if len(key) &lt; c.keySize {</span>
+<span class="lineNum">      46 </span>                :<span class="lineNoCov">          0 :                 panic(&quot;ssh: key length too small for cipher&quot;)</span>
+<span class="lineNum">      47 </span>                :            :         }
+<span class="lineNum">      48 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 70 times"> + </span>]:<span class="lineCov">         70 :         if len(iv) &lt; c.ivSize {</span>
+<span class="lineNum">      49 </span>                :<span class="lineNoCov">          0 :                 panic(&quot;ssh: iv too small for cipher&quot;)</span>
+<span class="lineNum">      50 </span>                :            :         }
+<span class="lineNum">      51 </span>                :            : 
+<span class="lineNum">      52 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         70 :         stream, err := c.createFn(key[:c.keySize], iv[:c.ivSize])</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 70 times"> + </span>][<span class="branchCov" title="Branch 7 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 70 times"> + </span>][<span class="branchCov" title="Branch 12 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>]
+<span class="lineNum">      53 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 70 times"> + </span>]:<span class="lineCov">         70 :         if err != nil {</span>
+<span class="lineNum">      54 </span>                :<span class="lineNoCov">          0 :                 return nil, err</span>
+<span class="lineNum">      55 </span>                :            :         }
+<span class="lineNum">      56 </span>                :            : 
+<span class="lineNum">      57 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 12 times"> + </span><span class="branchCov" title="Branch 3 was taken 70 times"> + </span>]:<span class="lineCov">         82 :         for remainingToDump := c.skip; remainingToDump &gt; 0; {</span>
+<span class="lineNum">      58 </span>                :<span class="lineCov">         12 :                 dumpThisTime := remainingToDump</span>
+<span class="lineNum">      59 </span>        [<span class="branchCov" title="Branch 0 was taken 8 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">         12 :                 if dumpThisTime &gt; len(streamDump) {</span>
+<span class="lineNum">      60 </span>                :<span class="lineCov">          8 :                         dumpThisTime = len(streamDump)</span>
+<span class="lineNum">      61 </span>                :            :                 }
+<span class="lineNum">      62 </span>[<span class="branchCov" title="Branch 0 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 12 times"> + </span>]:<span class="lineCov">         12 :                 stream.XORKeyStream(streamDump[:dumpThisTime], streamDump[:dumpThisTime])</span>
+<span class="lineNum">         </span>[<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 12 times"> + </span>][<span class="branchCov" title="Branch 8 was taken 12 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">      63 </span>                :<span class="lineCov">         12 :                 remainingToDump -= dumpThisTime</span>
+<span class="lineNum">      64 </span>                :            :         }
+<span class="lineNum">      65 </span>                :            : 
+<span class="lineNum">      66 </span>                :<span class="lineCov">         70 :         return stream, nil</span>
+<span class="lineNum">      67 </span>                :            : }
+<span class="lineNum">      68 </span>                :            : 
+<span class="lineNum">      69 </span>                :            : // Specifies a default set of ciphers and a preference order. This is based on
+<span class="lineNum">      70 </span>                :            : // OpenSSH's default client preference order, minus algorithms that are not
+<span class="lineNum">      71 </span>                :            : // implemented.
+<span class="lineNum">      72 </span>                :            : var DefaultCipherOrder = []string{
+<span class="lineNum">      73 </span>                :            :         &quot;aes128-ctr&quot;, &quot;aes192-ctr&quot;, &quot;aes256-ctr&quot;,
+<span class="lineNum">      74 </span>                :            :         &quot;arcfour256&quot;, &quot;arcfour128&quot;,
+<span class="lineNum">      75 </span>                :            : }
+<span class="lineNum">      76 </span>                :            : 
+<span class="lineNum">      77 </span>                :            : var cipherModes = map[string]*cipherMode{
+<span class="lineNum">      78 </span>                :            :         // Ciphers from RFC4344, which introduced many CTR-based ciphers. Algorithms
+<span class="lineNum">      79 </span>                :            :         // are defined in the order specified in the RFC.
+<span class="lineNum">      80 </span>                :            :         &quot;aes128-ctr&quot;: {16, aes.BlockSize, 0, newAESCTR},
+<span class="lineNum">      81 </span>                :            :         &quot;aes192-ctr&quot;: {24, aes.BlockSize, 0, newAESCTR},
+<span class="lineNum">      82 </span>                :            :         &quot;aes256-ctr&quot;: {32, aes.BlockSize, 0, newAESCTR},
+<span class="lineNum">      83 </span>                :            : 
+<span class="lineNum">      84 </span>                :            :         // Ciphers from RFC4345, which introduces security-improved arcfour ciphers.
+<span class="lineNum">      85 </span>                :            :         // They are defined in the order specified in the RFC.
+<span class="lineNum">      86 </span>                :            :         &quot;arcfour128&quot;: {16, 0, 1536, newRC4},
+<span class="lineNum">      87 </span>                :            :         &quot;arcfour256&quot;: {32, 0, 1536, newRC4},
+<span class="lineNum">      88 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

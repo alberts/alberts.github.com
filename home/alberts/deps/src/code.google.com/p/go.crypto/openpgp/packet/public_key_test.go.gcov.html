@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/go.crypto/openpgp/packet/public_key_test.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/go.crypto/openpgp/packet</a> - public_key_test.go<span style="font-size: 80%;"> (source / <a href="public_key_test.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">41</td>
+            <td class="headerCovTableEntryLo">73.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">40</td>
+            <td class="headerCovTableEntry">138</td>
+            <td class="headerCovTableEntryLo">29.0 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Copyright 2011 The Go Authors. All rights reserved.</a>
+<span class="lineNum">       2 </span>                :            : // Use of this source code is governed by a BSD-style
+<span class="lineNum">       3 </span>                :            : // license that can be found in the LICENSE file.
+<span class="lineNum">       4 </span>                :            : 
+<span class="lineNum">       5 </span>                :            : package packet
+<span class="lineNum">       6 </span>                :            : 
+<span class="lineNum">       7 </span>                :            : import (
+<span class="lineNum">       8 </span>                :            :         &quot;bytes&quot;
+<span class="lineNum">       9 </span>                :            :         &quot;encoding/hex&quot;
+<span class="lineNum">      10 </span>                :            :         &quot;testing&quot;
+<span class="lineNum">      11 </span>                :            :         &quot;time&quot;
+<span class="lineNum">      12 </span>                :            : )
+<span class="lineNum">      13 </span>                :            : 
+<span class="lineNum">      14 </span>                :            : var pubKeyTests = []struct {
+<span class="lineNum">      15 </span>                :            :         hexData        string
+<span class="lineNum">      16 </span>                :            :         hexFingerprint string
+<span class="lineNum">      17 </span>                :            :         creationTime   time.Time
+<span class="lineNum">      18 </span>                :            :         pubKeyAlgo     PublicKeyAlgorithm
+<span class="lineNum">      19 </span>                :            :         keyId          uint64
+<span class="lineNum">      20 </span>                :            :         keyIdString    string
+<span class="lineNum">      21 </span>                :            :         keyIdShort     string
+<span class="lineNum">      22 </span>                :            : }{
+<span class="lineNum">      23 </span>                :            :         {rsaPkDataHex, rsaFingerprintHex, time.Unix(0x4d3c5c10, 0), PubKeyAlgoRSA, 0xa34d7e18c20c31bb, &quot;A34D7E18C20C31BB&quot;, &quot;C20C31BB&quot;},
+<span class="lineNum">      24 </span>                :            :         {dsaPkDataHex, dsaFingerprintHex, time.Unix(0x4d432f89, 0), PubKeyAlgoDSA, 0x8e8fbe54062f19ed, &quot;8E8FBE54062F19ED&quot;, &quot;062F19ED&quot;},
+<a name="25"><span class="lineNum">      25 </span>                :            : }</a>
+<span class="lineNum">      26 </span>                :            : 
+<span class="lineNum">      27 </span>                :<span class="lineCov">          1 : func TestPublicKeyRead(t *testing.T) {</span>
+<span class="lineNum">      28 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">          3 :         for i, test := range pubKeyTests {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 2 times"> + </span>]
+<span class="lineNum">      29 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          2 :                 packet, err := Read(readerFromHex(test.hexData))</span>
+<span class="lineNum">      30 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err != nil {</span>
+<span class="lineNum">      31 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: Read error: %s&quot;, i, err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      32 </span>                :            :                         continue
+<span class="lineNum">      33 </span>                :            :                 }
+<span class="lineNum">      34 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 pk, ok := packet.(*PublicKey)</span>
+<span class="lineNum">      35 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !ok {</span>
+<span class="lineNum">      36 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: failed to parse, got: %#v&quot;, i, packet)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      37 </span>                :            :                         continue
+<span class="lineNum">      38 </span>                :            :                 }
+<span class="lineNum">      39 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if pk.PubKeyAlgo != test.pubKeyAlgo {</span>
+<span class="lineNum">      40 </span>[<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>][<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: bad public key algorithm got:%x want:%x&quot;, i, pk.PubKeyAlgo, test.pubKeyAlgo)</span>
+<span class="lineNum">      41 </span>                :            :                 }
+<span class="lineNum">      42 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !pk.CreationTime.Equal(test.creationTime) {</span>
+<span class="lineNum">      43 </span>[<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>][<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: bad creation time got:%v want:%v&quot;, i, pk.CreationTime, test.creationTime)</span>
+<span class="lineNum">      44 </span>                :            :                 }
+<span class="lineNum">      45 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 expectedFingerprint, _ := hex.DecodeString(test.hexFingerprint)</span>
+<span class="lineNum">      46 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !bytes.Equal(expectedFingerprint, pk.Fingerprint[:]) {</span>
+<span class="lineNum">      47 </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: bad fingerprint got:%x want:%x&quot;, i, pk.Fingerprint[:], expectedFingerprint)</span>
+<span class="lineNum">      48 </span>                :            :                 }
+<span class="lineNum">      49 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if pk.KeyId != test.keyId {</span>
+<span class="lineNum">      50 </span>[<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>][<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: bad keyid got:%x want:%x&quot;, i, pk.KeyId, test.keyId)</span>
+<span class="lineNum">      51 </span>                :            :                 }
+<span class="lineNum">      52 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if g, e := pk.KeyIdString(), test.keyIdString; g != e {</span>
+<span class="lineNum">      53 </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: bad KeyIdString got:%q want:%q&quot;, i, g, e)</span>
+<span class="lineNum">      54 </span>                :            :                 }
+<span class="lineNum">      55 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if g, e := pk.KeyIdShortString(), test.keyIdShort; g != e {</span>
+<span class="lineNum">      56 </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineCov">          2 :                         t.Errorf(&quot;#%d: bad KeyIdShortString got:%q want:%q&quot;, i, g, e)</span>
+<span class="lineNum">      57 </span>                :            :                 }
+<span class="lineNum">      58 </span>                :            :         }
+<a name="59"><span class="lineNum">      59 </span>                :<span class="lineCov">          1 : }</span></a>
+<span class="lineNum">      60 </span>                :            : 
+<span class="lineNum">      61 </span>                :<span class="lineCov">          1 : func TestPublicKeySerialize(t *testing.T) {</span>
+<span class="lineNum">      62 </span>[<span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">          3 :         for i, test := range pubKeyTests {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 2 times"> + </span>]
+<span class="lineNum">      63 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          2 :                 packet, err := Read(readerFromHex(test.hexData))</span>
+<span class="lineNum">      64 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err != nil {</span>
+<span class="lineNum">      65 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: Read error: %s&quot;, i, err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      66 </span>                :            :                         continue
+<span class="lineNum">      67 </span>                :            :                 }
+<span class="lineNum">      68 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 pk, ok := packet.(*PublicKey)</span>
+<span class="lineNum">      69 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !ok {</span>
+<span class="lineNum">      70 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: failed to parse, got: %#v&quot;, i, packet)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      71 </span>                :            :                         continue
+<span class="lineNum">      72 </span>                :            :                 }
+<span class="lineNum">      73 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 serializeBuf := bytes.NewBuffer(nil)</span>
+<span class="lineNum">      74 </span>[<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 err = pk.Serialize(serializeBuf)</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">      75 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err != nil {</span>
+<span class="lineNum">      76 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: failed to serialize: %s&quot;, i, err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      77 </span>                :            :                         continue
+<span class="lineNum">      78 </span>                :            :                 }
+<span class="lineNum">      79 </span>                :            : 
+<span class="lineNum">      80 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 packet, err = Read(serializeBuf)</span>
+<span class="lineNum">      81 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if err != nil {</span>
+<span class="lineNum">      82 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         t.Errorf(&quot;#%d: Read error (from serialized data): %s&quot;, i, err)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      83 </span>                :            :                         continue
+<span class="lineNum">      84 </span>                :            :                 }
+<span class="lineNum">      85 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :                 pk, ok = packet.(*PublicKey)</span>
+<span class="lineNum">      86 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          2 :                 if !ok {</span>
+<span class="lineNum">      87 </span>[<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>][<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]:<span class="lineCov">          2 :                         t.Errorf(&quot;#%d: failed to parse serialized data, got: %#v&quot;, i, packet)</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">      88 </span>                :            :                         continue
+<span class="lineNum">      89 </span>                :            :                 }
+<span class="lineNum">      90 </span>                :            :         }
+<span class="lineNum">      91 </span>                :<span class="lineCov">          1 : }</span>
+<span class="lineNum">      92 </span>                :            : 
+<span class="lineNum">      93 </span>                :            : const rsaFingerprintHex = &quot;5fb74b1d03b1e3cb31bc2f8aa34d7e18c20c31bb&quot;
+<span class="lineNum">      94 </span>                :            : 
+<span class="lineNum">      95 </span>                :            : const rsaPkDataHex = &quot;988d044d3c5c10010400b1d13382944bd5aba23a4312968b5095d14f947f600eb478e14a6fcb16b0e0cac764884909c020bc495cfcc39a935387c661507bdb236a0612fb582cac3af9b29cc2c8c70090616c41b662f4da4c1201e195472eb7f4ae1ccbcbf9940fe21d985e379a5563dde5b9a23d35f1cfaa5790da3b79db26f23695107bfaca8e7b5bcd0011010001&quot;
+<span class="lineNum">      96 </span>                :            : 
+<span class="lineNum">      97 </span>                :            : const dsaFingerprintHex = &quot;eece4c094db002103714c63c8e8fbe54062f19ed&quot;
+<span class="lineNum">      98 </span>                :            : 
+<span class="lineNum">      99 </span>                :            : const dsaPkDataHex = &quot;9901a2044d432f89110400cd581334f0d7a1e1bdc8b9d6d8c0baf68793632735d2bb0903224cbaa1dfbf35a60ee7a13b92643421e1eb41aa8d79bea19a115a677f6b8ba3c7818ce53a6c2a24a1608bd8b8d6e55c5090cbde09dd26e356267465ae25e69ec8bdd57c7bbb2623e4d73336f73a0a9098f7f16da2e25252130fd694c0e8070c55a812a423ae7f00a0ebf50e70c2f19c3520a551bd4b08d30f23530d3d03ff7d0bf4a53a64a09dc5e6e6e35854b7d70c882b0c60293401958b1bd9e40abec3ea05ba87cf64899299d4bd6aa7f459c201d3fbbd6c82004bdc5e8a9eb8082d12054cc90fa9d4ec251a843236a588bf49552441817436c4f43326966fe85447d4e6d0acf8fa1ef0f014730770603ad7634c3088dc52501c237328417c31c89ed70400b2f1a98b0bf42f11fefc430704bebbaa41d9f355600c3facee1e490f64208e0e094ea55e3a598a219a58500bf78ac677b670a14f4e47e9cf8eab4f368cc1ddcaa18cc59309d4cc62dd4f680e73e6cc3e1ce87a84d0925efbcb26c575c093fc42eecf45135fabf6403a25c2016e1774c0484e440a18319072c617cc97ac0a3bb0&quot;
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>LCOV - go.info - /home/alberts/deps/src/code.google.com/p/goprotobuf/proto/encode.go</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../../../../../../index.html">top level</a> - <a href="index.html">home/alberts/deps/src/code.google.com/p/goprotobuf/proto</a> - encode.go<span style="font-size: 80%;"> (source / <a href="encode.go.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">go.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">273</td>
+            <td class="headerCovTableEntry">306</td>
+            <td class="headerCovTableEntryMed">89.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2012-03-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">355</td>
+            <td class="headerCovTableEntry">766</td>
+            <td class="headerCovTableEntryLo">46.3 %</td>
+          </tr>
+          <tr><td><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Go support for Protocol Buffers - Google's data interchange format</a>
+<span class="lineNum">       2 </span>                :            : //
+<span class="lineNum">       3 </span>                :            : // Copyright 2010 Google Inc.  All rights reserved.
+<span class="lineNum">       4 </span>                :            : // http://code.google.com/p/goprotobuf/
+<span class="lineNum">       5 </span>                :            : //
+<span class="lineNum">       6 </span>                :            : // Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>                :            : // modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>                :            : // met:
+<span class="lineNum">       9 </span>                :            : //
+<span class="lineNum">      10 </span>                :            : //     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>                :            : // notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>                :            : //     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      13 </span>                :            : // copyright notice, this list of conditions and the following disclaimer
+<span class="lineNum">      14 </span>                :            : // in the documentation and/or other materials provided with the
+<span class="lineNum">      15 </span>                :            : // distribution.
+<span class="lineNum">      16 </span>                :            : //     * Neither the name of Google Inc. nor the names of its
+<span class="lineNum">      17 </span>                :            : // contributors may be used to endorse or promote products derived from
+<span class="lineNum">      18 </span>                :            : // this software without specific prior written permission.
+<span class="lineNum">      19 </span>                :            : //
+<span class="lineNum">      20 </span>                :            : // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      21 </span>                :            : // &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      22 </span>                :            : // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      23 </span>                :            : // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      24 </span>                :            : // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      25 </span>                :            : // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      26 </span>                :            : // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      27 </span>                :            : // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      28 </span>                :            : // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      29 </span>                :            : // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      30 </span>                :            : // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      31 </span>                :            : 
+<span class="lineNum">      32 </span>                :            : package proto
+<span class="lineNum">      33 </span>                :            : 
+<span class="lineNum">      34 </span>                :            : /*
+<span class="lineNum">      35 </span>                :            :  * Routines for encoding data into the wire format for protocol buffers.
+<span class="lineNum">      36 </span>                :            :  */
+<span class="lineNum">      37 </span>                :            : 
+<span class="lineNum">      38 </span>                :            : import (
+<span class="lineNum">      39 </span>                :            :         &quot;errors&quot;
+<span class="lineNum">      40 </span>                :            :         &quot;reflect&quot;
+<span class="lineNum">      41 </span>                :            :         &quot;unsafe&quot;
+<span class="lineNum">      42 </span>                :            : )
+<span class="lineNum">      43 </span>                :            : 
+<span class="lineNum">      44 </span>                :            : // ErrRequiredNotSet is the error returned if Marshal is called with
+<span class="lineNum">      45 </span>                :            : // a protocol buffer struct whose required fields have not
+<span class="lineNum">      46 </span>                :            : // all been initialized. It is also the error returned if Unmarshal is
+<span class="lineNum">      47 </span>                :            : // called with an encoded protocol buffer that does not include all the
+<span class="lineNum">      48 </span>                :            : // required fields.
+<span class="lineNum">      49 </span>                :            : type ErrRequiredNotSet struct {
+<span class="lineNum">      50 </span>                :            :         t reflect.Type
+<a name="51"><span class="lineNum">      51 </span>                :            : }</a>
+<span class="lineNum">      52 </span>                :            : 
+<span class="lineNum">      53 </span>                :<span class="lineCov">          3 : func (e *ErrRequiredNotSet) Error() string {</span>
+<span class="lineNum">      54 </span>[<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          3 :         return &quot;proto: required fields not set in &quot; + e.t.String()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">      55 </span>                :            : }
+<span class="lineNum">      56 </span>                :            : 
+<span class="lineNum">      57 </span>                :            : var (
+<span class="lineNum">      58 </span>                :            :         // ErrRepeatedHasNil is the error returned if Marshal is called with
+<span class="lineNum">      59 </span>                :            :         // a struct with a repeated field containing a nil element.
+<span class="lineNum">      60 </span>                :            :         ErrRepeatedHasNil = errors.New(&quot;proto: repeated field has nil&quot;)
+<span class="lineNum">      61 </span>                :            : 
+<span class="lineNum">      62 </span>                :            :         // ErrNil is the error returned if Marshal is called with nil.
+<span class="lineNum">      63 </span>                :            :         ErrNil = errors.New(&quot;proto: Marshal called with nil&quot;)
+<span class="lineNum">      64 </span>                :            : 
+<span class="lineNum">      65 </span>                :            :         // ErrNotPtr is the error returned if Marshal is called with a non-pointer.
+<span class="lineNum">      66 </span>                :            :         ErrNotPtr = errors.New(&quot;proto: Marshal called with a non-pointer&quot;)
+<span class="lineNum">      67 </span>                :            : )
+<span class="lineNum">      68 </span>                :            : 
+<span class="lineNum">      69 </span>                :            : // The fundamental encoders that put bytes on the wire.
+<span class="lineNum">      70 </span>                :            : // Those that take integer types all accept uint64 and are
+<span class="lineNum">      71 </span>                :            : // therefore of type valueEncoder.
+<span class="lineNum">      72 </span>                :            : 
+<span class="lineNum">      73 </span>                :            : const maxVarintBytes = 10 // maximum length of a varint
+<span class="lineNum">      74 </span>                :            : 
+<span class="lineNum">      75 </span>                :            : // EncodeVarint returns the varint encoding of x.
+<span class="lineNum">      76 </span>                :            : // This is the format for the
+<span class="lineNum">      77 </span>                :            : // int32, int64, uint32, uint64, bool, and enum
+<span class="lineNum">      78 </span>                :            : // protocol buffer types.
+<a name="79"><span class="lineNum">      79 </span>                :            : // Not used by the package itself, but helpful to clients</a>
+<span class="lineNum">      80 </span>                :            : // wishing to use the same encoding.
+<span class="lineNum">      81 </span>                :<span class="lineCov">          4 : func EncodeVarint(x uint64) []byte {</span>
+<span class="lineNum">      82 </span>                :<span class="lineCov">          4 :         var buf [maxVarintBytes]byte</span>
+<span class="lineNum">      83 </span>                :<span class="lineCov">          4 :         var n int</span>
+<span class="lineNum">      84 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          8 :         for n = 0; x &gt; 127; n++ {</span>
+<span class="lineNum">      85 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          4 :                 buf[n] = 0x80 | uint8(x&amp;0x7F)</span>
+<span class="lineNum">      86 </span>                :<span class="lineCov">          4 :                 x &gt;&gt;= 7</span>
+<span class="lineNum">      87 </span>                :            :         }
+<span class="lineNum">      88 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          4 :         buf[n] = uint8(x)</span>
+<span class="lineNum">      89 </span>                :<span class="lineCov">          4 :         n++</span>
+<span class="lineNum">      90 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          4 :         return buf[0:n]</span>
+<span class="lineNum">      91 </span>                :            : }
+<span class="lineNum">      92 </span>                :            : 
+<span class="lineNum">      93 </span>                :            : // EncodeVarint writes a varint-encoded integer to the Buffer.
+<span class="lineNum">      94 </span>                :            : // This is the format for the
+<a name="95"><span class="lineNum">      95 </span>                :            : // int32, int64, uint32, uint64, bool, and enum</a>
+<span class="lineNum">      96 </span>                :            : // protocol buffer types.
+<span class="lineNum">      97 </span>                :<span class="lineCov">      28427 : func (p *Buffer) EncodeVarint(x uint64) error {</span>
+<span class="lineNum">      98 </span>        [<span class="branchCov" title="Branch 0 was taken 53920 times"> + </span><span class="branchCov" title="Branch 1 was taken 28427 times"> + </span>]:<span class="lineCov">      82347 :         for x &gt;= 1&lt;&lt;7 {</span>
+<span class="lineNum">      99 </span>                :<span class="lineCov">      53920 :                 p.buf = append(p.buf, uint8(x&amp;0x7f|0x80))</span>
+<span class="lineNum">     100 </span>                :<span class="lineCov">      53920 :                 x &gt;&gt;= 7</span>
+<span class="lineNum">     101 </span>                :            :         }
+<span class="lineNum">     102 </span>                :<span class="lineCov">      28427 :         p.buf = append(p.buf, uint8(x))</span>
+<span class="lineNum">     103 </span>                :<span class="lineCov">      28427 :         return nil</span>
+<span class="lineNum">     104 </span>                :            : }
+<span class="lineNum">     105 </span>                :            : 
+<span class="lineNum">     106 </span>                :            : // EncodeFixed64 writes a 64-bit integer to the Buffer.
+<a name="107"><span class="lineNum">     107 </span>                :            : // This is the format for the</a>
+<span class="lineNum">     108 </span>                :            : // fixed64, sfixed64, and double protocol buffer types.
+<span class="lineNum">     109 </span>                :<span class="lineCov">       9183 : func (p *Buffer) EncodeFixed64(x uint64) error {</span>
+<span class="lineNum">     110 </span>                :<span class="lineCov">       9183 :         p.buf = append(p.buf,</span>
+<span class="lineNum">     111 </span>                :            :                 uint8(x),
+<span class="lineNum">     112 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;8),</span>
+<span class="lineNum">     113 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;16),</span>
+<span class="lineNum">     114 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;24),</span>
+<span class="lineNum">     115 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;32),</span>
+<span class="lineNum">     116 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;40),</span>
+<span class="lineNum">     117 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;48),</span>
+<span class="lineNum">     118 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;56))</span>
+<span class="lineNum">     119 </span>                :<span class="lineCov">       9183 :         return nil</span>
+<span class="lineNum">     120 </span>                :            : }
+<span class="lineNum">     121 </span>                :            : 
+<span class="lineNum">     122 </span>                :            : // EncodeFixed32 writes a 32-bit integer to the Buffer.
+<a name="123"><span class="lineNum">     123 </span>                :            : // This is the format for the</a>
+<span class="lineNum">     124 </span>                :            : // fixed32, sfixed32, and float protocol buffer types.
+<span class="lineNum">     125 </span>                :<span class="lineCov">       9183 : func (p *Buffer) EncodeFixed32(x uint64) error {</span>
+<span class="lineNum">     126 </span>                :<span class="lineCov">       9183 :         p.buf = append(p.buf,</span>
+<span class="lineNum">     127 </span>                :            :                 uint8(x),
+<span class="lineNum">     128 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;8),</span>
+<span class="lineNum">     129 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;16),</span>
+<span class="lineNum">     130 </span>                :<span class="lineCov">       9183 :                 uint8(x&gt;&gt;24))</span>
+<span class="lineNum">     131 </span>                :<span class="lineCov">       9183 :         return nil</span>
+<span class="lineNum">     132 </span>                :            : }
+<span class="lineNum">     133 </span>                :            : 
+<span class="lineNum">     134 </span>                :            : // EncodeZigzag64 writes a zigzag-encoded 64-bit integer
+<a name="135"><span class="lineNum">     135 </span>                :            : // to the Buffer.</a>
+<span class="lineNum">     136 </span>                :            : // This is the format used for the sint64 protocol buffer type.
+<span class="lineNum">     137 </span>                :<span class="lineCov">       9096 : func (p *Buffer) EncodeZigzag64(x uint64) error {</span>
+<span class="lineNum">     138 </span>                :            :         // use signed number to get arithmetic right shift.
+<span class="lineNum">     139 </span>[<span class="branchCov" title="Branch 0 was taken 9096 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 9096 times"> + </span>]:<span class="lineCov">       9096 :         return p.EncodeVarint(uint64((x &lt;&lt; 1) ^ uint64((int64(x) &gt;&gt; 63))))</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 9096 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     140 </span>                :            : }
+<span class="lineNum">     141 </span>                :            : 
+<span class="lineNum">     142 </span>                :            : // EncodeZigzag32 writes a zigzag-encoded 32-bit integer
+<a name="143"><span class="lineNum">     143 </span>                :            : // to the Buffer.</a>
+<span class="lineNum">     144 </span>                :            : // This is the format used for the sint32 protocol buffer type.
+<span class="lineNum">     145 </span>                :<span class="lineCov">       9096 : func (p *Buffer) EncodeZigzag32(x uint64) error {</span>
+<span class="lineNum">     146 </span>                :            :         // use signed number to get arithmetic right shift.
+<span class="lineNum">     147 </span>[<span class="branchCov" title="Branch 0 was taken 9096 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 9096 times"> + </span>]:<span class="lineCov">       9096 :         return p.EncodeVarint(uint64((uint32(x) &lt;&lt; 1) ^ uint32((int32(x) &gt;&gt; 31))))</span>
+<span class="lineNum">         </span>[<span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span>][<span class="branchCov" title="Branch 7 was taken 9096 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     148 </span>                :            : }
+<span class="lineNum">     149 </span>                :            : 
+<span class="lineNum">     150 </span>                :            : // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
+<a name="151"><span class="lineNum">     151 </span>                :            : // This is the format used for the bytes protocol buffer</a>
+<span class="lineNum">     152 </span>                :            : // type and for embedded messages.
+<span class="lineNum">     153 </span>                :<span class="lineCov">        159 : func (p *Buffer) EncodeRawBytes(b []byte) error {</span>
+<span class="lineNum">     154 </span>        [<span class="branchCov" title="Branch 0 was taken 159 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        159 :         p.EncodeVarint(uint64(len(b)))</span>
+<span class="lineNum">     155 </span>                :<span class="lineCov">        159 :         p.buf = append(p.buf, b...)</span>
+<span class="lineNum">     156 </span>                :<span class="lineCov">        159 :         return nil</span>
+<span class="lineNum">     157 </span>                :            : }
+<span class="lineNum">     158 </span>                :            : 
+<a name="159"><span class="lineNum">     159 </span>                :            : // EncodeStringBytes writes an encoded string to the Buffer.</a>
+<span class="lineNum">     160 </span>                :            : // This is the format used for the proto2 string type.
+<span class="lineNum">     161 </span>                :<span class="lineCov">        310 : func (p *Buffer) EncodeStringBytes(s string) error {</span>
+<span class="lineNum">     162 </span>        [<span class="branchCov" title="Branch 0 was taken 310 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        310 :         p.EncodeVarint(uint64(len(s)))</span>
+<span class="lineNum">     163 </span>                :<span class="lineCov">        310 :         p.buf = append(p.buf, s...)</span>
+<span class="lineNum">     164 </span>                :<span class="lineCov">        310 :         return nil</span>
+<span class="lineNum">     165 </span>                :            : }
+<span class="lineNum">     166 </span>                :            : 
+<span class="lineNum">     167 </span>                :            : // Marshaler is the interface representing objects that can marshal themselves.
+<span class="lineNum">     168 </span>                :            : type Marshaler interface {
+<span class="lineNum">     169 </span>                :            :         Marshal() ([]byte, error)
+<span class="lineNum">     170 </span>                :            : }
+<span class="lineNum">     171 </span>                :            : 
+<a name="172"><span class="lineNum">     172 </span>                :            : // Marshal takes the protocol buffer struct represented by pb</a>
+<span class="lineNum">     173 </span>                :            : // and encodes it into the wire format, returning the data.
+<span class="lineNum">     174 </span>                :<span class="lineCov">         13 : func Marshal(pb interface{}) ([]byte, error) {</span>
+<span class="lineNum">     175 </span>                :            :         // Can the object marshal itself?
+<span class="lineNum">     176 </span>[<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 13 times"> + </span>]:<span class="lineCov">         13 :         if m, ok := pb.(Marshaler); ok {</span>
+<span class="lineNum">     177 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return m.Marshal()</span>
+<span class="lineNum">     178 </span>                :            :         }
+<span class="lineNum">     179 </span>        [<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         13 :         p := NewBuffer(nil)</span>
+<span class="lineNum">     180 </span>        [<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         13 :         err := p.Marshal(pb)</span>
+<span class="lineNum">     181 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         13 :         if err != nil {</span>
+<span class="lineNum">     182 </span>                :<span class="lineCov">          2 :                 return nil, err</span>
+<span class="lineNum">     183 </span>                :            :         }
+<span class="lineNum">     184 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         13 :         return p.buf, err</span>
+<span class="lineNum">     185 </span>                :            : }
+<span class="lineNum">     186 </span>                :            : 
+<span class="lineNum">     187 </span>                :            : // Marshal takes the protocol buffer struct represented by pb
+<a name="188"><span class="lineNum">     188 </span>                :            : // and encodes it into the wire format, writing the result to the</a>
+<span class="lineNum">     189 </span>                :            : // Buffer.
+<span class="lineNum">     190 </span>                :<span class="lineCov">         31 : func (p *Buffer) Marshal(pb interface{}) error {</span>
+<span class="lineNum">     191 </span>                :            :         // Can the object marshal itself?
+<span class="lineNum">     192 </span>[<span class="branchCov" title="Branch 0 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 31 times"> + </span>]:<span class="lineCov">         31 :         if m, ok := pb.(Marshaler); ok {</span>
+<span class="lineNum">     193 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 data, err := m.Marshal()</span>
+<span class="lineNum">     194 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 if err != nil {</span>
+<span class="lineNum">     195 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     196 </span>                :            :                 }
+<span class="lineNum">     197 </span>                :<span class="lineNoCov">          0 :                 p.buf = append(p.buf, data...)</span>
+<span class="lineNum">     198 </span>                :<span class="lineNoCov">          0 :                 return nil</span>
+<span class="lineNum">     199 </span>                :            :         }
+<span class="lineNum">     200 </span>                :            : 
+<span class="lineNum">     201 </span>        [<span class="branchCov" title="Branch 0 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         31 :         t, b, err := getbase(pb)</span>
+<span class="lineNum">     202 </span>        [<span class="branchCov" title="Branch 0 was taken 30 times"> + </span><span class="branchCov" title="Branch 1 was taken 1 time"> + </span>]:<span class="lineCov">         31 :         if err == nil {</span>
+<span class="lineNum">     203 </span>[<span class="branchCov" title="Branch 0 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         30 :                 err = p.enc_struct(t.Elem(), b)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 9 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>][<span class="branchCov" title="Branch 12 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span>]
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 15 was taken 3 times"> + </span><span class="branchCov" title="Branch 16 was taken 27 times"> + </span>][<span class="branchCov" title="Branch 17 was taken 3 times"> + </span><span class="branchNoCov" title="Branch 18 was not taken"> - </span>]
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 19 was taken 30 times"> + </span><span class="branchNoCov" title="Branch 20 was not taken"> - </span>]
+<span class="lineNum">     204 </span>                :            :         }
+<span class="lineNum">     205 </span>                :            : 
+<span class="lineNum">     206 </span>                :<span class="lineCov">         31 :         stats.Encode++</span>
+<span class="lineNum">     207 </span>                :            : 
+<span class="lineNum">     208 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 27 times"> + </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         31 :         return err</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 31 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     209 </span>                :            : }
+<span class="lineNum">     210 </span>                :            : 
+<span class="lineNum">     211 </span>                :            : // Individual type encoders.
+<a name="212"><span class="lineNum">     212 </span>                :            : </a>
+<span class="lineNum">     213 </span>                :            : // Encode a bool.
+<span class="lineNum">     214 </span>                :<span class="lineCov">         51 : func (o *Buffer) enc_bool(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     215 </span>[<span class="branchCov" title="Branch 0 was taken 51 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 51 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         51 :         v := *(**bool)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     216 </span>        [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchCov" title="Branch 1 was taken 28 times"> + </span>]:<span class="lineCov">         51 :         if v == nil {</span>
+<span class="lineNum">     217 </span>[<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 23 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         23 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 23 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     218 </span>                :            :         }
+<span class="lineNum">     219 </span>                :<span class="lineCov">         28 :         x := 0</span>
+<span class="lineNum">     220 </span>[<span class="branchCov" title="Branch 0 was taken 28 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 28 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         28 :         if *v {</span>
+<span class="lineNum">     221 </span>                :<span class="lineCov">         28 :                 x = 1</span>
+<span class="lineNum">     222 </span>                :            :         }
+<span class="lineNum">     223 </span>        [<span class="branchCov" title="Branch 0 was taken 28 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         28 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     224 </span>[<span class="branchCov" title="Branch 0 was taken 28 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 28 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         28 :         p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     225 </span>                :<span class="lineCov">         51 :         return nil</span>
+<span class="lineNum">     226 </span>                :            : }
+<a name="227"><span class="lineNum">     227 </span>                :            : </a>
+<span class="lineNum">     228 </span>                :            : // Encode an int32.
+<span class="lineNum">     229 </span>                :<span class="lineCov">        296 : func (o *Buffer) enc_int32(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     230 </span>[<span class="branchCov" title="Branch 0 was taken 296 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 296 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        296 :         v := *(**int32)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 132 times"> + </span><span class="branchCov" title="Branch 1 was taken 164 times"> + </span>]:<span class="lineCov">        296 :         if v == nil {</span>
+<span class="lineNum">     232 </span>[<span class="branchCov" title="Branch 0 was taken 132 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 132 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        132 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 132 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     233 </span>                :            :         }
+<span class="lineNum">     234 </span>        [<span class="branchCov" title="Branch 0 was taken 164 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        164 :         x := *v</span>
+<span class="lineNum">     235 </span>        [<span class="branchCov" title="Branch 0 was taken 164 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        164 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     236 </span>[<span class="branchCov" title="Branch 0 was taken 164 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 164 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        164 :         p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     237 </span>                :<span class="lineCov">        296 :         return nil</span>
+<span class="lineNum">     238 </span>                :            : }
+<a name="239"><span class="lineNum">     239 </span>                :            : </a>
+<span class="lineNum">     240 </span>                :            : // Encode an int64.
+<span class="lineNum">     241 </span>                :<span class="lineCov">        256 : func (o *Buffer) enc_int64(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     242 </span>[<span class="branchCov" title="Branch 0 was taken 256 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 256 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        256 :         v := *(**int64)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     243 </span>        [<span class="branchCov" title="Branch 0 was taken 115 times"> + </span><span class="branchCov" title="Branch 1 was taken 141 times"> + </span>]:<span class="lineCov">        256 :         if v == nil {</span>
+<span class="lineNum">     244 </span>[<span class="branchCov" title="Branch 0 was taken 115 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 115 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        115 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 115 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     245 </span>                :            :         }
+<span class="lineNum">     246 </span>        [<span class="branchCov" title="Branch 0 was taken 141 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        141 :         x := *v</span>
+<span class="lineNum">     247 </span>        [<span class="branchCov" title="Branch 0 was taken 141 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        141 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     248 </span>[<span class="branchCov" title="Branch 0 was taken 141 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 141 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        141 :         p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     249 </span>                :<span class="lineCov">        256 :         return nil</span>
+<span class="lineNum">     250 </span>                :            : }
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<span class="lineNum">     252 </span>                :            : // Encode a string.
+<span class="lineNum">     253 </span>                :<span class="lineCov">        297 : func (o *Buffer) enc_string(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     254 </span>[<span class="branchCov" title="Branch 0 was taken 297 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 297 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        297 :         v := *(**string)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     255 </span>        [<span class="branchCov" title="Branch 0 was taken 42 times"> + </span><span class="branchCov" title="Branch 1 was taken 255 times"> + </span>]:<span class="lineCov">        297 :         if v == nil {</span>
+<span class="lineNum">     256 </span>[<span class="branchCov" title="Branch 0 was taken 42 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 42 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         42 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 42 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     257 </span>                :            :         }
+<span class="lineNum">     258 </span>        [<span class="branchCov" title="Branch 0 was taken 255 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        255 :         x := *v</span>
+<span class="lineNum">     259 </span>        [<span class="branchCov" title="Branch 0 was taken 255 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        255 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     260 </span>        [<span class="branchCov" title="Branch 0 was taken 255 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        255 :         o.EncodeStringBytes(x)</span>
+<span class="lineNum">     261 </span>                :<span class="lineCov">        297 :         return nil</span>
+<span class="lineNum">     262 </span>                :            : }
+<a name="263"><span class="lineNum">     263 </span>                :            : </a>
+<span class="lineNum">     264 </span>                :            : // All protocol buffer fields are nillable, but be careful.
+<span class="lineNum">     265 </span>                :<span class="lineCov">         49 : func isNil(v reflect.Value) bool {</span>
+<span class="lineNum">     266 </span>        [<span class="branchCov" title="Branch 1 was taken 49 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>]:<span class="lineCov">         49 :         switch v.Kind() {</span>
+<span class="lineNum">     267 </span>                :            :         case reflect.Map, reflect.Ptr, reflect.Slice:
+<span class="lineNum">     268 </span>                :<span class="lineCov">         49 :                 return v.IsNil()</span>
+<span class="lineNum">     269 </span>                :            :         }
+<span class="lineNum">     270 </span>                :<span class="lineCov">         49 :         return false</span>
+<span class="lineNum">     271 </span>                :            : }
+<a name="272"><span class="lineNum">     272 </span>                :            : </a>
+<span class="lineNum">     273 </span>                :            : // Encode a message struct.
+<span class="lineNum">     274 </span>                :<span class="lineCov">         36 : func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     275 </span>                :            :         // Can the object marshal itself?
+<span class="lineNum">     276 </span>[<span class="branchCov" title="Branch 0 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         36 :         iv := reflect.NewAt(p.stype, unsafe.Pointer(base+p.offset)).Elem().Interface()</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 8 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     277 </span>[<span class="branchCov" title="Branch 0 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 36 times"> + </span>]:<span class="lineCov">         36 :         if m, ok := iv.(Marshaler); ok {</span>
+<span class="lineNum">     278 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 if isNil(reflect.ValueOf(iv)) {</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">     279 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     280 </span>                :            :                 }
+<span class="lineNum">     281 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 data, err := m.Marshal()</span>
+<span class="lineNum">     282 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 if err != nil {</span>
+<span class="lineNum">     283 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     284 </span>                :            :                 }
+<span class="lineNum">     285 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     286 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 o.EncodeRawBytes(data)</span>
+<span class="lineNum">     287 </span>                :<span class="lineNoCov">          0 :                 return nil</span>
+<span class="lineNum">     288 </span>                :            :         }
+<span class="lineNum">     289 </span>[<span class="branchCov" title="Branch 0 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         36 :         v := *(**struct{})(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     290 </span>        [<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchCov" title="Branch 1 was taken 19 times"> + </span>]:<span class="lineCov">         36 :         if v == nil {</span>
+<span class="lineNum">     291 </span>[<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         17 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     292 </span>                :            :         }
+<span class="lineNum">     293 </span>                :            : 
+<span class="lineNum">     294 </span>                :            :         // need the length before we can write out the message itself,
+<span class="lineNum">     295 </span>                :            :         // so marshal into a separate byte buffer first.
+<span class="lineNum">     296 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         obuf := o.buf</span>
+<span class="lineNum">     297 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         19 :         o.buf = o.bufalloc()</span>
+<span class="lineNum">     298 </span>                :            : 
+<span class="lineNum">     299 </span>                :<span class="lineCov">         19 :         b := uintptr(unsafe.Pointer(v))</span>
+<span class="lineNum">     300 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         typ := p.stype.Elem()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     301 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         err := o.enc_struct(typ, b)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     302 </span>                :            : 
+<span class="lineNum">     303 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         nbuf := o.buf</span>
+<span class="lineNum">     304 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         o.buf = obuf</span>
+<span class="lineNum">     305 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 19 times"> + </span>]:<span class="lineCov">         19 :         if err != nil {</span>
+<span class="lineNum">     306 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 o.buffree(nbuf)</span>
+<span class="lineNum">     307 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     308 </span>                :            :         }
+<span class="lineNum">     309 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     310 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         o.EncodeRawBytes(nbuf)</span>
+<span class="lineNum">     311 </span>        [<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         19 :         o.buffree(nbuf)</span>
+<span class="lineNum">     312 </span>                :<span class="lineCov">         36 :         return nil</span>
+<span class="lineNum">     313 </span>                :            : }
+<a name="314"><span class="lineNum">     314 </span>                :            : </a>
+<span class="lineNum">     315 </span>                :            : // Encode a group struct.
+<span class="lineNum">     316 </span>                :<span class="lineCov">         36 : func (o *Buffer) enc_struct_group(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     317 </span>[<span class="branchCov" title="Branch 0 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 36 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         36 :         v := *(**struct{})(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     318 </span>        [<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchCov" title="Branch 1 was taken 19 times"> + </span>]:<span class="lineCov">         36 :         if v == nil {</span>
+<span class="lineNum">     319 </span>[<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         17 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     320 </span>                :            :         }
+<span class="lineNum">     321 </span>                :            : 
+<span class="lineNum">     322 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         o.EncodeVarint(uint64((p.Tag &lt;&lt; 3) | WireStartGroup))</span>
+<span class="lineNum">     323 </span>                :<span class="lineCov">         19 :         b := uintptr(unsafe.Pointer(v))</span>
+<span class="lineNum">     324 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         typ := p.stype.Elem()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     325 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         err := o.enc_struct(typ, b)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     326 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 19 times"> + </span>]:<span class="lineCov">         19 :         if err != nil {</span>
+<span class="lineNum">     327 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     328 </span>                :            :         }
+<span class="lineNum">     329 </span>[<span class="branchCov" title="Branch 0 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 19 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         19 :         o.EncodeVarint(uint64((p.Tag &lt;&lt; 3) | WireEndGroup))</span>
+<span class="lineNum">     330 </span>                :<span class="lineCov">         36 :         return nil</span>
+<span class="lineNum">     331 </span>                :            : }
+<a name="332"><span class="lineNum">     332 </span>                :            : </a>
+<span class="lineNum">     333 </span>                :            : // Encode a slice of bools ([]bool).
+<span class="lineNum">     334 </span>                :<span class="lineCov">         17 : func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     335 </span>[<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         17 :         s := *(*[]uint8)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     336 </span>                :<span class="lineCov">         17 :         l := len(s)</span>
+<span class="lineNum">     337 </span>        [<span class="branchCov" title="Branch 0 was taken 14 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">         17 :         if l == 0 {</span>
+<span class="lineNum">     338 </span>[<span class="branchCov" title="Branch 0 was taken 14 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 14 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         14 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 14 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     339 </span>                :            :         }
+<span class="lineNum">     340 </span>[<span class="branchCov" title="Branch 1 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 54 times"> + </span><span class="branchCov" title="Branch 4 was taken 3 times"> + </span>]:<span class="lineCov">         57 :         for _, x := range s {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 54 times"> + </span>]
+<span class="lineNum">     341 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     342 </span>        [<span class="branchCov" title="Branch 0 was taken 27 times"> + </span><span class="branchCov" title="Branch 1 was taken 27 times"> + </span>]:<span class="lineCov">         54 :                 if x != 0 {</span>
+<span class="lineNum">     343 </span>                :<span class="lineCov">         27 :                         x = 1</span>
+<span class="lineNum">     344 </span>                :            :                 }
+<span class="lineNum">     345 </span>[<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         54 :                 p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     346 </span>                :            :         }
+<span class="lineNum">     347 </span>                :<span class="lineCov">         17 :         return nil</span>
+<span class="lineNum">     348 </span>                :            : }
+<a name="349"><span class="lineNum">     349 </span>                :            : </a>
+<span class="lineNum">     350 </span>                :            : // Encode a slice of bools ([]bool) in packed format.
+<span class="lineNum">     351 </span>                :<span class="lineCov">         17 : func (o *Buffer) enc_slice_packed_bool(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     352 </span>[<span class="branchCov" title="Branch 0 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 17 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         17 :         s := *(*[]uint8)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     353 </span>                :<span class="lineCov">         17 :         l := len(s)</span>
+<span class="lineNum">     354 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">         17 :         if l == 0 {</span>
+<span class="lineNum">     355 </span>[<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         15 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 15 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     356 </span>                :            :         }
+<span class="lineNum">     357 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     358 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">          2 :         o.EncodeVarint(uint64(l)) // each bool takes exactly one byte</span>
+<span class="lineNum">     359 </span>[<span class="branchCov" title="Branch 1 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 4 times"> + </span><span class="branchCov" title="Branch 4 was taken 2 times"> + </span>]:<span class="lineCov">          6 :         for _, x := range s {</span>
+<span class="lineNum">         </span>        [<span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 4 times"> + </span>]
+<span class="lineNum">     360 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          4 :                 if x != 0 {</span>
+<span class="lineNum">     361 </span>                :<span class="lineCov">          2 :                         x = 1</span>
+<span class="lineNum">     362 </span>                :            :                 }
+<span class="lineNum">     363 </span>[<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          4 :                 p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     364 </span>                :            :         }
+<span class="lineNum">     365 </span>                :<span class="lineCov">         17 :         return nil</span>
+<span class="lineNum">     366 </span>                :            : }
+<a name="367"><span class="lineNum">     367 </span>                :            : </a>
+<span class="lineNum">     368 </span>                :            : // Encode a slice of bytes ([]byte).
+<span class="lineNum">     369 </span>                :<span class="lineCov">         51 : func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     370 </span>[<span class="branchCov" title="Branch 0 was taken 51 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 51 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         51 :         s := *(*[]uint8)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     371 </span>        [<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchCov" title="Branch 1 was taken 29 times"> + </span>]:<span class="lineCov">         51 :         if s == nil {</span>
+<span class="lineNum">     372 </span>[<span class="branchCov" title="Branch 0 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         22 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 22 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     373 </span>                :            :         }
+<span class="lineNum">     374 </span>        [<span class="branchCov" title="Branch 0 was taken 29 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         29 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     375 </span>        [<span class="branchCov" title="Branch 0 was taken 29 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         29 :         o.EncodeRawBytes(s)</span>
+<span class="lineNum">     376 </span>                :<span class="lineCov">         51 :         return nil</span>
+<span class="lineNum">     377 </span>                :            : }
+<a name="378"><span class="lineNum">     378 </span>                :            : </a>
+<span class="lineNum">     379 </span>                :            : // Encode a slice of int32s ([]int32).
+<span class="lineNum">     380 </span>                :<span class="lineCov">         86 : func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     381 </span>[<span class="branchCov" title="Branch 0 was taken 86 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 86 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         86 :         s := *(*[]uint32)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     382 </span>                :<span class="lineCov">         86 :         l := len(s)</span>
+<span class="lineNum">     383 </span>        [<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">         86 :         if l == 0 {</span>
+<span class="lineNum">     384 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         70 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     385 </span>                :            :         }
+<span class="lineNum">     386 </span>        [<span class="branchCov" title="Branch 0 was taken 276 times"> + </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">        292 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     387 </span>        [<span class="branchCov" title="Branch 0 was taken 276 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        276 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     388 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 276 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 276 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">        276 :                 x := s[i]</span>
+<span class="lineNum">     389 </span>[<span class="branchCov" title="Branch 0 was taken 276 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 276 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        276 :                 p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     390 </span>                :            :         }
+<span class="lineNum">     391 </span>                :<span class="lineCov">         86 :         return nil</span>
+<span class="lineNum">     392 </span>                :            : }
+<a name="393"><span class="lineNum">     393 </span>                :            : </a>
+<span class="lineNum">     394 </span>                :            : // Encode a slice of int32s ([]int32) in packed format.
+<span class="lineNum">     395 </span>                :<span class="lineCov">         86 : func (o *Buffer) enc_slice_packed_int32(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     396 </span>[<span class="branchCov" title="Branch 0 was taken 86 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 86 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         86 :         s := *(*[]uint32)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     397 </span>                :<span class="lineCov">         86 :         l := len(s)</span>
+<span class="lineNum">     398 </span>        [<span class="branchCov" title="Branch 0 was taken 75 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         86 :         if l == 0 {</span>
+<span class="lineNum">     399 </span>[<span class="branchCov" title="Branch 0 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         75 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     400 </span>                :            :         }
+<span class="lineNum">     401 </span>                :            :         // TODO: Reuse a Buffer.
+<span class="lineNum">     402 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         buf := NewBuffer(nil)</span>
+<span class="lineNum">     403 </span>        [<span class="branchCov" title="Branch 0 was taken 26 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">         37 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     404 </span>[<span class="branchCov" title="Branch 0 was taken 26 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 26 times"> + </span>]:<span class="lineCov">         26 :                 p.valEnc(buf, uint64(s[i]))</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 26 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 26 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     405 </span>                :            :         }
+<span class="lineNum">     406 </span>                :            : 
+<span class="lineNum">     407 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     408 </span>[<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         11 :         o.EncodeVarint(uint64(len(buf.buf)))</span>
+<span class="lineNum">     409 </span>        [<span class="branchCov" title="Branch 0 was taken 11 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         11 :         o.buf = append(o.buf, buf.buf...)</span>
+<span class="lineNum">     410 </span>                :<span class="lineCov">         86 :         return nil</span>
+<span class="lineNum">     411 </span>                :            : }
+<a name="412"><span class="lineNum">     412 </span>                :            : </a>
+<span class="lineNum">     413 </span>                :            : // Encode a slice of int64s ([]int64).
+<span class="lineNum">     414 </span>                :<span class="lineCov">         85 : func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     415 </span>[<span class="branchCov" title="Branch 0 was taken 85 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 85 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         85 :         s := *(*[]uint64)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     416 </span>                :<span class="lineCov">         85 :         l := len(s)</span>
+<span class="lineNum">     417 </span>        [<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>]:<span class="lineCov">         85 :         if l == 0 {</span>
+<span class="lineNum">     418 </span>[<span class="branchCov" title="Branch 0 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         70 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 70 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     419 </span>                :            :         }
+<span class="lineNum">     420 </span>        [<span class="branchCov" title="Branch 0 was taken 270 times"> + </span><span class="branchCov" title="Branch 1 was taken 15 times"> + </span>]:<span class="lineCov">        285 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     421 </span>        [<span class="branchCov" title="Branch 0 was taken 270 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        270 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     422 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 270 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 270 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">        270 :                 x := s[i]</span>
+<span class="lineNum">     423 </span>[<span class="branchCov" title="Branch 0 was taken 270 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 270 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        270 :                 p.valEnc(o, uint64(x))</span>
+<span class="lineNum">     424 </span>                :            :         }
+<span class="lineNum">     425 </span>                :<span class="lineCov">         85 :         return nil</span>
+<span class="lineNum">     426 </span>                :            : }
+<a name="427"><span class="lineNum">     427 </span>                :            : </a>
+<span class="lineNum">     428 </span>                :            : // Encode a slice of int64s ([]int64) in packed format.
+<span class="lineNum">     429 </span>                :<span class="lineCov">         85 : func (o *Buffer) enc_slice_packed_int64(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     430 </span>[<span class="branchCov" title="Branch 0 was taken 85 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 85 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         85 :         s := *(*[]uint64)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     431 </span>                :<span class="lineCov">         85 :         l := len(s)</span>
+<span class="lineNum">     432 </span>        [<span class="branchCov" title="Branch 0 was taken 75 times"> + </span><span class="branchCov" title="Branch 1 was taken 10 times"> + </span>]:<span class="lineCov">         85 :         if l == 0 {</span>
+<span class="lineNum">     433 </span>[<span class="branchCov" title="Branch 0 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         75 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 75 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     434 </span>                :            :         }
+<span class="lineNum">     435 </span>                :            :         // TODO: Reuse a Buffer.
+<span class="lineNum">     436 </span>        [<span class="branchCov" title="Branch 0 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         10 :         buf := NewBuffer(nil)</span>
+<span class="lineNum">     437 </span>        [<span class="branchCov" title="Branch 0 was taken 20 times"> + </span><span class="branchCov" title="Branch 1 was taken 10 times"> + </span>]:<span class="lineCov">         30 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     438 </span>[<span class="branchCov" title="Branch 0 was taken 20 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 20 times"> + </span>]:<span class="lineCov">         20 :                 p.valEnc(buf, s[i])</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 20 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 20 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     439 </span>                :            :         }
+<span class="lineNum">     440 </span>                :            : 
+<span class="lineNum">     441 </span>        [<span class="branchCov" title="Branch 0 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         10 :         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     442 </span>[<span class="branchCov" title="Branch 0 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         10 :         o.EncodeVarint(uint64(len(buf.buf)))</span>
+<span class="lineNum">     443 </span>        [<span class="branchCov" title="Branch 0 was taken 10 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         10 :         o.buf = append(o.buf, buf.buf...)</span>
+<span class="lineNum">     444 </span>                :<span class="lineCov">         85 :         return nil</span>
+<span class="lineNum">     445 </span>                :            : }
+<a name="446"><span class="lineNum">     446 </span>                :            : </a>
+<span class="lineNum">     447 </span>                :            : // Encode a slice of slice of bytes ([][]byte).
+<span class="lineNum">     448 </span>                :<span class="lineCov">         18 : func (o *Buffer) enc_slice_slice_byte(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     449 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         ss := *(*[][]uint8)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     450 </span>                :<span class="lineCov">         18 :         l := len(ss)</span>
+<span class="lineNum">     451 </span>        [<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         18 :         if l == 0 {</span>
+<span class="lineNum">     452 </span>[<span class="branchCov" title="Branch 0 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         13 :                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 13 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     453 </span>                :            :         }
+<span class="lineNum">     454 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">         61 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     455 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         56 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     456 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 56 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         56 :                 s := ss[i]</span>
+<span class="lineNum">     457 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         56 :                 o.EncodeRawBytes(s)</span>
+<span class="lineNum">     458 </span>                :            :         }
+<span class="lineNum">     459 </span>                :<span class="lineCov">         18 :         return nil</span>
+<span class="lineNum">     460 </span>                :            : }
+<a name="461"><span class="lineNum">     461 </span>                :            : </a>
+<span class="lineNum">     462 </span>                :            : // Encode a slice of strings ([]string).
+<span class="lineNum">     463 </span>                :<span class="lineCov">         18 : func (o *Buffer) enc_slice_string(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     464 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         ss := *(*[]string)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     465 </span>                :<span class="lineCov">         18 :         l := len(ss)</span>
+<span class="lineNum">     466 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         72 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     467 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     468 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 54 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         54 :                 s := ss[i]</span>
+<span class="lineNum">     469 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.EncodeStringBytes(s)</span>
+<span class="lineNum">     470 </span>                :            :         }
+<span class="lineNum">     471 </span>                :<span class="lineCov">         18 :         return nil</span>
+<span class="lineNum">     472 </span>                :            : }
+<a name="473"><span class="lineNum">     473 </span>                :            : </a>
+<span class="lineNum">     474 </span>                :            : // Encode a slice of message structs ([]*struct).
+<span class="lineNum">     475 </span>                :<span class="lineCov">         18 : func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     476 </span>[<span class="branchCov" title="Branch 1 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         18 :         s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     477 </span>                :<span class="lineCov">         18 :         l := len(s)</span>
+<span class="lineNum">     478 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         typ := p.stype.Elem()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     479 </span>                :            : 
+<span class="lineNum">     480 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchCov" title="Branch 1 was taken 18 times"> + </span>]:<span class="lineCov">         72 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     481 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 54 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         54 :                 v := s[i]</span>
+<span class="lineNum">     482 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 54 times"> + </span>]:<span class="lineCov">         54 :                 if v == nil {</span>
+<span class="lineNum">     483 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return ErrRepeatedHasNil</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     484 </span>                :            :                 }
+<span class="lineNum">     485 </span>                :            : 
+<span class="lineNum">     486 </span>                :            :                 // Can the object marshal itself?
+<span class="lineNum">     487 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 54 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         54 :                 iv := reflect.NewAt(p.stype, unsafe.Pointer(&amp;s[i])).Elem().Interface()</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>][<span class="branchCov" title="Branch 9 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 10 was not taken"> - </span>]
+<span class="lineNum">     488 </span>[<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 54 times"> + </span>]:<span class="lineCov">         54 :                 if m, ok := iv.(Marshaler); ok {</span>
+<span class="lineNum">     489 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         if isNil(reflect.ValueOf(iv)) {</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<span class="lineNum">     490 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return ErrNil</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     491 </span>                :            :                         }
+<span class="lineNum">     492 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         data, err := m.Marshal()</span>
+<span class="lineNum">     493 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         if err != nil {</span>
+<span class="lineNum">     494 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     495 </span>                :            :                         }
+<span class="lineNum">     496 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     497 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         o.EncodeRawBytes(data)</span>
+<span class="lineNum">     498 </span>                :            :                         continue
+<span class="lineNum">     499 </span>                :            :                 }
+<span class="lineNum">     500 </span>                :            : 
+<span class="lineNum">     501 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 obuf := o.buf</span>
+<span class="lineNum">     502 </span>[<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buf = o.bufalloc()</span>
+<span class="lineNum">     503 </span>                :            : 
+<span class="lineNum">     504 </span>                :<span class="lineCov">         54 :                 b := uintptr(unsafe.Pointer(v))</span>
+<span class="lineNum">     505 </span>[<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         54 :                 err := o.enc_struct(typ, b)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     506 </span>                :            : 
+<span class="lineNum">     507 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 nbuf := o.buf</span>
+<span class="lineNum">     508 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buf = obuf</span>
+<span class="lineNum">     509 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 54 times"> + </span>]:<span class="lineCov">         54 :                 if err != nil {</span>
+<span class="lineNum">     510 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         o.buffree(nbuf)</span>
+<span class="lineNum">     511 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         if err == ErrNil {</span>
+<span class="lineNum">     512 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return ErrRepeatedHasNil</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     513 </span>                :            :                         }
+<span class="lineNum">     514 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     515 </span>                :            :                 }
+<span class="lineNum">     516 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buf = append(o.buf, p.tagcode...)</span>
+<span class="lineNum">     517 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.EncodeRawBytes(nbuf)</span>
+<span class="lineNum">     518 </span>                :            : 
+<span class="lineNum">     519 </span>        [<span class="branchCov" title="Branch 0 was taken 54 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         54 :                 o.buffree(nbuf)</span>
+<span class="lineNum">     520 </span>                :            :         }
+<span class="lineNum">     521 </span>                :<span class="lineCov">         18 :         return nil</span>
+<span class="lineNum">     522 </span>                :            : }
+<a name="523"><span class="lineNum">     523 </span>                :            : </a>
+<span class="lineNum">     524 </span>                :            : // Encode a slice of group structs ([]*struct).
+<span class="lineNum">     525 </span>                :<span class="lineCov">         18 : func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     526 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     527 </span>                :<span class="lineCov">         18 :         l := len(s)</span>
+<span class="lineNum">     528 </span>[<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         18 :         typ := p.stype.Elem()</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 18 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     529 </span>                :            : 
+<span class="lineNum">     530 </span>        [<span class="branchCov" title="Branch 0 was taken 56 times"> + </span><span class="branchCov" title="Branch 1 was taken 17 times"> + </span>]:<span class="lineCov">         74 :         for i := 0; i &lt; l; i++ {</span>
+<span class="lineNum">     531 </span>[<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 56 times"> + </span>][<span class="branchCov" title="Branch 3 was taken 56 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">         56 :                 v := s[i]</span>
+<span class="lineNum">     532 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 55 times"> + </span>]:<span class="lineCov">         56 :                 if v == nil {</span>
+<span class="lineNum">     533 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                         return ErrRepeatedHasNil</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     534 </span>                :            :                 }
+<span class="lineNum">     535 </span>                :            : 
+<span class="lineNum">     536 </span>[<span class="branchCov" title="Branch 0 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         55 :                 o.EncodeVarint(uint64((p.Tag &lt;&lt; 3) | WireStartGroup))</span>
+<span class="lineNum">     537 </span>                :            : 
+<span class="lineNum">     538 </span>                :<span class="lineCov">         55 :                 b := uintptr(unsafe.Pointer(v))</span>
+<span class="lineNum">     539 </span>[<span class="branchCov" title="Branch 0 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         55 :                 err := o.enc_struct(typ, b)</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 4 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>][<span class="branchCov" title="Branch 7 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 8 was not taken"> - </span>]
+<span class="lineNum">     540 </span>                :            : 
+<span class="lineNum">     541 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 55 times"> + </span>]:<span class="lineCov">         55 :                 if err != nil {</span>
+<span class="lineNum">     542 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 3 was not executed"> # </span><span class="branchNoExec" title="Branch 4 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         if err == ErrNil {</span>
+<span class="lineNum">     543 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                 return ErrRepeatedHasNil</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     544 </span>                :            :                         }
+<span class="lineNum">     545 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     546 </span>                :            :                 }
+<span class="lineNum">     547 </span>                :            : 
+<span class="lineNum">     548 </span>[<span class="branchCov" title="Branch 0 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 55 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">         55 :                 o.EncodeVarint(uint64((p.Tag &lt;&lt; 3) | WireEndGroup))</span>
+<span class="lineNum">     549 </span>                :            :         }
+<span class="lineNum">     550 </span>                :<span class="lineCov">         18 :         return nil</span>
+<span class="lineNum">     551 </span>                :            : }
+<a name="552"><span class="lineNum">     552 </span>                :            : </a>
+<span class="lineNum">     553 </span>                :            : // Encode an extension map.
+<span class="lineNum">     554 </span>                :<span class="lineCov">          1 : func (o *Buffer) enc_map(p *Properties, base uintptr) error {</span>
+<span class="lineNum">     555 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :         v := *(*map[int32]Extension)(unsafe.Pointer(base + p.offset))</span>
+<span class="lineNum">     556 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 3 was not taken"> - </span><span class="branchCov" title="Branch 4 was taken 1 time"> + </span>]:<span class="lineCov">          1 :         if err := encodeExtensionMap(v); err != nil {</span>
+<span class="lineNum">     557 </span>[<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>][<span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :                 return err</span>
+<span class="lineNum">         </span>        [<span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<span class="lineNum">     558 </span>                :            :         }
+<span class="lineNum">     559 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">          2 :         for _, e := range v {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 6 was taken 1 time"> + </span><span class="branchCov" title="Branch 7 was taken 1 time"> + </span>][<span class="branchCov" title="Branch 8 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span>]
+<span class="lineNum">     560 </span>                :<span class="lineCov">          1 :                 o.buf = append(o.buf, e.enc...)</span>
+<span class="lineNum">     561 </span>                :            :         }
+<span class="lineNum">     562 </span>                :<span class="lineCov">          1 :         return nil</span>
+<span class="lineNum">     563 </span>                :            : }
+<a name="564"><span class="lineNum">     564 </span>                :            : </a>
+<span class="lineNum">     565 </span>                :            : // Encode a struct.
+<span class="lineNum">     566 </span>                :<span class="lineCov">        177 : func (o *Buffer) enc_struct(t reflect.Type, base uintptr) error {</span>
+<span class="lineNum">     567 </span>        [<span class="branchCov" title="Branch 0 was taken 177 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        177 :         prop := GetProperties(t)</span>
+<span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 0 was taken 177 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        177 :         required := prop.reqCount</span>
+<span class="lineNum">     569 </span>                :            :         // Encode fields in tag order so that decoders may use optimizations
+<span class="lineNum">     570 </span>                :            :         // that depend on the ordering.
+<span class="lineNum">     571 </span>                :            :         // http://code.google.com/apis/protocolbuffers/docs/encoding.html#order
+<span class="lineNum">     572 </span>[<span class="branchCov" title="Branch 0 was taken 177 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1648 times"> + </span><span class="branchNoCov" title="Branch 4 was not taken"> - </span>]:<span class="lineCov">       1824 :         for _, i := range prop.order {</span>
+<span class="lineNum">         </span>[<span class="branchCov" title="Branch 5 was taken 1648 times"> + </span><span class="branchCov" title="Branch 6 was taken 176 times"> + </span>][<span class="branchNoCov" title="Branch 7 was not taken"> - </span><span class="branchCov" title="Branch 8 was taken 1648 times"> + </span>]
+<span class="lineNum">     573 </span>[<span class="branchCov" title="Branch 0 was taken 1648 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 1648 times"> + </span>]:<span class="lineCov">       1648 :                 p := prop.Prop[i]</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 5 was taken 1648 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span>]
+<span class="lineNum">     574 </span>[<span class="branchCov" title="Branch 0 was taken 1648 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1471 times"> + </span><span class="branchCov" title="Branch 3 was taken 177 times"> + </span>]:<span class="lineCov">       1648 :                 if p.enc != nil {</span>
+<span class="lineNum">     575 </span>[<span class="branchCov" title="Branch 0 was taken 1471 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1471 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       1471 :                         err := p.enc(o, p, base)</span>
+<span class="lineNum">     576 </span>        [<span class="branchCov" title="Branch 0 was taken 701 times"> + </span><span class="branchCov" title="Branch 1 was taken 770 times"> + </span>]:<span class="lineCov">       1471 :                         if err != nil {</span>
+<span class="lineNum">     577 </span>[<span class="branchCov" title="Branch 0 was taken 701 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 3 was taken 1 time"> + </span><span class="branchCov" title="Branch 4 was taken 700 times"> + </span>]:<span class="lineCov">        701 :                                 if err != ErrNil {</span>
+<span class="lineNum">     578 </span>[<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">          1 :                                         return err</span>
+<span class="lineNum">         </span>        [<span class="branchCov" title="Branch 4 was taken 1 time"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<span class="lineNum">     579 </span>                :            :                                 }
+<span class="lineNum">     580 </span>[<span class="branchCov" title="Branch 0 was taken 770 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>][<span class="branchCov" title="Branch 2 was taken 485 times"> + </span><span class="branchCov" title="Branch 3 was taken 285 times"> + </span>]:<span class="lineCov">        770 :                         } else if p.Required {</span>
+<span class="lineNum">     581 </span>                :<span class="lineCov">       1470 :                                 required--</span>
+<span class="lineNum">     582 </span>                :            :                         }
+<span class="lineNum">     583 </span>                :            :                 }
+<span class="lineNum">     584 </span>                :            :         }
+<span class="lineNum">     585 </span>                :            :         // See if we encoded all required fields.
+<span class="lineNum">     586 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 174 times"> + </span>]:<span class="lineCov">        176 :         if required &gt; 0 {</span>
+<span class="lineNum">     587 </span>                :<span class="lineCov">          2 :                 return &amp;ErrRequiredNotSet{t}</span>
+<span class="lineNum">     588 </span>                :            :         }
+<span class="lineNum">     589 </span>                :            : 
+<span class="lineNum">     590 </span>                :<span class="lineCov">        177 :         return nil</span>
+<span class="lineNum">     591 </span>                :            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.9</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
